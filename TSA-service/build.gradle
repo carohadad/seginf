@@ -4,10 +4,15 @@ sourceCompatibility = 1.7
 
 repositories {
   mavenCentral()
+  maven { url "https://oss.jfrog.org/artifactory/repo" }
+  maven { url "http://central.maven.org/maven2/org/bouncycastle/" }
 }
 
 dependencies {
   groovy "org.codehaus.groovy:groovy-all:1.8.6"
   testCompile "org.spockframework:spock-core:0.6-groovy-1.8"
+
+  compile "org.ratpack-framework:ratpack-groovy:0.9.0-SNAPSHOT"
+  compile "org.bouncycastle:bctsp-jdk16:1.46"
 }
 
