@@ -1,18 +1,27 @@
-apply plugin: "groovy"
-
-sourceCompatibility = 1.7
+buildscript {
+  repositories {
+    maven { url "http://oss.jfrog.org/repo" }
+    mavenCentral()
+  }
+  dependencies {
+    classpath 'io.ratpack:ratpack-gradle:0.9.0-SNAPSHOT'
+  }
+}
 
 repositories {
+  maven { url "http://oss.jfrog.org/repo" }
   mavenCentral()
-  maven { url "https://oss.jfrog.org/artifactory/repo" }
   maven { url "http://central.maven.org/maven2/org/bouncycastle/" }
 }
 
-dependencies {
-  groovy "org.codehaus.groovy:groovy-all:1.8.6"
-  testCompile "org.spockframework:spock-core:0.6-groovy-1.8"
+// The “ratpack” plugin applies the “application” plugin, making it easy to create a standalone application.
+// See: http://gradle.org/docs/current/userguide/application_plugin.html
+apply plugin: "ratpack-groovy"
 
-  compile "org.ratpack-framework:ratpack-groovy:0.9.0-SNAPSHOT"
+
+dependencies {
+  testCompile "org.spockframework:spock-core:0.7-groovy-2.0", {
+        exclude module: "groovy-all"
+    }
   compile "org.bouncycastle:bctsp-jdk16:1.46"
 }
-
