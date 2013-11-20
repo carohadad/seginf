@@ -1,0 +1,37 @@
+<html>  
+  <head>
+	<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+	<link href="/css/site.css" rel="stylesheet" type="text/css" />
+    <title>sinapuli</title>
+  </head>
+  
+  <body>
+    <div id="header">
+      <p><img src="images/Argentina.png"></p>    
+      <h1>Sistema Nacional publico de licitaciones (sinapuli)</h1>
+      <hr/>    
+    </div>
+
+  <table class="gridtable">
+    <tr>
+      <th>ID</th><th>NAME</th><th>EDIT</th><th>DELETE</th>
+    </tr>
+
+<%model.offererList.each() { %>
+    <tr>
+      <td>${it.id}</td>
+      <td>${it.name}</td>	  
+      <td><a href="/edit/${it.id}"><img src="images/edit.png" /></td>
+   	  <td><a href="/delete/${it.id}"><img src="images/delete.png" /></td>
+    </tr>
+<% }%>
+
+</table>
+
+<br>
+<br>
+<p><a href="/new">Add a New Offerer!</a></p>
+
+</body>
+
+</html>

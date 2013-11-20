@@ -1,0 +1,31 @@
+<html>  
+  <head>
+	<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+	<link href="/css/site.css" rel="stylesheet" type="text/css" />
+    <title>sinapuli</title>
+  </head>
+  
+  <body>
+	
+<h1>Edit Existing Offerer Form</h1>
+<p>Please edit any information below for the item.</p>
+
+<form action="/update/offerer/${model.id}" method="post" accept-charset="utf-8">
+
+    <!-- hidden to preserve the item id -->
+    <input type="hidden" name="id" id="id" value="${model.id}">
+  
+    <label for="name">Name:</label>    
+    <input type="text" name="name" id="name" value="${model.name}">
+    <br><br>  
+
+  <p>
+    <button type="submit">Update</button>
+  </p>
+</form>
+  
+<a href="/">Cancel</a>	
+
+  </body>
+	
+</html>	
