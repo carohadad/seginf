@@ -14,14 +14,14 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 @Singleton(lazy = true)
-public class OffererRepository {
+public class TenderOfferRepository {
 
-	String DATABASE_URL = "jdbc:h2:mem:offerer;DB_CLOSE_DELAY=-1";
+	String DATABASE_URL = "jdbc:h2:mem:tenderOfferer;DB_CLOSE_DELAY=-1";
 
 	JdbcConnectionSource connectionSource = null;
-	Dao<Offerer, Integer> offererDao = null;
+	Dao<TenderOffer, Integer> tenderOfferDao = null;
 
-	OffererRepository() {
+	TenderOfferRepository() {
 		try {
 			if(connectionSource == null){
 				// create our data source			
@@ -43,39 +43,40 @@ public class OffererRepository {
 	 */
 	private void setupDatabase(ConnectionSource connectionSource) throws Exception {
 
-		offererDao = DaoManager.createDao(connectionSource, Offerer.class);
+		tenderOfferDao = DaoManager.createDao(connectionSource, TenderOffer.class);
 		// if you need to create the table
-		TableUtils.createTable(connectionSource, Offerer.class);
+		TableUtils.createTable(connectionSource, TenderOffer.class);
 	}
 
 	public void delete(int id) throws SQLException, Exception {
-		def offerer = get(id);
-		offererDao.delete(offerer);
+		def tenderOffer = get(id);
+		tenderOfferDao.delete(tenderOffer);
 	}
 
-	public void update(int id, String name) throws SQLException, Exception {	
-		def offerer = get(id);
-		offerer.setName(name);
+	public void update(int id, String hash) throws SQLException, Exception {	
+		def tenderOffer = get(id);
+		tenderOffer.setHash(hash);
 
-		offererDao.update(offerer);
+		tenderOfferDao.update(tenderOffer);
 	}
 
-	public Offerer get(int id) throws SQLException, Exception {
-		return offererDao.queryForId(id);
+	public TenderOffer get(int id) throws SQLException, Exception {
+		return tenderOfferDao.queryForId(id);
 	}
 
-	public Offerer create(String name) throws Exception {
-		Offerer offerer = new Offerer(name);
+	public TenderOffer create(String hash) throws Exception {
+		TenderOffer tenderOffer = new TenderOffer(hash);
 
-		offererDao.create(offerer);
-		return offerer;
+		tenderOfferDao.create(tenderOffer);
+		return tenderOffer;
 	}
 
-	public List<Offerer> list() {
+	public List<TenderOffer> list() {
 		try {
-		    return offererDao.queryForAll();
+		    return tenderOfferDao.queryForAll();
 		} catch (SQLException e) {
 		    e.printStackTrace();
 		}
 	}
+
 }

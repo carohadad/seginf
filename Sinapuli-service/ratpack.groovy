@@ -8,43 +8,53 @@
 
 import static ratpack.groovy.Groovy.*
 
-//def repoOfferer = new OffererRepository();
-
 ratpack {    	
 
 	OffererRepository repoOfferer = OffererRepository.instance
+	TenderOfferRepository repoTenderOffer = TenderOfferRepository.instance
 
 	handlers {
 
 		// default route
 		get {
-			render groovyTemplate("index.html", offererList:repoOfferer.list())
+			render groovyTemplate("index.html", offererList:repoOfferer.list(), tenderOfferList:repoTenderOffer.list())			
 		}
 
-		// Form for creating new entries
-		get ("new") {
-		    render groovyTemplate("new.html")
+		get ("offerer/new") {
+		    render groovyTemplate("/offerer/new.html")
 		}
 
-		// http://localhost:5050/edit/23
-		get("edit/:id"){		  
+		get("offerer/edit/:id"){		  
 			println "getting Offerer with ID " + pathTokens.id
 			def offerer = repoOfferer.get((pathTokens.id).toInteger())
 				  
-			render groovyTemplate("edit.html", id: offerer.id, name: offerer.name) 
+			render groovyTemplate("/offerer/edit.html", id: offerer.id, name: offerer.name) 
 		}		
 
-		// http://localhost:5050/delete/2
-		get("delete/:id"){
-			render groovyTemplate("delete.html", id: pathTokens.id)
+		get("offerer/delete/:id"){
+			render groovyTemplate("/offerer/delete.html", id: pathTokens.id)
+		}
+
+		get ("tenderOffer/new") {
+		    render groovyTemplate("/tenderOffer/new.html")
+		}
+
+		get("tenderOffer/edit/:id"){		  
+			println "getting Offerer with ID " + pathTokens.id
+			def tenderOffer = repoTenderOffer.get((pathTokens.id).toInteger())
+				  
+			render groovyTemplate("/tenderOffer/edit.html", id: tenderOffer.id, hash: tenderOffer.hash) 
+		}		
+
+		get("tenderOffer/delete/:id"){
+			render groovyTemplate("/tenderOffer/delete.html", id: pathTokens.id)
 		}
 
 		// --------------------------------------------------------------------
 		// POSTs
 		// --------------------------------------------------------------------
 
-		// Data posted from a form
-		post ("submit") {
+		post ("offerer/submit") {
 			def form = request.form
 	
 			def offerer = repoOfferer.create(form.name)
@@ -52,27 +62,51 @@ ratpack {
 			def message = "Just created Offerer " + offerer.name + " with id " + offerer.id
 			println message
 	
-			render groovyTemplate("index.html", offererList:repoOfferer.list())			
+			render groovyTemplate("index.html", offererList:repoOfferer.list(), tenderOfferList:repoTenderOffer.list())			
 		}									
 
-		// http://localhost:5050/update/offerer/1
 		post ("update/offerer/:id") {
 			def form = request.form
 
 			// Update is a save with an id	
 			repoOfferer.update(form.id.toInteger(), form.name)
 
-			render groovyTemplate("index.html", offererList:repoOfferer.list())
+			render groovyTemplate("index.html", offererList:repoOfferer.list(), tenderOfferList:repoTenderOffer.list())			
 		}											
 
-		// http://localhost:5050/delete/offerer/1
 		post ("delete/offerer/:id") {
 			println "Now deleting offerer with ID: ${pathTokens.id}"
 			repoOfferer.delete(pathTokens.id.toInteger())
 
-			render groovyTemplate("index.html", offererList:repoOfferer.list())			
+			render groovyTemplate("index.html", offererList:repoOfferer.list(), tenderOfferList:repoTenderOffer.list())			
 		}									
 
+		post ("tenderOffer/submit") {
+			def form = request.form
+	
+			def tenderOffer = repoTenderOffer.create(form.hash)
+
+			def message = "Just created TenderOffer " + tenderOffer.hash + " with id " + tenderOffer.id
+			println message
+	
+			render groovyTemplate("index.html", offererList:repoOfferer.list(), tenderOfferList:repoTenderOffer.list())			
+		}									
+
+		post ("update/tenderOffer/:id") {
+			def form = request.form
+
+			// Update is a save with an id	
+			repoTenderOffer.update(form.id.toInteger(), form.hash)
+
+			render groovyTemplate("index.html", offererList:repoOfferer.list(), tenderOfferList:repoTenderOffer.list())			
+		}											
+
+		post ("delete/tenderOffer/:id") {
+			println "Now deleting trendeOffer with ID: ${pathTokens.id}"
+			repoTenderOffer.delete(pathTokens.id.toInteger())
+
+			render groovyTemplate("index.html", offererList:repoOfferer.list(), tenderOfferList:repoTenderOffer.list())			
+		}									
 		assets "public"
 	}
 }

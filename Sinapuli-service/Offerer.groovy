@@ -1,7 +1,6 @@
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 
-
 @DatabaseTable(tableName = "offerer")
 class Offerer {
 
@@ -9,9 +8,9 @@ class Offerer {
         public static final String NAME_FIELD_NAME = "name";
   
 	@DatabaseField(generatedId = true)
-	public int id;
+	private int id;
 	@DatabaseField
-	public String name;
+	private String name;
     
 
         Offerer() {

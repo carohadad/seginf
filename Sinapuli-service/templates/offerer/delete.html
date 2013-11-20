@@ -13,9 +13,7 @@
 
 	<p>Are you sure you want to delete the following item with ID: <em>"${model.id}"</em>?</p>
 	
-	<form action="offerer/${model.id}" method="post">	
-	    <!-- do we need the below ? -->
-		<input type="hidden" name="_method" value="delete">
+	<form action="/delete/offerer/${model.id}" method="post">
 		<input type="submit" value="Yes, Delete It!">
 		<a href="/">Cancel</a>
 	</form>

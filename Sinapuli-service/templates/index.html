@@ -21,8 +21,8 @@
     <tr>
       <td>${it.id}</td>
       <td>${it.name}</td>	  
-      <td><a href="/edit/${it.id}"><img src="images/edit.png" /></td>
-   	  <td><a href="/delete/${it.id}"><img src="images/delete.png" /></td>
+      <td><a href="/offerer/edit/${it.id}"><img src="images/edit.png" /></td>
+   	  <td><a href="/offerer/delete/${it.id}"><img src="images/delete.png" /></td>
     </tr>
 <% }%>
 
@@ -30,7 +30,30 @@
 
 <br>
 <br>
-<p><a href="/new">Add a New Offerer!</a></p>
+<p><a href="/offerer/new">Registrar nuevo oferente!</a></p>
+
+
+  <table class="gridtable">
+    <tr>
+      <th>ID</th><th>HASH</th><th>DOCUMENT</th><th>OFERENTE</th><th>EDIT</th><th>DELETE</th>
+    </tr>
+
+<%model.tenderOfferList.each() { %>
+    <tr>
+      <td>${it.id}</td>
+      <td>${it.hash}</td>	  
+      <td>${it.document}</td>
+      <td>${it.offerer?.name}</td>
+      <td><a href="/tenderOffer/edit/${it.id}"><img src="images/edit.png" /></td>
+   	  <td><a href="/tenderOffer/delete/${it.id}"><img src="images/delete.png" /></td>
+    </tr>
+<% }%>
+
+</table>
+
+<br>
+<br>
+<p><a href="/tenderOffer/new">Agregue nueva licitacion!</a></p>
 
 </body>
 
