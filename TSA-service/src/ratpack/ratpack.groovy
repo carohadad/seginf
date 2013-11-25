@@ -1,5 +1,7 @@
 import static ratpack.groovy.Groovy.*
 import org.bouncycastle.tsp.*
+import org.bouncycastle.cms.SignerInfoGenerator
+import org.bouncycastle.operator.DigestCalculator;
 
 
 ratpack {
@@ -21,16 +23,30 @@ ratpack {
 
     get("get_timestamp") {
 
-      TimeStampRequestGenerator reqGen = new TimeStampRequestGenerator();
+      TimeStampRequestGenerator reqGen = new TimeStampRequestGenerator()
 
-      // Dummy request
+      // TODO: generar este objeto a partir de los parametros!
       TimeStampRequest request = reqGen.generate(
-        TSPAlgorithms.SHA1, new byte[20], BigInteger.valueOf(100));
-
-      byte[] reqData = request.getEncoded();
+        TSPAlgorithms.SHA1, new byte[20], BigInteger.valueOf(100))
 
 
-      response.send "It worked ${reqData}"
+      TSAModule tsa = new TSAModule()
+      tsa.validate(request)
+
+
+      // Generamos la respuesta
+      SignerInfoGenerator signerInfoGen = null
+      DigestCalculator digestCalculator = null
+      org.bouncycastle.asn1.ASN1ObjectIdentifier tsaPolicy = request.getReqPolicy()
+
+      TimeStampTokenGenerator respGen = new TimeStampTokenGenerator(signerInfoGen, digestCalculator, tsaPolicy)
+
+      // TODO: Este numero tiene que ser unico, por ahora lo genero random, pero creo que deberiamos guardarlo.
+      java.math.BigInteger serialNumber = new BigInteger(160, new Random())
+
+      TimeStampToken timeStampToken = respGen.generate(request, serialNumber, new Date())
+
+      response.send "It worked ${timeStampToken}"
 
     }
   }
