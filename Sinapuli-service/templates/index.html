@@ -7,7 +7,7 @@
   
   <body>
     <div id="header">
-      <p><img src="images/Argentina.png"></p>    
+      <p><img src="/images/Argentina.png"></p>    
       <h1>Sistema Nacional publico de licitaciones (sinapuli)</h1>
       <hr/>    
     </div>
@@ -21,8 +21,8 @@
     <tr>
       <td>${it.id}</td>
       <td>${it.name}</td>	  
-      <td><a href="/offerer/edit/${it.id}"><img src="images/edit.png" /></td>
-   	  <td><a href="/offerer/delete/${it.id}"><img src="images/delete.png" /></td>
+      <td><a href="/offerer/edit/${it.id}"><img src="/images/edit.png" /></td>
+   	  <td><a href="/offerer/delete/${it.id}"><img src="/images/delete.png" /></td>
     </tr>
 <% }%>
 
@@ -44,8 +44,8 @@
       <td>${it.hash}</td>	  
       <td>${it.document}</td>
       <td>${it.offerer?.name}</td>
-      <td><a href="/tenderOffer/edit/${it.id}"><img src="images/edit.png" /></td>
-   	  <td><a href="/tenderOffer/delete/${it.id}"><img src="images/delete.png" /></td>
+      <td><a href="/tenderOffer/edit/${it.id}"><img src="/images/edit.png" /></td>
+   	  <td><a href="/tenderOffer/delete/${it.id}"><img src="/images/delete.png" /></td>
     </tr>
 <% }%>
 
