@@ -1,3 +1,5 @@
+package garantito.tsa
+
 import spock.lang.*
 import org.bouncycastle.tsp.*
 
@@ -31,3 +33,4 @@ class TSAModuleTest extends spock.lang.Specification {
     thrown(TSPException)
   }
 }
+

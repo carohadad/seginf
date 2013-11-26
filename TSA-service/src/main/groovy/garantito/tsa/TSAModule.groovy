@@ -1,3 +1,5 @@
+package garantito.tsa
+
 import org.bouncycastle.tsp.*
 
 class TSAModule {

@@ -3,6 +3,7 @@ import org.bouncycastle.tsp.*
 import org.bouncycastle.cms.SignerInfoGenerator
 import org.bouncycastle.operator.DigestCalculator;
 
+import garantito.tsa.TSAModule
 
 ratpack {
   handlers {

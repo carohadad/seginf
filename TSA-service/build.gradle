@@ -11,17 +11,20 @@ buildscript {
 repositories {
   maven { url "http://oss.jfrog.org/repo" }
   mavenCentral()
-  maven { url "http://central.maven.org/maven2/org/bouncycastle/" }
+  maven { url "http://repo.springsource.org/repo" } // for springloaded
 }
 
-// The “ratpack” plugin applies the “application” plugin, making it easy to create a standalone application.
-// See: http://gradle.org/docs/current/userguide/application_plugin.html
+// The “ratpack” plugin applies the “application” plugin, making it easy to
+// create a standalone application.  See:
+// http://gradle.org/docs/current/userguide/application_plugin.html
 apply plugin: "ratpack-groovy"
 
 
 dependencies {
   testCompile "org.spockframework:spock-core:0.7-groovy-2.0", {
-        exclude module: "groovy-all"
-    }
+    exclude module: "groovy-all"
+  }
+  springloaded "org.springsource.springloaded:springloaded-core:1.1.4"
   compile "org.bouncycastle:bctsp-jdk16:1.46"
 }
+
