@@ -1,12 +1,6 @@
-@GrabResolver("https://oss.jfrog.org/artifactory/repo")
-@GrabResolver("http://mvnrepository.com/artifact/")
-
-@Grab("com.j256.ormlite:ormlite-jdbc:4.47")
-@Grab("com.j256.ormlite:ormlite-core:4.47")
-@Grab("com.h2database:h2:1.3.174")
-@Grab("io.ratpack:ratpack-groovy:0.9.0-SNAPSHOT")
-
 import static ratpack.groovy.Groovy.*
+
+import garantito.sinapuli.*
 
 ratpack {    	
 
