@@ -32,5 +32,17 @@ class TSAModuleTest extends spock.lang.Specification {
     then:
     thrown(TSPException)
   }
+
+  def "should generate time stamp"() {
+    setup:
+    def tsa = new TSAModule()
+
+    when:
+    def resp = tsa.generate()
+    println tsa.encode(resp)
+
+    then:
+    resp != null
+  }
 }
 

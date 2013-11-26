@@ -25,7 +25,7 @@ dependencies {
     exclude module: "groovy-all"
   }
   springloaded "org.springsource.springloaded:springloaded-core:1.1.4"
-  compile "org.bouncycastle:bctsp-jdk16:1.46"
+  compile 'org.bouncycastle:bcpkix-jdk15on:1.49'
 }
 
 task wrapper(type: Wrapper) {
