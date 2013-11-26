@@ -1,6 +1,4 @@
-@GrabResolver("https://oss.jfrog.org/artifactory/repo")
 //@GrabResolver("http://jcenter.bintray.com")
-@Grab("io.ratpack:ratpack-groovy:0.9.0-SNAPSHOT")
 //@Grab("pdfbox:pdfbox:0.7.3")
 //@Grab("xhtmlrenderer:xhtmlrenderer")
 //@Grab("itext:itext:2.0.8")
