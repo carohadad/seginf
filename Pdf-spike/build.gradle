@@ -25,6 +25,8 @@ dependencies {
     exclude module: "groovy-all"
   }
   springloaded "org.springsource.springloaded:springloaded-core:1.1.4"
+  compile 'org.bouncycastle:bcpkix-jdk15on:1.49'
+  compile 'com.itextpdf:itextpdf:5.4.4'
 }
 
 task wrapper(type: Wrapper) {

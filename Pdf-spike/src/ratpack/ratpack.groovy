@@ -5,6 +5,28 @@
 //@Grab("jtidy:jtidy")
 
 import static ratpack.groovy.Groovy.*
+import java.io.*;
+import com.itextpdf.text.pdf.PdfReader;
+import com.itextpdf.text.pdf.PdfStamper;
+import com.itextpdf.text.pdf.AcroFields;
+import com.itextpdf.text.pdf.PdfSignatureAppearance;
+import com.itextpdf.text.pdf.PdfFormField;
+import com.itextpdf.text.Rectangle;
+import com.itextpdf.text.pdf.PdfAnnotation;
+import com.itextpdf.text.pdf.security.ExternalSignature;
+import com.itextpdf.text.pdf.security.PrivateKeySignature;
+import com.itextpdf.text.pdf.security.BouncyCastleDigest;
+import com.itextpdf.text.pdf.security.MakeSignature;
+import com.itextpdf.text.pdf.security.MakeSignature.CryptoStandard;
+import com.itextpdf.text.pdf.security.ExternalDigest;
+import com.itextpdf.text.pdf.security.DigestAlgorithms;
+//import com.itextpdf.text.pdf.security.TSAClientBouncyCastle;
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
+
+import java.security.Security;
+import java.security.KeyStore;
+import java.security.PrivateKey;
+import java.security.cert.Certificate;
 
 /*
 import org.pdfbox.exceptions.*
@@ -26,6 +48,12 @@ ratpack {
     handlers {
         get {
             render groovyTemplate("html2pdf.html")
+        }
+
+	get("pades") {
+		//render groovyTemplate("pades.html")
+		pades()
+		render groovyTemplate("pdf.html")
         }
 	/*
 	
@@ -65,10 +93,9 @@ ratpack {
         }
 	*/
 	post("html2pdf"){
-		
+
 		html2pdf(request.form.url)
 		render groovyTemplate("pdf.html")
-
 	}
 
         assets "public"
@@ -132,5 +159,67 @@ public void html2pdf(String url){
 	println "stdout: ${proc.in.text}" // *out* from the external program is *in* for groovy
 
 
+}
+
+
+public void pades(){
+
+	PdfReader reader = new PdfReader(new FileInputStream("EnunciadosTP.pdf"));
+	FileOutputStream fout = new FileOutputStream("EnunciadosTP_signed_2.pdf");
+
+	//------- Creo un area para el firmado -----------------//
+	/*
+	PdfStamper stp = new PdfStamper(reader, fout);
+	//PdfStamper stp = PdfStamper.createSignature(reader, fout, (char)'\0', null, true);
+	// create a signature form field
+	PdfFormField field = PdfFormField.createSignature(stp.getWriter());
+	field.setFieldName("SIGNAME");
+	// set the widget properties
+	field.setWidget(new Rectangle(72, 732, 144, 780),PdfAnnotation.HIGHLIGHT_OUTLINE);
+	field.setFlags(PdfAnnotation.FLAGS_PRINT);
+	// add the annotation
+	stp.addAnnotation(field, 1);
+	// close the stamper
+	stp.close();
+	*/
+	//------- firmado ------------------------------------//
+	String KEYSTORE = "ks";
+	char[] PASSWORD = "garantito".toCharArray();//password = garantito
+	BouncyCastleProvider provider = new BouncyCastleProvider();
+	Security.addProvider(provider);
+	KeyStore ks = KeyStore.getInstance(KeyStore.getDefaultType());
+	ks.load(new FileInputStream(KEYSTORE), PASSWORD);
+	String alias = (String)ks.aliases().nextElement();
+	PrivateKey pk = (PrivateKey) ks.getKey(alias, PASSWORD);
+	Certificate[] chain = ks.getCertificateChain(alias);
+	String digestAlgorithm = DigestAlgorithms.SHA256;
+	
+	/*
+	sign(String src, String name, String dest, Certificate[] chain,
+	  PrivateKey pk, String digestAlgorithm, String provider,
+	  CryptoStandard subfilter, String reason, String location)
+
+	sign(SRC, String.format(DEST, 4), chain, pk,
+	DigestAlgorithms.RIPEMD160, provider.getName(), CryptoStandard.CADES,
+	"Test 4", "Ghent");
+	*/
+
+	PdfStamper stamper = PdfStamper.createSignature(reader, fout, (char)'\0');
+	// Creating the appearance
+	PdfSignatureAppearance appearance = stamper.getSignatureAppearance();
+	//ver si hace falta
+	//appearance.setReason("Test");
+	//appearance.setLocation(location);
+	//appearance.setVisibleSignature(name);
+	//----------------------------------------------
+	// Creating the signature
+	ExternalDigest digest = new BouncyCastleDigest();
+	//ExternalSignature signature = new PrivateKeySignature(pk, digestAlgorithm, provider);
+	ExternalSignature signature = new PrivateKeySignature(pk, "SHA-256", "BC");
+	MakeSignature.signDetached(appearance, digest, signature, chain, null, null, null, 0, CryptoStandard.CMS);
+
+
+
+	println "hello pades!"
 }
 
