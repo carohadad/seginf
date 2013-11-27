@@ -1,4 +1,5 @@
 import static ratpack.groovy.Groovy.*
+import static ratpack.form.Forms.form
 
 import garantito.sinapuli.*
 
@@ -44,12 +45,26 @@ ratpack {
 			render groovyTemplate("/tenderOffer/delete.html", id: pathTokens.id)
 		}
 
+    handler('upload') {
+      byMethod {
+        get {
+          render groovyTemplate('/upload.html')      
+        }
+
+        post {
+          def f = context.parse(form())
+          def uploaded = f.file('file')
+          render groovyTemplate('/upload-result.html', filename: uploaded.fileName, content: uploaded.text)
+        }
+      }
+    }
+
 		// --------------------------------------------------------------------
 		// POSTs
 		// --------------------------------------------------------------------
 
 		post ("offerer/submit") {
-			def form = request.form
+			def form = context.parse(form())
 	
 			def offerer = repoOfferer.create(form.name)
 
@@ -60,7 +75,7 @@ ratpack {
 		}									
 
 		post ("update/offerer/:id") {
-			def form = request.form
+			def form = context.parse(form())
 
 			// Update is a save with an id	
 			repoOfferer.update(form.id.toInteger(), form.name)
@@ -76,7 +91,7 @@ ratpack {
 		}									
 
 		post ("tenderOffer/submit") {
-			def form = request.form
+			def form = context.parse(form())
 	
 			def tenderOffer = repoTenderOffer.create(form.hash)
 
@@ -87,7 +102,7 @@ ratpack {
 		}									
 
 		post ("update/tenderOffer/:id") {
-			def form = request.form
+			def form = context.parse(form())
 
 			// Update is a save with an id	
 			repoTenderOffer.update(form.id.toInteger(), form.hash)
