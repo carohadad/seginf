@@ -150,7 +150,7 @@ public void html2pdf(String url){
 
 	def command = ["phantomjs", 
 			"/usr/local/share/phantomjs/examples/rasterize.js", 
-			url, "salida.pdf"]
+			url, "html2pdf.pdf"]
 
 	def proc = command.execute()                 // Call *execute* on the string
 	proc.waitFor()                               // Wait for the command to finish
