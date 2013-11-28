@@ -87,7 +87,7 @@ public class TSAClient {
   public static void main(String[] args) {
     try {
       def client = new TSAClient()
-      println client.getToken(new byte[20])
+      new File('tsa.tsr') << client.getToken(new byte[20])
     } catch (Exception e) {
       e.printStackTrace()
     }
