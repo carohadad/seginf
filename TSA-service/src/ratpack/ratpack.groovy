@@ -22,5 +22,24 @@ ratpack {
       response.contentType("application/timestamp-reply")
       response.send "${encodedResponse}"
     }
+
+    post("timestamp") {
+
+      rawRequest = request.getInputStream()
+
+      def tsaRequest = new TimeStampRequest(rawRequest)
+
+      TSAModule tsa = new TSAModule()
+      tsa.validate(tsaRequest)
+
+      def resp = tsa.generate(tsaRequest)
+
+      def encodedResponse = tsa.encode(resp)
+
+      response.contentType("application/timestamp-reply")
+      response.headers.add("Content-Transfer-Encoding", "base64")
+
+      response.send "${encodedResponse}"
+    }
   }
 }

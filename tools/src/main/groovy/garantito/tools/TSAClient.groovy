@@ -7,7 +7,7 @@ import org.bouncycastle.tsp.*
 
 
 public class TSAClient {
-  def tsaURL = "http://ca.signfiles.com/tsa/get.aspx"
+  def tsaURL = "http://localhost:5050/timestamp"
   def tsaUsername = "garantito"
   def tsaPassword = "garantito"
 
@@ -78,11 +78,12 @@ public class TSAClient {
     byte[] respBytes = baos.toByteArray()
 
     def encoding = tsaConnection.getContentEncoding()
-    if (encoding != null && encoding.equalsIgnoreCase("base64")) {
+
+    //if (encoding != null && encoding.equalsIgnoreCase("base64")) {
       respBytes = new String(respBytes).decodeBase64()
-    }
+    //}
     respBytes
-  }    
+  }
 
   public static void main(String[] args) {
     try {
@@ -100,7 +101,7 @@ public class TSAClient {
         }
         output.bytes = client.getToken(new byte[20])
         println "Wrote ${output.name}"
-      } else { 
+      } else {
         println "error: falta parámetro SHA-1 sum"
       }
     } catch (Exception e) {
