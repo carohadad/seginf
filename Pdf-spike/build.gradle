@@ -34,3 +34,4 @@ task wrapper(type: Wrapper) {
   gradleVersion = '1.8'
 }
 
+run.jvmArgs = ['-Dratpack.port=5052']

@@ -47,6 +47,7 @@ import org.w3c.dom.Document;
 // You can change anything in the ratpack {} closure without needing to restart
 
 ratpack {
+
     handlers {
         get {
             render groovyTemplate("index.html")
