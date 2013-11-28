@@ -5,6 +5,8 @@
 //@Grab("jtidy:jtidy")
 
 import static ratpack.groovy.Groovy.*
+import static ratpack.form.Forms.form
+
 import java.io.*;
 import com.itextpdf.text.pdf.PdfReader;
 import com.itextpdf.text.pdf.PdfStamper;
@@ -28,7 +30,6 @@ import java.security.KeyStore;
 import java.security.PrivateKey;
 import java.security.cert.Certificate;
 
-/*
 import org.pdfbox.exceptions.*
 import org.pdfbox.pdmodel.PDDocument
 import org.pdfbox.pdmodel.PDPage
@@ -36,26 +37,25 @@ import org.pdfbox.pdmodel.edit.PDPageContentStream
 import org.pdfbox.pdmodel.font.PDFont
 import org.pdfbox.pdmodel.font.PDType1Font
 
+/*
 import java.io.*
 import org.xhtmlrenderer.pdf.ITextRenderer
-
 import org.w3c.tidy.Tidy
 import org.w3c.dom.Document;
 */
+
 // You can change anything in the ratpack {} closure without needing to restart
 
 ratpack {
     handlers {
         get {
-            render groovyTemplate("html2pdf.html")
+            render groovyTemplate("index.html")
         }
 
 	get("pades") {
-		//render groovyTemplate("pades.html")
 		pades()
 		render groovyTemplate("pdf.html")
         }
-	/*
 	
         get("generatePDF") {
 
@@ -63,7 +63,6 @@ ratpack {
 		def page = null
 		def contentStream = null
 		def font = null
-
 
 		try{
 			document = new PDDocument()
@@ -76,7 +75,7 @@ ratpack {
 			contentStream.beginText();
 			contentStream.setFont( font, 12 );
 			contentStream.moveTextPositionByAmount( 100, 700 );
-			contentStream.drawString( "any shit" );
+			contentStream.drawString( "Hola mundo!" );
 			contentStream.endText();
 			contentStream.close();
 
@@ -91,12 +90,19 @@ ratpack {
 			}
 		}
         }
-	*/
+
 	post("html2pdf"){
 
-		html2pdf(request.form.url)
+		def f = context.parse(form())
+		html2pdf(f.url)
 		render groovyTemplate("pdf.html")
 	}
+
+
+	post("pades") {
+		pades()
+		render groovyTemplate("pdf.html")
+        }
 
         assets "public"
     }
@@ -116,18 +122,15 @@ public void html2pdf(String url){
 	
         Tidy tidy = new Tidy();	
 
-	try{
-		
+	try{		
 
 		tidy.setXHTML(true);
 		tidy.setMakeClean(true);
 		
-		Document converted = tidy.parseDOM(is,cleanOS)
-		
+		Document converted = tidy.parseDOM(is,cleanOS)		
 
 		ITextRenderer renderer = new ITextRenderer()		
 		renderer.setDocument("cleaned.html")
-
 
 		renderer.layout()
 		renderer.createPDF(os)
@@ -142,7 +145,6 @@ public void html2pdf(String url){
 
 }
 */
-
 
 public void html2pdf(String url){
 
@@ -160,7 +162,6 @@ public void html2pdf(String url){
 
 
 }
-
 
 public void pades(){
 
@@ -184,7 +185,10 @@ public void pades(){
 	*/
 	//------- firmado ------------------------------------//
 	String KEYSTORE = "ks";
-	char[] PASSWORD = "garantito".toCharArray();//password = garantito
+
+	char[] PASSWORD = "garantito".toCharArray();
+	//password = garantito
+
 	BouncyCastleProvider provider = new BouncyCastleProvider();
 	Security.addProvider(provider);
 	KeyStore ks = KeyStore.getInstance(KeyStore.getDefaultType());
@@ -194,32 +198,20 @@ public void pades(){
 	Certificate[] chain = ks.getCertificateChain(alias);
 	String digestAlgorithm = DigestAlgorithms.SHA256;
 	
-	/*
-	sign(String src, String name, String dest, Certificate[] chain,
-	  PrivateKey pk, String digestAlgorithm, String provider,
-	  CryptoStandard subfilter, String reason, String location)
-
-	sign(SRC, String.format(DEST, 4), chain, pk,
-	DigestAlgorithms.RIPEMD160, provider.getName(), CryptoStandard.CADES,
-	"Test 4", "Ghent");
-	*/
 
 	PdfStamper stamper = PdfStamper.createSignature(reader, fout, (char)'\0');
 	// Creating the appearance
 	PdfSignatureAppearance appearance = stamper.getSignatureAppearance();
-	//ver si hace falta
+
 	//appearance.setReason("Test");
 	//appearance.setLocation(location);
 	//appearance.setVisibleSignature(name);
+
 	//----------------------------------------------
 	// Creating the signature
 	ExternalDigest digest = new BouncyCastleDigest();
-	//ExternalSignature signature = new PrivateKeySignature(pk, digestAlgorithm, provider);
 	ExternalSignature signature = new PrivateKeySignature(pk, "SHA-256", "BC");
 	MakeSignature.signDetached(appearance, digest, signature, chain, null, null, null, 0, CryptoStandard.CMS);
 
-
-
-	println "hello pades!"
 }
 
