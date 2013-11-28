@@ -15,21 +15,8 @@ import org.bouncycastle.util.io.pem.*
 
 class TSAModule {
 
-  /*
-    The Time Stamp Authority SHOULD check whether or not the given hash algorithm is
-    known to be "sufficient" (based on the current state of knowledge in
-    cryptanalysis and the current state of the art in computational resources, for example).
-  */
-
   def acceptedAlgorithms = [TSPAlgorithms.SHA1] as Set
 
-  /*
-  public void validate(java.util.Set algorithms,
-                     java.util.Set policies,
-                     java.util.Set extensions)
-              throws TSPException
-
-  */
   def validate(TimeStampRequest request) {
     request.validate(acceptedAlgorithms, null, null)
   }
@@ -63,9 +50,7 @@ class TSAModule {
     new JcaContentSignerBuilder("SHA1withRSA").build(keyPair.private)
   }
 
-  def generate() {
-    def reqGen = new TimeStampRequestGenerator()
-    def request = reqGen.generate(TSPAlgorithms.SHA1, new byte[20])
+  def generate(request) {
 
     def date = new Date()
     def serialNumber = new BigInteger(160, new Random())
@@ -89,14 +74,9 @@ class TSAModule {
     def response = resGen.generate(request, serialNumber, date)
 
     response
-  }  
+  }
 
   def encode(response) {
-    Writer out = new StringWriter()
-    PemWriter writer = new PemWriter(out)
-    writer.writeObject(new PemObject("TSP response", response.encoded))
-    writer.close()
-    out.close()
-    return out.toString()
+    response.encoded.encodeBase64().toString()
   }
 }

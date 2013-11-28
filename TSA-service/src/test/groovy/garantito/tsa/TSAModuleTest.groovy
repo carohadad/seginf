@@ -21,7 +21,6 @@ class TSAModuleTest extends spock.lang.Specification {
 
   def "request validation: MD5 should be invalid"() {
     setup:
-    println "setup"
     TimeStampRequestGenerator reqGen = new TimeStampRequestGenerator();
     TimeStampRequest requestInvalid = reqGen.generate(TSPAlgorithms.MD5, new byte[20], BigInteger.valueOf(100));
     TSAModule tsa = new TSAModule()
@@ -36,9 +35,11 @@ class TSAModuleTest extends spock.lang.Specification {
   def "should generate time stamp"() {
     setup:
     def tsa = new TSAModule()
+    def reqGen = new TimeStampRequestGenerator()
+    def request = reqGen.generate(TSPAlgorithms.SHA1, new byte[20])
 
     when:
-    def resp = tsa.generate()
+    def resp = tsa.generate(request)
     println tsa.encode(resp)
 
     then:
