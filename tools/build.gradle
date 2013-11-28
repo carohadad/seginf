@@ -28,3 +28,9 @@ task wrapper(type: Wrapper) {
 
 mainClassName = 'garantito.tools.TSAClient'
 
+run {
+  if (project.hasProperty('args')) {
+    args project.args.split('\\s+')
+  }
+}
+

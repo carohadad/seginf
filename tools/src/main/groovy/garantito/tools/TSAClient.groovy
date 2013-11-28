@@ -20,7 +20,7 @@ public class TSAClient {
     // Setup the time stamp request
     def tsqGenerator = new TimeStampRequestGenerator()
     tsqGenerator.certReq = true
-    // tsqGenerator.setReqPolicy("1.3.6.1.4.1.601.10.3.1")
+    tsqGenerator.reqPolicy = new ASN1ObjectIdentifier("1.3.6.1.4.1.13762.3")
     def nonce = BigInteger.valueOf(System.currentTimeMillis())
     def request = tsqGenerator.generate(algoIdentifier.objectId, imprint, nonce)
     byte[] requestBytes = request.encoded
@@ -86,8 +86,23 @@ public class TSAClient {
 
   public static void main(String[] args) {
     try {
+      def imprint
       def client = new TSAClient()
-      new File('tsa.tsr') << client.getToken(new byte[20])
+
+      if (args.length > 0) {
+        imprint = args[0].decodeHex()
+        assert imprint.length == 20
+        def output
+        if (args.length > 1) {
+          output = new File(args[1] + '.tsr')
+        } else {
+          output = new File('tsa.tsr')
+        }
+        output.bytes = client.getToken(new byte[20])
+        println "Wrote ${output.name}"
+      } else { 
+        println "error: falta parámetro SHA-1 sum"
+      }
     } catch (Exception e) {
       e.printStackTrace()
     }
