@@ -22,7 +22,12 @@ import com.itextpdf.text.pdf.security.MakeSignature;
 import com.itextpdf.text.pdf.security.MakeSignature.CryptoStandard;
 import com.itextpdf.text.pdf.security.ExternalDigest;
 import com.itextpdf.text.pdf.security.DigestAlgorithms;
-//import com.itextpdf.text.pdf.security.TSAClientBouncyCastle;
+
+import com.itextpdf.text.pdf.security.OcspClient;
+import com.itextpdf.text.pdf.security.OcspClientBouncyCastle;
+import com.itextpdf.text.pdf.security.TSAClient;
+import com.itextpdf.text.pdf.security.TSAClientBouncyCastle;
+
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 
 import java.security.Security;
@@ -54,7 +59,7 @@ ratpack {
         }
 
 	get("pades") {
-		pades()
+		pades(true, true) //TODO: levantar estos boolean de un check
 		render groovyTemplate("pdf.html")
         }
 	
@@ -98,12 +103,6 @@ ratpack {
 		html2pdf(f.url)
 		render groovyTemplate("pdf.html")
 	}
-
-
-	post("pades") {
-		pades()
-		render groovyTemplate("pdf.html")
-        }
 
         assets "public"
     }
@@ -164,7 +163,9 @@ public void html2pdf(String url){
 
 }
 
-public void pades(){
+
+//public void pades(String src, String dest, boolean withTS, boolean withOCSP)
+public void pades(boolean withTS, boolean withOCSP){
 
 	PdfReader reader = new PdfReader(new FileInputStream("EnunciadosTP.pdf"));
 	FileOutputStream fout = new FileOutputStream("EnunciadosTP_signed_2.pdf");
@@ -184,35 +185,69 @@ public void pades(){
 	// close the stamper
 	stp.close();
 	*/
+
 	//------- firmado ------------------------------------//
 	String KEYSTORE = "ks";
 
 	char[] PASSWORD = "garantito".toCharArray();
-	//password = garantito
+	//password = garantito, luego generar interfaz con usuario :P
 
 	BouncyCastleProvider provider = new BouncyCastleProvider();
+	//BouncyCastle, es el security provider
 	Security.addProvider(provider);
 	KeyStore ks = KeyStore.getInstance(KeyStore.getDefaultType());
+	//keystore generada con:
+	//keytool -genkeypair -alias sha256 -keyalg RSA -keysize 2048 -sigalg SHA256withRSA -keystore ks
 	ks.load(new FileInputStream(KEYSTORE), PASSWORD);
+	//cargo keystore, y le paso la pass
 	String alias = (String)ks.aliases().nextElement();
 	PrivateKey pk = (PrivateKey) ks.getKey(alias, PASSWORD);
 	Certificate[] chain = ks.getCertificateChain(alias);
 	String digestAlgorithm = DigestAlgorithms.SHA256;
 	
-
+	//creating stamper
 	PdfStamper stamper = PdfStamper.createSignature(reader, fout, (char)'\0');
 	// Creating the appearance
 	PdfSignatureAppearance appearance = stamper.getSignatureAppearance();
 
-	//appearance.setReason("Test");
-	//appearance.setLocation(location);
-	//appearance.setVisibleSignature(name);
+	//se le pueden agregar atributos:
+        //appearance.setVisibleSignature("mySig");
+        appearance.setReason("Estoy probando para el tp");
+        appearance.setLocation("desde mi pc, man");
+	//appearance.setVisibleSignature(new Rectangle(36, 748, 144, 780), 1, "sig");
+
 
 	//----------------------------------------------
 	// Creating the signature
 	ExternalDigest digest = new BouncyCastleDigest();
 	ExternalSignature signature = new PrivateKeySignature(pk, "SHA-256", "BC");
-	MakeSignature.signDetached(appearance, digest, signature, chain, null, null, null, 0, CryptoStandard.CMS);
+	//BC = BouncyCastle, es el security provider
+	
+
+	// If we add a time stamp:
+
+        TSAClient tsc = null;
+
+        if (withTS) {
+            String tsa_url    = "http://ca.signfiles.com/tsa/get.aspx"
+            String tsa_login  = "garantito" 
+            String tsa_passw  = "garantito"
+            tsc = new TSAClientBouncyCastle(tsa_url, tsa_login, tsa_passw);
+        }
+
+
+        // If we use OCSP:
+        OcspClient ocsp = null;
+	//Online Certificate Status Protocol (OCSP)
+	//Internet protocol used for obtaining the revocation status of an X.509 digital certificate.
+	//an alternative to certificate revocation lists (CRL)
+        if (withOCSP) {
+            ocsp = new OcspClientBouncyCastle();
+        }
+
+	//MakeSignature.signDetached(appearance, digest, signature, chain, null, null, null, 0, CryptoStandard.CMS); 
+	MakeSignature.signDetached(appearance, digest, signature, chain, null, ocsp, tsc, 0, CryptoStandard.CMS);
+	//CMS = Cryptographic Message Syntax
 
 }
 
