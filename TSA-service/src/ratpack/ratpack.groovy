@@ -19,6 +19,7 @@ ratpack {
 
       def encodedResponse = tsa.encode(resp)
 
+      response.contentType("application/timestamp-reply")
       response.send "${encodedResponse}"
     }
   }
