@@ -1,0 +1,30 @@
+apply plugin: 'groovy'
+apply plugin: 'application'
+
+buildscript {
+  repositories {
+    mavenCentral()
+  }
+  dependencies {
+  }
+}
+
+repositories {
+  mavenCentral()
+}
+
+dependencies {
+  compile 'org.bouncycastle:bcpkix-jdk15on:1.49'
+  compile 'org.codehaus.groovy:groovy-all:2.0.5'
+
+  testCompile "org.spockframework:spock-core:0.7-groovy-2.0", {
+    exclude module: "groovy-all"
+  }
+}
+
+task wrapper(type: Wrapper) {
+  gradleVersion = '1.8'
+}
+
+mainClassName = 'garantito.tools.TSAClient'
+
