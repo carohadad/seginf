@@ -15,7 +15,7 @@ public class TSAClient {
     byte[] respBytes = null
 
     def algoFinder = new DefaultDigestAlgorithmIdentifierFinder()
-    def algoIdentifier = algoFinder.find("SHA-1")
+    def algoIdentifier = algoFinder.find("SHA-256")
 
     // Setup the time stamp request
     def tsqGenerator = new TimeStampRequestGenerator()
@@ -93,17 +93,17 @@ public class TSAClient {
 
       if (args.length > 0) {
         imprint = args[0].decodeHex()
-        assert imprint.length == 20
+        assert imprint.length == 32
         def output
         if (args.length > 1) {
           output = new File(args[1] + '.tsr')
         } else {
           output = new File('tsa.tsr')
         }
-        output.bytes = client.getToken(new byte[20])
+        output.bytes = client.getToken(imprint)
         println "Wrote ${output.name}"
       } else {
-        println "error: falta parámetro SHA-1 sum"
+        println "error: falta parámetro SHA-256 sum"
       }
     } catch (Exception e) {
       e.printStackTrace()

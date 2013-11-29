@@ -10,7 +10,7 @@ ratpack {
     get("get_timestamp") {
 
       def reqGen = new TimeStampRequestGenerator()
-      def request = reqGen.generate(TSPAlgorithms.SHA1, new byte[20])
+      def request = reqGen.generate(TSPAlgorithms.SHA256, new byte[32])
 
 
       TSAModule tsa = new TSAModule(loadKeyStore())
@@ -29,12 +29,17 @@ ratpack {
       rawRequest = request.getInputStream()
 
       def tsaRequest = new TimeStampRequest(rawRequest)
+      println "Imprint algorithm: " + tsaRequest.messageImprintAlgOID
+      println "Imprint digest length: " + tsaRequest.messageImprintDigest.length
 
       TSAModule tsa = new TSAModule(loadKeyStore())
       tsa.validate(tsaRequest)
 
       def resp = tsa.generate(tsaRequest)
 
+      println 'Response status: ' + resp.status
+      println "Response status string: " + resp.statusString
+      println 'Failure info: ' + resp.failInfo.intValue()
       def encodedResponse = tsa.encode(resp)
 
       response.contentType("application/timestamp-reply")

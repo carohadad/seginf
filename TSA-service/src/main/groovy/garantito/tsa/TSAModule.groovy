@@ -16,7 +16,7 @@ import org.bouncycastle.util.io.pem.*
 class TSAModule {
 
   KeyStore keyStore
-  def acceptedAlgorithms = [TSPAlgorithms.SHA1] as Set
+  def acceptedAlgorithms = [TSPAlgorithms.SHA256] as Set
 
   public TSAModule() {
     this(null)
@@ -56,7 +56,7 @@ class TSAModule {
 //  }
 
   def buildContentSigner(privateKey) {
-    new JcaContentSignerBuilder("SHA1withRSA").build(privateKey)
+    new JcaContentSignerBuilder("SHA256withRSA").build(privateKey)
   }
 
   def getPrivateKey() {
@@ -80,8 +80,8 @@ class TSAModule {
     def sigBuilder = new JcaSignerInfoGeneratorBuilder(calcProv)
     def signerInfoGen = sigBuilder.build(contentSigner, certHolder)
 
-    def digestCalculator = calcProv.get(new AlgorithmIdentifier(TSPAlgorithms.SHA1))
-    def tsaPolicy = null
+    def digestCalculator = calcProv.get(new AlgorithmIdentifier(TSPAlgorithms.SHA256))
+    def tsaPolicy = request.reqPolicy
 
     def tokenGen = new TimeStampTokenGenerator(signerInfoGen, digestCalculator, tsaPolicy)
 
