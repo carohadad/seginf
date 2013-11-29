@@ -79,9 +79,10 @@ public class TSAClient {
 
     def encoding = tsaConnection.getContentEncoding()
 
-    //if (encoding != null && encoding.equalsIgnoreCase("base64")) {
+    if (encoding != null && encoding.equalsIgnoreCase("base64")) {
       respBytes = new String(respBytes).decodeBase64()
-    //}
+    }
+
     respBytes
   }
 
