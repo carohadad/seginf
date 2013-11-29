@@ -1,5 +1,6 @@
 import static ratpack.groovy.Groovy.*
 import org.bouncycastle.tsp.*
+import java.security.KeyStore
 
 import garantito.tsa.TSAModule
 
@@ -12,7 +13,7 @@ ratpack {
       def request = reqGen.generate(TSPAlgorithms.SHA1, new byte[20])
 
 
-      TSAModule tsa = new TSAModule()
+      TSAModule tsa = new TSAModule(loadKeyStore())
       tsa.validate(request)
 
       def resp = tsa.generate(request)
@@ -29,7 +30,7 @@ ratpack {
 
       def tsaRequest = new TimeStampRequest(rawRequest)
 
-      TSAModule tsa = new TSAModule()
+      TSAModule tsa = new TSAModule(loadKeyStore())
       tsa.validate(tsaRequest)
 
       def resp = tsa.generate(tsaRequest)
@@ -43,3 +44,11 @@ ratpack {
     }
   }
 }
+
+def loadKeyStore() {
+  def keyStore = KeyStore.getInstance("JKS")
+  keyStore.load(new File('../../tsa.jks').newInputStream(), 'garantito'.toCharArray())
+  keyStore
+}
+
+
