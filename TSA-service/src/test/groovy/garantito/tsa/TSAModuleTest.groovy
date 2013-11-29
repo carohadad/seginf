@@ -2,15 +2,20 @@ package garantito.tsa
 
 import spock.lang.*
 import org.bouncycastle.tsp.*
+import java.security.*
 
 
 class TSAModuleTest extends spock.lang.Specification {
 
-  def "request validation: SHA1 should be valid"() {
+  private buildTSAModule() {
+    new TSAModule(loadKeyStore())
+  }
+
+  def "request validation: SHA256 should be valid"() {
     setup:
     TimeStampRequestGenerator reqGen = new TimeStampRequestGenerator();
-    TimeStampRequest requestValid = reqGen.generate(TSPAlgorithms.SHA1, new byte[20], BigInteger.valueOf(100));
-    TSAModule tsa = new TSAModule()
+    TimeStampRequest requestValid = reqGen.generate(TSPAlgorithms.SHA256, new byte[32], BigInteger.valueOf(100));
+    TSAModule tsa = buildTSAModule()
 
     when:
     tsa.validate(requestValid)
@@ -23,7 +28,7 @@ class TSAModuleTest extends spock.lang.Specification {
     setup:
     TimeStampRequestGenerator reqGen = new TimeStampRequestGenerator();
     TimeStampRequest requestInvalid = reqGen.generate(TSPAlgorithms.MD5, new byte[20], BigInteger.valueOf(100));
-    TSAModule tsa = new TSAModule()
+    TSAModule tsa = buildTSAModule()
 
     when:
     tsa.validate(requestInvalid)
@@ -34,9 +39,9 @@ class TSAModuleTest extends spock.lang.Specification {
 
   def "should generate time stamp"() {
     setup:
-    def tsa = new TSAModule()
+    TSAModule tsa = buildTSAModule()
     def reqGen = new TimeStampRequestGenerator()
-    def request = reqGen.generate(TSPAlgorithms.SHA1, new byte[20])
+    def request = reqGen.generate(TSPAlgorithms.SHA256, new byte[32])
 
     when:
     def resp = tsa.generate(request)
@@ -45,5 +50,12 @@ class TSAModuleTest extends spock.lang.Specification {
     then:
     resp != null
   }
+
+  private def loadKeyStore() {
+    def keyStore = KeyStore.getInstance("JKS")
+    keyStore.load(new File('tsa.jks').newInputStream(), 'garantito'.toCharArray())
+    keyStore
+  }
+
 }
 
