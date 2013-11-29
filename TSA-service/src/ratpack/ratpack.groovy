@@ -39,7 +39,7 @@ ratpack {
 
       println 'Response status: ' + resp.status
       println "Response status string: " + resp.statusString
-      println 'Failure info: ' + resp.failInfo.intValue()
+      println 'Failure info: ' + resp.failInfo?.intValue()
       def encodedResponse = tsa.encode(resp)
 
       response.contentType("application/timestamp-reply")
