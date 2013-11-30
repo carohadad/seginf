@@ -15,57 +15,73 @@ import org.bouncycastle.util.io.pem.*
 
 class TSAModule {
 
-  def acceptedAlgorithms = [TSPAlgorithms.SHA1] as Set
+  KeyStore keyStore
+  def acceptedAlgorithms = [TSPAlgorithms.SHA256] as Set
+
+  public TSAModule() {
+    this(null)
+  }
+
+  public TSAModule(keyStore) {
+    this.keyStore = keyStore
+  }
 
   def validate(TimeStampRequest request) {
     request.validate(acceptedAlgorithms, null, null)
   }
 
-  def generateKeyPair() {
-    def keygen = KeyPairGenerator.getInstance("RSA")
-    keygen.initialize(2048)
-    keygen.generateKeyPair()
+//  def generateKeyPair() {
+//    def keygen = KeyPairGenerator.getInstance("RSA")
+//    keygen.initialize(2048)
+//    keygen.generateKeyPair()
+//  }
+//
+//  def generateCertificate(keyPair) {
+//    def name = new X500Name("cn=garantito, o=uba, c=ar")
+//    def certSerial = BigInteger.ONE
+//    Date notBefore = new Date(System.currentTimeMillis() - 24 * 3600 * 1000)
+//    Date notAfter = new Date(System.currentTimeMillis() + 365 * 24 * 3600 * 1000)
+//    def publicKeyInfo = new SubjectPublicKeyInfo(ASN1Sequence.getInstance(keyPair.public.encoded))
+//
+//    def certBuilder = new X509v3CertificateBuilder(name, certSerial, notBefore, notAfter, name, publicKeyInfo)
+//
+//    def extendedKeyUsage = new ExtendedKeyUsage(KeyPurposeId.id_kp_timeStamping)
+//    def extension = new X509Extension(true, new DEROctetString(extendedKeyUsage))
+//    certBuilder = certBuilder.addExtension(Extension.extendedKeyUsage, true, extension.parsedValue)
+//
+//    def contentSigner = buildContentSigner(keyPair)
+//    def certHolder = certBuilder.build(contentSigner)
+//
+//    certHolder
+//  }
+
+  def buildContentSigner(privateKey) {
+    new JcaContentSignerBuilder("SHA256withRSA").build(privateKey)
   }
 
-  def generateCertificate(keyPair) {
-    def name = new X500Name("cn=garantito, o=uba, c=ar")
-    def certSerial = BigInteger.ONE
-    Date notBefore = new Date(System.currentTimeMillis() - 24 * 3600 * 1000)
-    Date notAfter = new Date(System.currentTimeMillis() + 365 * 24 * 3600 * 1000)
-    def publicKeyInfo = new SubjectPublicKeyInfo(ASN1Sequence.getInstance(keyPair.public.encoded))
-
-    def certBuilder = new X509v3CertificateBuilder(name, certSerial, notBefore, notAfter, name, publicKeyInfo)
-
-    def extendedKeyUsage = new ExtendedKeyUsage(KeyPurposeId.id_kp_timeStamping)
-    def extension = new X509Extension(true, new DEROctetString(extendedKeyUsage))
-    certBuilder = certBuilder.addExtension(Extension.extendedKeyUsage, true, extension.parsedValue)
-
-    def contentSigner = buildContentSigner(keyPair)
-    def certHolder = certBuilder.build(contentSigner)
-
-    certHolder
+  def getPrivateKey() {
+    keyStore.getKey('tsa', 'garantito'.toCharArray()) 
   }
 
-  def buildContentSigner(keyPair) {
-    new JcaContentSignerBuilder("SHA1withRSA").build(keyPair.private)
+  def buildCertHolder() {
+    def certificate = keyStore.getCertificate('tsa')
+    new X509CertificateHolder(certificate.encoded)
   }
 
   def generate(request) {
-
     def date = new Date()
     def serialNumber = new BigInteger(160, new Random())
 
     def calcProv = new BcDigestCalculatorProvider()
 
-    def keyPair = generateKeyPair()
-    def contentSigner = buildContentSigner(keyPair)
+    def contentSigner = buildContentSigner(privateKey)
 
-    def certHolder = generateCertificate(keyPair)
+    def certHolder = buildCertHolder()
     def sigBuilder = new JcaSignerInfoGeneratorBuilder(calcProv)
     def signerInfoGen = sigBuilder.build(contentSigner, certHolder)
 
-    def digestCalculator = calcProv.get(new AlgorithmIdentifier(TSPAlgorithms.SHA1))
-    def tsaPolicy = null
+    def digestCalculator = calcProv.get(new AlgorithmIdentifier(TSPAlgorithms.SHA256))
+    def tsaPolicy = request.reqPolicy
 
     def tokenGen = new TimeStampTokenGenerator(signerInfoGen, digestCalculator, tsaPolicy)
 
