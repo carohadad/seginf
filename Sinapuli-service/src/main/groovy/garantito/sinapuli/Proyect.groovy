@@ -13,13 +13,15 @@ class Proyect {
 	private int id;
 	@DatabaseField()
 	private String nombre;
-    @DatabaseField()
+    	@DatabaseField()
+	private String empresa;
+    	@DatabaseField()
 	private String descripcion;
-    @DatabaseField()
+    	@DatabaseField()
 	private Date fechaCreacion;
-    @DatabaseField()
+    	@DatabaseField()
 	private Date fechaInicioLicitacion;
-    @DatabaseField()
+    	@DatabaseField()
 	private int horasDuracionLicitacion;
     
 
@@ -27,8 +29,9 @@ class Proyect {
 			// all persisted classes must define a no-arg constructor with at least package visibility
 	}
 	
-	public Proyect(String nombre, String descripcion, Date fechaInicioLicitacion, int horasDuracionLicitacion) {
+	public Proyect(String nombre, String empresa, String descripcion, Date fechaInicioLicitacion, int horasDuracionLicitacion) {
 		this.nombre = nombre;
+		this.empresa = empresa;
 		this.descripcion = descripcion;
 		this.fechaInicioLicitacion = fechaInicioLicitacion;
 		this.horasDuracionLicitacion = horasDuracionLicitacion;
@@ -41,6 +44,10 @@ class Proyect {
 
 	public String getNombre() {
 		return nombre;
+	}
+	
+	public String getEmpresa() {
+		return empresa;
 	}
 
 	public String getDescripcion() {
@@ -61,6 +68,10 @@ class Proyect {
 
 	public void setNombre(String nombre) {
 		this.nombre = nombre;
+	}
+
+	public void setEmpresa(String empresa) {
+		this.empresa = empresa;
 	}
 
 	public void setDescripcion(String descripcion) {

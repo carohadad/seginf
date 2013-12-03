@@ -3,16 +3,31 @@
 	<meta http-equiv="content-type" content="text/html; charset=utf-8" />
 	<link href="/css/site.css" rel="stylesheet" type="text/css" />
     <title>sinapuli</title>
+	<script src="/scripts/jquery-1.10.2.min.js"></script>
+	<script src="/scripts/jquery-ui-1.10.3.custom.min.js"></script>
+	<link href="/css/jquery-ui-1.10.3.custom.css" rel="stylesheet" type="text/css" />
+	<script type="text/javascript">
+		jQuery.noConflict();
+		jQuery(document).ready(function(\$){
+			\$("input[name='fechaInicioLicitacion']").datepicker({ dateFormat: 'dd/mm/yy' });
+		});
+	</script>
   </head>
   
   <body>
     </div>
 
-<h1>New Proyect Form</h1>
-<p>Please enter information about the new offerer.</p>
+
+<h1>Crear Proyect</h1>
+<p>Complete la informacion del proyecto.</p>
 <form action="/proyect/submit" method="post" accept-charset="utf-8">
 
-  <label for="name">Name:</label>
+
+  <label for="empresa">Empresa:</label>
+  <input type="text" name="empresa">
+  <br><br>
+
+  <label for="name">Nombre:</label>
   <input type="text" name="name">
   <br><br>
 
@@ -20,12 +35,11 @@
   <input type="text" name="descripcion">
   <br><br>
   
-  <label for="fechaInicioLicitacion">Fecha Inicio de la Licitacion:</label>
+  <label for="fechaInicioLicitacion">Fechai inicio de la licitacion:</label>
   <input type="datetime" name="fechaInicioLicitacion">
   <br><br>
 
-  <label for="horasDuracionLicitacion">Duracion en horas de la licitacion:</label>
-  <input type="text" name="horasDuracionLicitacion" value="48">
+  <label for="horasDuracionLicitacion">Iniciada la licitacion, permanecera abierta durante 48 horas</label>
   <br><br>
 
 

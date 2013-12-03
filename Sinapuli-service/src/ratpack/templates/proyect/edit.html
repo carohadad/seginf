@@ -7,16 +7,16 @@
   
   <body>
 	
-<h1>Edit Existing Offerer Form</h1>
-<p>Please edit any information below for the item.</p>
+<h1>Editar proyecto</h1>
+<p>Edite el proyecto.</p>
 
 <form action="/update/offerer/${model.id}" method="post" accept-charset="utf-8">
 
     <!-- hidden to preserve the item id -->
     <input type="hidden" name="id" id="id" value="${model.id}">
   
-    <label for="name">Name:</label>    
-    <input type="text" name="name" id="name" value="${model.name}">
+    <label for="name">Nombre:</label>    
+    <input type="text" name="name" id="name" value="${model.nombre}">
     <br><br>  
 
   <p>

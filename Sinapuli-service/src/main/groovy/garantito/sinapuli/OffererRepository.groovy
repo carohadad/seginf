@@ -12,7 +12,7 @@ import java.util.List;
 @Singleton(lazy = true)
 public class OffererRepository {
 
-	String DATABASE_URL = "jdbc:h2:mem:offerer;DB_CLOSE_DELAY=-1";
+	String DATABASE_URL = "jdbc:h2:~/seginf/Sinapuli-service/SinapuliDB;DB_CLOSE_DELAY=-1";
 
 	JdbcConnectionSource connectionSource = null;
 	Dao<Offerer, Integer> offererDao = null;
@@ -41,7 +41,7 @@ public class OffererRepository {
 
 		offererDao = DaoManager.createDao(connectionSource, Offerer.class);
 		// if you need to create the table
-		TableUtils.createTable(connectionSource, Offerer.class);
+		TableUtils.createTableIfNotExists(connectionSource, Offerer.class);
 	}
 
 	public void delete(int id) throws SQLException, Exception {
@@ -74,4 +74,6 @@ public class OffererRepository {
 		    e.printStackTrace();
 		}
 	}
+
+
 }

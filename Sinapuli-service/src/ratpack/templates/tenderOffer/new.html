@@ -8,14 +8,24 @@
   <body>
     </div>
 
-<h1>New TenderOffer Form</h1>
-<p>Please enter information about the new trendOffer.</p>
+<h1>Nueva oferta para proyecto ${model.proyect.nombre}</h1>
+<p>Complete el formulario.</p>
 <form action="/tenderOffer/submit" method="post" accept-charset="utf-8">
 
   <label for="hash">Hash:</label>
   <input type="text" name="hash">
   <br><br>
   
+  <label for="hash">Email:</label>
+  <input type="text" name="email">
+  <br><br>
+
+  <label for="hash">Documento:</label>
+  <input type="file" name="document">
+  <br><br>
+
+  <input type="hidden" name="idProyect" value="${model.proyect.id}">
+
   <p>
     <button type="submit">Save</button>
   </p>

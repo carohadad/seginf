@@ -13,16 +13,21 @@ class TenderOffer {
 	private String hash;
         @DatabaseField(dataType = DataType.BYTE_ARRAY)
 	private byte[] document;	
-        @DatabaseField(foreign = true)
+        @DatabaseField(foreign = true, foreignAutoRefresh = true)
 	private Offerer offerer;
+        @DatabaseField(foreign = true, foreignAutoRefresh = true)
+	private Proyect proyect;
     
 
         TenderOffer() {
                 // all persisted classes must define a no-arg constructor with at least package visibility
         }
 
-        public TenderOffer(String hash) {
+        public TenderOffer(String hash, Offerer offerer, String document, Proyect proyect) {
                 this.hash = hash;
+		this.offerer = offerer;
+		this.document = document;
+		this.proyect = proyect;
         }
 
         public int getId() {
@@ -45,12 +50,20 @@ class TenderOffer {
                 this.document = document;
         }
 
-        public String getOfferer() {
+        public Offerer getOfferer() {
                 return offerer;
         }
 
         public void setOfferer(String offerer) {
                 this.offerer = offerer;
+        }
+
+        public Proyect getProyect() {
+                return proyect;
+        }
+
+        public void setProyect(Proyect idProyect) {
+                this.proyect = proyect;
         }
         @Override
         public int hashCode() {

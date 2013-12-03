@@ -12,7 +12,7 @@ import java.util.List;
 @Singleton(lazy = true)
 public class TenderOfferRepository {
 
-	String DATABASE_URL = "jdbc:h2:mem:tenderOfferer;DB_CLOSE_DELAY=-1";
+	String DATABASE_URL = "jdbc:h2:~/seginf/Sinapuli-service/SinapuliDB;DB_CLOSE_DELAY=-1";
 
 	JdbcConnectionSource connectionSource = null;
 	Dao<TenderOffer, Integer> tenderOfferDao = null;
@@ -41,7 +41,7 @@ public class TenderOfferRepository {
 
 		tenderOfferDao = DaoManager.createDao(connectionSource, TenderOffer.class);
 		// if you need to create the table
-		TableUtils.createTable(connectionSource, TenderOffer.class);
+		TableUtils.createTableIfNotExists(connectionSource, TenderOffer.class);
 	}
 
 	public void delete(int id) throws SQLException, Exception {
@@ -60,8 +60,8 @@ public class TenderOfferRepository {
 		return tenderOfferDao.queryForId(id);
 	}
 
-	public TenderOffer create(String hash) throws Exception {
-		TenderOffer tenderOffer = new TenderOffer(hash);
+	public TenderOffer create(String hash, Offerer offerer, String document, Proyect proyect) throws Exception {
+		TenderOffer tenderOffer = new TenderOffer(hash, offerer, document, proyect);
 
 		tenderOfferDao.create(tenderOffer);
 		return tenderOffer;
@@ -70,6 +70,14 @@ public class TenderOfferRepository {
 	public List<TenderOffer> list() {
 		try {
 		    return tenderOfferDao.queryForAll();
+		} catch (SQLException e) {
+		    e.printStackTrace();
+		}
+	}
+
+	public List<TenderOffer> listWithProyect(int idProyect) {
+		try {
+		    return tenderOfferDao.queryForEq("proyect_id", idProyect);
 		} catch (SQLException e) {
 		    e.printStackTrace();
 		}

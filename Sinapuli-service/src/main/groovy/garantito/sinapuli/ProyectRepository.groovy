@@ -47,13 +47,14 @@ public class ProyectRepository {
 
 	public void delete(int id) throws SQLException, Exception {
 		def proyect = get(id);
-		tenderOfferDao.delete(proyect);
+		proyectDao.delete(proyect);
 	}
 
 	// Este update no se deberia usar, si se necesita hay que modificar para no cambiar algunos campos
-	public void update(int id, String nombre, String descripcion, Date fechaCreacion, Date fechaInicioLicitacion, int horasDuracionLicitacion) throws SQLException, Exception {	
+	public void update(int id, String nombre, String empresa, String descripcion, Date fechaCreacion, Date fechaInicioLicitacion, int horasDuracionLicitacion) throws SQLException, Exception {	
 		def proyect = get(id);
 		proyect.setNombre(nombre);
+		proyect.setEmpresa(empresa);
 		proyect.setDescripcion(descripcion);
 		proyect.setFechaCreacion(fechaCreacion);
 		proyect.setFechaInicioLicitacion(fechaInicioLicitacion);
@@ -66,8 +67,8 @@ public class ProyectRepository {
 		return proyectDao.queryForId(id);
 	}
 
-	public Proyect create(String nombre, String descripcion, Date fechaInicioLicitacion, int horasDuracionLicitacion) throws Exception {
-		Proyect proyect = new Proyect(nombre, descripcion, fechaInicioLicitacion, horasDuracionLicitacion);
+	public Proyect create(String nombre, String empresa, String descripcion, Date fechaInicioLicitacion, int horasDuracionLicitacion) throws Exception {
+		Proyect proyect = new Proyect(nombre, empresa, descripcion, fechaInicioLicitacion, horasDuracionLicitacion);
 
 		proyectDao.create(proyect);
 		return proyect;
