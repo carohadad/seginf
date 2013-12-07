@@ -67,6 +67,16 @@ public class OffererRepository {
 		return offerer;
 	}
 
+	public Offerer create(Offerer offerer) {
+		offererDao.create(offerer)
+		offerer
+	}
+
+	public boolean authenticate(String username, String password) {
+		def results = offererDao.queryForFieldValuesArgs(username: username, password: password)
+		return results.size() == 1
+	}
+
 	public List<Offerer> list() {
 		try {
 		    return offererDao.queryForAll();

@@ -21,20 +21,63 @@ ratpack {
 	
 	handlers {
 
+		prefix('css') {
+			assets "public/css"
+		}
+		prefix('images') {
+			assets 'public/images'
+		}
+		prefix('scripts') {
+			assets 'public/scripts'
+		}
+
 		handler('login') {
 			byMethod {
 				get {
 					render groovyTemplate("login.html")
 				}
 				post {
-					get(SessionStorage).name = parse(form()).name
-					redirect '/'
+					def form = parse(form())
+					def session = get(SessionStorage)
+					if (form.username == 'admin' && form.password == 'admin') {
+						session.auth = true
+						session.username = form.username
+						session.role = 'admin'
+					} else {
+						if (repoOfferer.authenticate(form.username, form.password)) {
+							session.auth = true
+							session.username = form.username
+							session.role = 'offerer'
+						}
+					}
+					if (session.auth) {
+						redirect '/'
+					} else {
+						redirect '/login'
+					}
 				}
 			}
 		}
 		get('logout') {
 			get(Session).terminate()
 			redirect '/'
+		}
+		handler('register') {
+			byMethod {
+				get {
+					render groovyTemplate('register.html')
+				}
+				post {
+					def form = parse(form())
+					def offerer = new Offerer()
+					offerer.username = form.username
+					offerer.password = form.password
+					offerer.name = form.username
+					offerer = repoOfferer.create(offerer)
+					println "Oferente registrado: " + offerer
+					redirect '/login'
+				}
+			}
 		}
 
 		handler('upload') {
@@ -52,9 +95,8 @@ ratpack {
 		}
 
 		handler {
-			println "here"
 			// default route
-			if (get(SessionStorage).name == null) {
+			if (!get(SessionStorage).auth) {
 				redirect '/login'
 				return
 			}
@@ -63,9 +105,7 @@ ratpack {
 		
 		get {
 			def session = get(SessionStorage)
-			def loggedIn = session.name != null
-			def loginName = session.name ?: '(sin usuario)'
-			render groovyTemplate("index.html", loggedIn: loggedIn, loginName: loginName, proyectList:repoProyect.list(), offererList:repoOfferer.list(), tenderOfferList:repoTenderOffer.list())			
+			render groovyTemplate("index.html", loggedIn: session.auth, loginName: session.username, proyectList:repoProyect.list(), offererList:repoOfferer.list(), tenderOfferList:repoTenderOffer.list())			
 		}
 
 		get("offerer/new"){
@@ -219,7 +259,6 @@ ratpack {
 
 			redirect "/" 
 		}									
-		assets "public"
 	}
 }
 

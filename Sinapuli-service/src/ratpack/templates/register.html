@@ -7,7 +7,7 @@
 </head>
 
 <body>
-  <h1>Login</h1>
+  <h1>Registración</h1>
   <form method="POST">
     <p>
      <label for="username">Nombre de usuario:</label>
@@ -18,8 +18,12 @@
      <input id="password" type="password" name="password">
    </p>
    <p>
-     <input type="submit" value="Login">
-     <a href="/register">Registrarse como nuevo oferente</a>
+     <label for="repeat_password">Repetir Contraseña:</label>
+     <input id="repeat_password" type="password" name="repeat_password">
+   </p>
+   <p>
+     <input type="submit" value="Registrar nuevo oferente">
+     <a href="/login">Login</a>
    </p>
  </form>
 </body>

@@ -6,46 +6,48 @@ import com.j256.ormlite.table.DatabaseTable;
 @DatabaseTable(tableName = "offerer")
 class Offerer {
 
-        // for QueryBuilder to be able to find the fields
-        public static final String NAME_FIELD_NAME = "name";
+	// for QueryBuilder to be able to find the fields
+	public static final String NAME_FIELD_NAME = "name";
   
 	@DatabaseField(generatedId = true)
-	private int id;
+	int id
+	
 	@DatabaseField
-	private String name;
-    
+	String name
+	
+	@DatabaseField
+	String username
+	
+	@DatabaseField
+	String password
 
-        Offerer() {
-                // all persisted classes must define a no-arg constructor with at least package visibility
-        }
+	@DatabaseField
+	String publicKey
 
-        public Offerer(String name) {
-                this.name = name;
-        }
+	Offerer() {
+		// all persisted classes must define a no-arg constructor with at least package visibility
+	}
 
-        public int getId() {
-                return id;
-        }
+	public Offerer(String name) {
+		this.name = name;
+	}
 
-        public String getName() {
-                return name;
-        }
+	@Override
+	public int hashCode() {
+		return name.hashCode();
+	}
 
-        public void setName(String name) {
-                this.name = name;
-        }
+	@Override
+	public boolean equals(Object other) {
+		if (other == null || other.getClass() != getClass()) {
+			return false;
+		}
+		return name.equals(((Offerer) other).name);
+	}
 
-        @Override
-        public int hashCode() {
-                return name.hashCode();
-        }
-
-        @Override
-        public boolean equals(Object other) {
-                if (other == null || other.getClass() != getClass()) {
-                        return false;
-                }
-                return name.equals(((Offerer) other).name);
-        }
+	@Override
+	public String toString() {
+		"<Offerer ${id}, username=${username}>"
+	}
 
 }
