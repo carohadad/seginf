@@ -9,12 +9,18 @@
     <div id="header">
       <p><img src="/images/Argentina.png"></p>    
       <h1>Sistema Nacional publico de licitaciones (sinapuli)</h1>
-      <hr/>    
+	  <% if (model.loggedIn) { %>
+		<h2>Usuario: ${model.loginName}</h2>
+		<a href="/logout">Logout</a>
+	  <% } else { %>
+		<a href="/login">Login</a>
+      <% } %>
+	  <hr/>
     </div>
 
 <table class="gridtable">
     <tr>
-      <th>ID</th><th>EMPRESA</th><th>NOMBRE</th><th>DESCRIPCION</th><th>FECHA CREACION</th><th>FECHA INICIO LICITACION</th><th>DURACION (horas)</th><th>OFERTAR</th><th>EDIT</th><th>DELETE</th>
+      <th>ID</th><th>NOMBRE</th><th>DESCRIPCION</th><th>FECHA CREACION</th><th>FECHA INICIO LICITACION</th><th>FECHA FIN LICITACION</th><th>OFERTAR</th><th>EDIT</th><th>DELETE</th>
     </tr>
 
 <%model.proyectList.each() { %>
@@ -23,14 +29,15 @@
 	if (nombreProject.size() == 0)
 		nombreProject = "Sin Nombre";		
 	%>
+	
     <tr>
 	<td>${it.id}</td>
-	<td>${it.empresa}</td>
+	
 	<td><a href="/proyect/offerts/${it.id}" title="ver ofertas">${it.nombre}</td>	  
 	<td>${it.descripcion}</td>	 
 	<td>${it.fechaCreacion}</td>	 
 	<td>${it.fechaInicioLicitacion}</td>
-	<td>${it.horasDuracionLicitacion}</td>
+	<td>${it.fechaFinLicitacion}</td>	
 	<td><a href="/tenderOffer/new/${it.id}">Ofertar</td> 	 
 	<td><a href="/proyect/edit/${it.id}"><img src="/images/edit.png" /></td>
 	<td><a href="/proyect/delete/${it.id}/${nombreProject}"><img src="/images/delete.png" /></td>
@@ -41,7 +48,8 @@
 
 <br>
 <br>
-<p><a href="/proyect/new">Agregue un nuevo Proyecto!</a></p><!--
+<p><a href="/proyect/new">Agregue un nuevo Proyecto!</a></p>
+
 <table class="gridtable">
     <tr>
       <th>ID</th><th>NAME</th><th>EDIT</th><th>DELETE</th>
@@ -62,6 +70,7 @@
 
 <p><a href="/offerer/new">Registrar nuevo oferente!</a></p>
 
+<!--
 
   <table class="gridtable">
     <tr>

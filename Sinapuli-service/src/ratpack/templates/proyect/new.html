@@ -9,7 +9,8 @@
 	<script type="text/javascript">
 		jQuery.noConflict();
 		jQuery(document).ready(function(\$){
-			\$("input[name='fechaInicioLicitacion']").datepicker({ dateFormat: 'dd/mm/yy' });
+			\$("input[name='fechaInicioLicitacion']").datepicker({ dateFormat: 'dd/mm/yy' });		
+			\$("input[name='fechaFinLicitacion']").datepicker({ dateFormat: 'dd/mm/yy' });
 		});
 	</script>
   </head>
@@ -18,14 +19,10 @@
     </div>
 
 
-<h1>Crear Proyect</h1>
+<h1>Crear Proyecto</h1>
 <p>Complete la informacion del proyecto.</p>
 <form action="/proyect/submit" method="post" accept-charset="utf-8">
 
-
-  <label for="empresa">Empresa:</label>
-  <input type="text" name="empresa">
-  <br><br>
 
   <label for="name">Nombre:</label>
   <input type="text" name="name">
@@ -35,13 +32,13 @@
   <input type="text" name="descripcion">
   <br><br>
   
-  <label for="fechaInicioLicitacion">Fechai inicio de la licitacion:</label>
+  <label for="fechaInicioLicitacion">Fecha inicio de la licitacion:</label>
   <input type="datetime" name="fechaInicioLicitacion">
   <br><br>
 
-  <label for="horasDuracionLicitacion">Iniciada la licitacion, permanecera abierta durante 48 horas</label>
+  <label for="fechaFinLicitacion">Fecha fin de la licitacion:</label>
+  <input type="datetime" name="fechaFinLicitacion">
   <br><br>
-
 
 
   <p>

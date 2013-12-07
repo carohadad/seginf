@@ -23,11 +23,10 @@ class TenderOffer {
                 // all persisted classes must define a no-arg constructor with at least package visibility
         }
 
-        public TenderOffer(String hash, Offerer offerer, String document, Proyect proyect) {
+        public TenderOffer(String hash, Offerer offerer, Proyect proyect) {
                 this.hash = hash;
-		this.offerer = offerer;
-		this.document = document;
-		this.proyect = proyect;
+				this.offerer = offerer;		
+				this.proyect = proyect;
         }
 
         public int getId() {

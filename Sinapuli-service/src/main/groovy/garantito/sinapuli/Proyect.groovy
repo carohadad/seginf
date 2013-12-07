@@ -10,86 +10,30 @@ import java.util.Date;
 class Proyect {
 
 	@DatabaseField(generatedId = true)
-	private int id;
+	int id;
 	@DatabaseField()
-	private String nombre;
-    	@DatabaseField()
-	private String empresa;
-    	@DatabaseField()
-	private String descripcion;
-    	@DatabaseField()
-	private Date fechaCreacion;
-    	@DatabaseField()
-	private Date fechaInicioLicitacion;
-    	@DatabaseField()
-	private int horasDuracionLicitacion;
-    
+	String nombre;
+	@DatabaseField()
+	String descripcion;
+    @DatabaseField()
+	Date fechaCreacion;
+    @DatabaseField()
+	Date fechaInicioLicitacion;
+	@DatabaseField()
+	Date fechaFinLicitacion;
 
 	Proyect() {
 			// all persisted classes must define a no-arg constructor with at least package visibility
 	}
 	
-	public Proyect(String nombre, String empresa, String descripcion, Date fechaInicioLicitacion, int horasDuracionLicitacion) {
+	public Proyect(String nombre, String descripcion, Date fechaInicioLicitacion, Date fechaFinLicitacion) {		
 		this.nombre = nombre;
-		this.empresa = empresa;
 		this.descripcion = descripcion;
-		this.fechaInicioLicitacion = fechaInicioLicitacion;
-		this.horasDuracionLicitacion = horasDuracionLicitacion;
+		this.fechaInicioLicitacion = fechaInicioLicitacion;		
 		this.fechaCreacion = new Date();
-	}
-
-	public int getId() {
-		return id;
-	}
-
-	public String getNombre() {
-		return nombre;
+		this.fechaFinLicitacion = fechaFinLicitacion;
 	}
 	
-	public String getEmpresa() {
-		return empresa;
-	}
-
-	public String getDescripcion() {
-		return descripcion;
-	}
-
-	public Date getFechaCreacion() {
-		return fechaCreacion;
-	}
-
-	public Date getFechaInicioLicitacion() {
-		return fechaInicioLicitacion;
-	}
-
-	public int getHorasDuracionLicitacion() {
-		return horasDuracionLicitacion;
-	}
-
-	public void setNombre(String nombre) {
-		this.nombre = nombre;
-	}
-
-	public void setEmpresa(String empresa) {
-		this.empresa = empresa;
-	}
-
-	public void setDescripcion(String descripcion) {
-		this.descripcion = descripcion;
-	}
-
-	public void setFechaCreacion(Date fechaCreacion) {
-		this.fechaCreacion = fechaCreacion;
-	}
-
-	public void setFechaInicioLicitacion(Date fechaInicioLicitacion) {
-		this.fechaInicioLicitacion = fechaInicioLicitacion;
-	}
-	
-	public void setHorasDuracionLicitacion(int horasDuracionLicitacion) {
-		this.horasDuracionLicitacion = horasDuracionLicitacion;
-	}
-
 	@Override
 	public int hashCode() {
 		return hash.hashCode();

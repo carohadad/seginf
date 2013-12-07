@@ -9,7 +9,7 @@ import com.j256.ormlite.table.TableUtils
 import java.sql.SQLException;
 import java.util.List;
 
-@Singleton(lazy = true)
+@Singleton(lazy = true, strict =false)
 public class OffererRepository {
 
 	String DATABASE_URL = "jdbc:h2:~/seginf/Sinapuli-service/SinapuliDB;DB_CLOSE_DELAY=-1";

@@ -16,8 +16,12 @@
 	
     <tr>
 	<td>${it.id}</td>
-	<td>${it.hash}</td>
-	<td>${it.document}</td>
+	<td>${it.hash}</td>	
+	<%if(it.document){ %>
+		<td>${it.document}</td>	
+	<% }else {%>	
+		<td><a href="/tenderOffert/upload/${it.id}"><img src="/images/upload.png" /></td>
+	<% }%>	
 	<td>${it.offerer?.name}</td>	 
 	<td><a href="/tenderOffert/edit/${it.id}"><img src="/images/edit.png" /></td>
 	<td><a href="/tenderOffert/delete/${it.id}"><img src="/images/delete.png" /></td>

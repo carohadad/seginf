@@ -10,7 +10,7 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.Date;
 
-@Singleton(lazy = true)
+@Singleton(lazy = true, strict =false)
 public class ProyectRepository {
 
 	String DATABASE_URL = "jdbc:h2:~/seginf/Sinapuli-service/SinapuliDB;DB_CLOSE_DELAY=-1";
@@ -50,25 +50,36 @@ public class ProyectRepository {
 		proyectDao.delete(proyect);
 	}
 
-	// Este update no se deberia usar, si se necesita hay que modificar para no cambiar algunos campos
-	public void update(int id, String nombre, String empresa, String descripcion, Date fechaCreacion, Date fechaInicioLicitacion, int horasDuracionLicitacion) throws SQLException, Exception {	
-		def proyect = get(id);
+	
+	public void update(int id, String nombre) throws SQLException, Exception {	
+		def proyect = get(id);		
+		
 		proyect.setNombre(nombre);
-		proyect.setEmpresa(empresa);
+	
+		proyectDao.update(proyect);
+	}	
+	
+	/*
+	// Este update no se deberia usar, si se necesita hay que modificar para no cambiar algunos campos
+	public void update(int id, String nombre, String descripcion, Date fechaCreacion, Date fechaInicioLicitacion, Date fechaFinLicitacion) throws SQLException, Exception {	
+		def proyect = get(id);
+		
+		proyect.setNombre(nombre);
 		proyect.setDescripcion(descripcion);
 		proyect.setFechaCreacion(fechaCreacion);
 		proyect.setFechaInicioLicitacion(fechaInicioLicitacion);
-		proyect.setHorasDuracionLicitacion(horasDuracionLicitacion);
+		proyect.setFechaFinLicitacion(fechaFinLicitacion);
 
 		tenderOfferDao.update(proyect);
 	}
-
+	*/
+	
 	public Proyect get(int id) throws SQLException, Exception {
 		return proyectDao.queryForId(id);
 	}
 
-	public Proyect create(String nombre, String empresa, String descripcion, Date fechaInicioLicitacion, int horasDuracionLicitacion) throws Exception {
-		Proyect proyect = new Proyect(nombre, empresa, descripcion, fechaInicioLicitacion, horasDuracionLicitacion);
+	public Proyect create(String nombre, String descripcion, Date fechaInicioLicitacion, Date fechaFinLicitacion) throws Exception {
+		Proyect proyect = new Proyect(nombre, descripcion, fechaInicioLicitacion, fechaFinLicitacion);
 
 		proyectDao.create(proyect);
 		return proyect;

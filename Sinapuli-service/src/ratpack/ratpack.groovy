@@ -1,5 +1,9 @@
 import static ratpack.groovy.Groovy.*
 import static ratpack.form.Forms.form
+import ratpack.session.Session
+import ratpack.session.store.MapSessionsModule
+import ratpack.session.store.SessionStorage
+import ratpack.session.store.SessionStore
 
 import java.text.*
 import java.util.*
@@ -11,17 +15,62 @@ ratpack {
 	TenderOfferRepository repoTenderOffer = TenderOfferRepository.instance
 	ProyectRepository repoProyect = ProyectRepository.instance
 
+	modules {
+		register new MapSessionsModule(10, 5)
+	}
+	
 	handlers {
 
-		// default route
-		get {
-			render groovyTemplate("index.html", proyectList:repoProyect.list(), offererList:repoOfferer.list(), tenderOfferList:repoTenderOffer.list())			
+		handler('login') {
+			byMethod {
+				get {
+					render groovyTemplate("login.html")
+				}
+				post {
+					get(SessionStorage).name = parse(form()).name
+					redirect '/'
+				}
+			}
+		}
+		get('logout') {
+			get(Session).terminate()
+			redirect '/'
 		}
 
-		get ("index"){
-			render groovyTemplate("index.html", proyectList:repoProyect.list())			
+		handler('upload') {
+		  byMethod {
+			get {
+			  render groovyTemplate('/upload.html')      
+			}
+
+			post {
+			  def f = context.parse(form())
+			  def uploaded = f.file('file')
+			  render groovyTemplate('/upload-result.html', filename: uploaded.fileName, content: uploaded.text)
+			}
+		  }
+		}
+
+		handler {
+			println "here"
+			// default route
+			if (get(SessionStorage).name == null) {
+				redirect '/login'
+				return
+			}
+			next()
 		}
 		
+		get {
+			def session = get(SessionStorage)
+			def loggedIn = session.name != null
+			def loginName = session.name ?: '(sin usuario)'
+			render groovyTemplate("index.html", loggedIn: loggedIn, loginName: loginName, proyectList:repoProyect.list(), offererList:repoOfferer.list(), tenderOfferList:repoTenderOffer.list())			
+		}
+
+		get("offerer/new"){
+			render groovyTemplate("/offerer/new.html") 
+		}
 
 		get("offerer/edit/:id"){		  
 			println "getting Offerer with ID " + pathTokens.id
@@ -42,12 +91,12 @@ ratpack {
 			println "getting Proyect with ID " + pathTokens.id
 			def proyect = repoProyect.get((pathTokens.id).toInteger())
 				  
-			render groovyTemplate("/proyect/edit.html", proyect: proyect) 
+			render groovyTemplate("/proyect/edit.html", id: proyect.id, nombre: proyect.nombre)
 		}
 
 		get ("proyect/offerts/:id") {
 			def proyect = repoProyect.get((pathTokens.id).toInteger())
-		    	render groovyTemplate("/proyect/offerts.html", proyect: proyect, offertsList:repoTenderOffer.listWithProyect(proyect.id))
+		    render groovyTemplate("/proyect/offerts.html", proyect: proyect, offertsList:repoTenderOffer.listWithProyect(proyect.id))
 		}		
 
 		get("proyect/delete/:id/:nombre"){
@@ -72,19 +121,6 @@ ratpack {
 			render groovyTemplate("/tenderOffer/delete.html", id: pathTokens.id)
 		}
 
-    handler('upload') {
-      byMethod {
-        get {
-          render groovyTemplate('/upload.html')      
-        }
-
-        post {
-          def f = context.parse(form())
-          def uploaded = f.file('file')
-          render groovyTemplate('/upload-result.html', filename: uploaded.fileName, content: uploaded.text)
-        }
-      }
-    }
 
 		// --------------------------------------------------------------------
 		// POSTs
@@ -97,8 +133,9 @@ ratpack {
 
 			def message = "Just created Offerer " + offerer.name + " with id " + offerer.id
 			println message
-	
-			render groovyTemplate("index.html", offererList:repoOfferer.list(), tenderOfferList:repoTenderOffer.list())			
+
+
+			redirect "/" 
 		}									
 
 		post ("update/offerer/:id") {
@@ -107,41 +144,50 @@ ratpack {
 			// Update is a save with an id	
 			repoOfferer.update(form.id.toInteger(), form.name)
 
-			render groovyTemplate("index.html", offererList:repoOfferer.list(), tenderOfferList:repoTenderOffer.list())			
+
+			redirect "/" 
 		}											
 
 		post ("delete/offerer/:id") {
 			println "Now deleting offerer with ID: ${pathTokens.id}"
 			repoOfferer.delete(pathTokens.id.toInteger())
 
-			render groovyTemplate("index.html", offererList:repoOfferer.list(), tenderOfferList:repoTenderOffer.list())			
+
+			redirect "/" 			
 		}	
 
 		post ("proyect/submit") {
 			def form = context.parse(form())
 	
-			String dateString = "2001/03/09";
 			SimpleDateFormat dateFormat = new SimpleDateFormat("dd/mm/yyyy");
-			Date convertedDate = dateFormat.parse(form.fechaInicioLicitacion);
+			Date inicioLicitacionDate = dateFormat.parse(form.fechaInicioLicitacion);
+			Date finLicitacionDate = dateFormat.parse(form.fechaFinLicitacion);
 			
-			def proyect = repoProyect.create(form.name, form.empresa, form.descripcion, convertedDate, 48)
+			def proyect = repoProyect.create(form.name, form.descripcion, inicioLicitacionDate, finLicitacionDate)
 
 			def message = "Just created Proyect " + proyect.nombre + " with id " + proyect.id
 			println message
-			redirect "/index" 
-			//render groovyTemplate("index.html", proyectList:repoProyect.list())			
+			redirect "/" 
+
 		}	
+
+		
+		post ("update/proyect/:id") {
+			def form = context.parse(form())
+
+			// Update is a save with an id	
+			repoProyect.update(form.id.toInteger(), form.name)
+
+			redirect "/" 
+		}											
 
 		post ("proyect/delete") {
 			def form = context.parse(form())
 			println "Now deleting proyect with ID: ${pathTokens.id}"
 			repoProyect.delete(form.proyectId.toInteger())
-			redirect "/index"
-			//repoProyect.delete(pathTokens.id.toInteger())
-
-			//render groovyTemplate("index.html", proyectList:repoProyect.list())			
+			redirect "/"						
 		}
-							
+		
 
 		post ("tenderOffer/submit") {
 			def form = context.parse(form())
@@ -150,11 +196,11 @@ ratpack {
 			println "CREADO offerer " + offerer.id
 			def proyect = repoProyect.get(form.idProyect.toInteger())
 	
-			def tenderOffer = repoTenderOffer.create(form.hash, offerer, "un documento", proyect)
+			def tenderOffer = repoTenderOffer.create(form.hash, offerer, proyect)
 			//def message = "Importante: " + tenderOffer.getProyect().getNombre()
 			//def message = "Just created TenderOffer " + tenderOffer.hash + " with id " + tenderOffer.id + " for proyect id " + tenderOffer.proyect.id+ " y el ofertante id " + tenderOffer.offerer.id
-			//println message
-			redirect "/index"		
+
+			redirect "/"		
 		}									
 
 		post ("update/tenderOffer/:id") {
@@ -163,14 +209,15 @@ ratpack {
 			// Update is a save with an id	
 			repoTenderOffer.update(form.id.toInteger(), form.hash)
 
-			render groovyTemplate("index.html", offererList:repoOfferer.list(), tenderOfferList:repoTenderOffer.list())			
+			redirect "/" 			
+			
 		}											
 
 		post ("delete/tenderOffer/:id") {
 			println "Now deleting trendeOffer with ID: ${pathTokens.id}"
 			repoTenderOffer.delete(pathTokens.id.toInteger())
 
-			render groovyTemplate("index.html", offererList:repoOfferer.list(), tenderOfferList:repoTenderOffer.list())			
+			redirect "/" 
 		}									
 		assets "public"
 	}

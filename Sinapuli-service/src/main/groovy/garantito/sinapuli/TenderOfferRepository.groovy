@@ -9,7 +9,7 @@ import com.j256.ormlite.table.TableUtils
 import java.sql.SQLException;
 import java.util.List;
 
-@Singleton(lazy = true)
+@Singleton(lazy = true, strict =false)
 public class TenderOfferRepository {
 
 	String DATABASE_URL = "jdbc:h2:~/seginf/Sinapuli-service/SinapuliDB;DB_CLOSE_DELAY=-1";
@@ -60,8 +60,8 @@ public class TenderOfferRepository {
 		return tenderOfferDao.queryForId(id);
 	}
 
-	public TenderOffer create(String hash, Offerer offerer, String document, Proyect proyect) throws Exception {
-		TenderOffer tenderOffer = new TenderOffer(hash, offerer, document, proyect);
+	public TenderOffer create(String hash, Offerer offerer, Proyect proyect) throws Exception {
+		TenderOffer tenderOffer = new TenderOffer(hash, offerer, proyect);
 
 		tenderOfferDao.create(tenderOffer);
 		return tenderOffer;
