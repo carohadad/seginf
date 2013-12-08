@@ -10,6 +10,10 @@
   <h1>Registración</h1>
   <form method="POST">
     <p>
+     <label for="name">Nombre:</label>
+     <input id="name" name="name">
+    </p>
+    <p>
      <label for="username">Nombre de usuario:</label>
      <input id="username" name="username">
    </p>
@@ -24,6 +28,11 @@
    <p>
      <input type="submit" value="Registrar nuevo oferente">
      <a href="/login">Login</a>
+   </p>
+   <p>    
+      <% if (model.error) { %>
+          <font color="red"><i>${model.error}<i></font>
+      <% } %>
    </p>
  </form>
 </body>

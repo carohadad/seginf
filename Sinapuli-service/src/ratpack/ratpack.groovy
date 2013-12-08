@@ -5,6 +5,8 @@ import ratpack.session.store.MapSessionsModule
 import ratpack.session.store.SessionStorage
 import ratpack.session.store.SessionStore
 
+import java.security.MessageDigest;
+
 import java.text.*
 import java.util.*
 import garantito.sinapuli.*
@@ -68,14 +70,32 @@ ratpack {
 					render groovyTemplate('register.html')
 				}
 				post {
+					
 					def form = parse(form())
 					def offerer = new Offerer()
-					offerer.username = form.username
-					offerer.password = form.password
-					offerer.name = form.username
-					offerer = repoOfferer.create(offerer)
-					println "Oferente registrado: " + offerer
-					redirect '/login'
+
+					//valida que ingresa los datos
+					if( form.username?.trim() && 						
+						form.password?.trim() &&
+						form.repeat_password?.trim() ) {
+  						
+  						//valida que password y repeat_password sean iguales  						
+						if(form.password == form.repeat_password){
+
+							offerer.username = form.username							
+							offerer.password = form.password								
+							offerer.name = form.name
+							offerer = repoOfferer.create(offerer)
+							println "Oferente registrado: " + offerer
+							redirect '/login'
+
+						} else {
+							render groovyTemplate("register.html", error: "Las contraseñas no coinciden")			
+						}  						
+
+					} else {						
+						render groovyTemplate("register.html", error: "Le falto ingresar alguno de los campos")			
+					}					
 				}
 			}
 		}
@@ -237,8 +257,6 @@ ratpack {
 			def proyect = repoProyect.get(form.idProyect.toInteger())
 	
 			def tenderOffer = repoTenderOffer.create(form.hash, offerer, proyect)
-			//def message = "Importante: " + tenderOffer.getProyect().getNombre()
-			//def message = "Just created TenderOffer " + tenderOffer.hash + " with id " + tenderOffer.id + " for proyect id " + tenderOffer.proyect.id+ " y el ofertante id " + tenderOffer.offerer.id
 
 			redirect "/"		
 		}									

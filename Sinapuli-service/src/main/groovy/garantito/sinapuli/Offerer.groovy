@@ -12,14 +12,17 @@ class Offerer {
 	@DatabaseField(generatedId = true)
 	int id
 	
-	@DatabaseField
+	@DatabaseField(canBeNull = false)
 	String name
 	
-	@DatabaseField
+	@DatabaseField(canBeNull = false, unique = true)
 	String username
 	
-	@DatabaseField
+	@DatabaseField(canBeNull = false)
 	String password
+
+	@DatabaseField(canBeNull = false)
+	String salt
 
 	@DatabaseField
 	String publicKey
