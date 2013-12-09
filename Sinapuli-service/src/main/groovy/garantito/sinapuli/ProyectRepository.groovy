@@ -51,24 +51,25 @@ public class ProyectRepository {
 	}
 
 	
-	public void update(int id, String nombre) throws SQLException, Exception {	
+	public void update(int id, String name) throws SQLException, Exception {	
 		def proyect = get(id);		
 		
-		proyect.setNombre(nombre);
-	
+		proyect.name = name;	
 		proyectDao.update(proyect);
 	}	
 	
 	/*
 	// Este update no se deberia usar, si se necesita hay que modificar para no cambiar algunos campos
-	public void update(int id, String nombre, String descripcion, Date fechaCreacion, Date fechaInicioLicitacion, Date fechaFinLicitacion) throws SQLException, Exception {	
+	public void update(int id, String name, String description, Date creationDate, Date startTenderDate, Date endTenderDate, byte[] tender) throws SQLException, Exception {	
 		def proyect = get(id);
 		
-		proyect.setNombre(nombre);
-		proyect.setDescripcion(descripcion);
-		proyect.setFechaCreacion(fechaCreacion);
-		proyect.setFechaInicioLicitacion(fechaInicioLicitacion);
-		proyect.setFechaFinLicitacion(fechaFinLicitacion);
+		proyect.name = name;
+		proyect.description = description;
+		proyect.creationDate = creationDate;
+		proyect.startTenderDate = startTenderDate;
+		proyect.endTenderDate = endTenderDate;
+		proyect.tender = tender;
+
 
 		tenderOfferDao.update(proyect);
 	}
@@ -78,8 +79,8 @@ public class ProyectRepository {
 		return proyectDao.queryForId(id);
 	}
 
-	public Proyect create(String nombre, String descripcion, Date fechaInicioLicitacion, Date fechaFinLicitacion) throws Exception {
-		Proyect proyect = new Proyect(nombre, descripcion, fechaInicioLicitacion, fechaFinLicitacion);
+	public Proyect create(String name, String description, Date startTenderDate, Date endTenderDate, byte[] tender) throws Exception {
+		Proyect proyect = new Proyect(name, description, startTenderDate, endTenderDate, tender);
 
 		proyectDao.create(proyect);
 		return proyect;

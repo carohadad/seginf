@@ -9,8 +9,8 @@
 	<script type="text/javascript">
 		jQuery.noConflict();
 		jQuery(document).ready(function(\$){
-			\$("input[name='fechaInicioLicitacion']").datepicker({ dateFormat: 'dd/mm/yy' });		
-			\$("input[name='fechaFinLicitacion']").datepicker({ dateFormat: 'dd/mm/yy' });
+			\$("input[name='startTenderDate']").datepicker({ dateFormat: 'dd/mm/yy' });		
+			\$("input[name='endTenderDate']").datepicker({ dateFormat: 'dd/mm/yy' });
 		});
 	</script>
   </head>
@@ -21,30 +21,39 @@
 
 <h1>Crear Proyecto</h1>
 <p>Complete la informacion del proyecto.</p>
-<form action="/proyect/submit" method="post" accept-charset="utf-8">
+<form action="/proyect/submit" method="post"  enctype="multipart/form-data">
 
 
   <label for="name">Nombre:</label>
   <input type="text" name="name">
   <br><br>
 
-  <label for="descripcion">Descripcion:</label>
-  <input type="text" name="descripcion">
+  <label for="description">Descripcion:</label>
+  <input type="text" name="description">
   <br><br>
   
-  <label for="fechaInicioLicitacion">Fecha inicio de la licitacion:</label>
-  <input type="datetime" name="fechaInicioLicitacion">
+  <label for="file">Documento de Licitacion:</label>
+  <input name="file" type="file" id="file">
   <br><br>
 
-  <label for="fechaFinLicitacion">Fecha fin de la licitacion:</label>
-  <input type="datetime" name="fechaFinLicitacion">
+  <label for="startTenderDate">Fecha inicio de la licitacion:</label>
+  <input type="datetime" name="startTenderDate">
+  <br><br>
+
+  <label for="endTenderDate">Fecha fin de la licitacion:</label>
+  <input type="datetime" name="endTenderDate">
   <br><br>
 
 
   <p>
     <button type="submit">Save</button>
   </p>
-  
+  <p>    
+    <% if (model.error) { %>
+      <font color="red"><i>${model.error}<i></font>
+    <% } %>
+  </p>
+
 </form>
 
 <a href="/">Cancel</a>

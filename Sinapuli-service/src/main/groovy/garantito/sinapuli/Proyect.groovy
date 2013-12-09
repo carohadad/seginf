@@ -12,26 +12,29 @@ class Proyect {
 	@DatabaseField(generatedId = true)
 	int id;
 	@DatabaseField()
-	String nombre;
+	String name;
 	@DatabaseField()
-	String descripcion;
-    @DatabaseField()
-	Date fechaCreacion;
-    @DatabaseField()
-	Date fechaInicioLicitacion;
+	String description;
 	@DatabaseField()
-	Date fechaFinLicitacion;
+	Date creationDate;
+	@DatabaseField()
+	Date startTenderDate;
+	@DatabaseField()
+	Date endTenderDate;
+        @DatabaseField(dataType = DataType.BYTE_ARRAY)
+	byte[] tender;	
 
 	Proyect() {
-			// all persisted classes must define a no-arg constructor with at least package visibility
+		// all persisted classes must define a no-arg constructor with at least package visibility
 	}
 	
-	public Proyect(String nombre, String descripcion, Date fechaInicioLicitacion, Date fechaFinLicitacion) {		
-		this.nombre = nombre;
-		this.descripcion = descripcion;
-		this.fechaInicioLicitacion = fechaInicioLicitacion;		
-		this.fechaCreacion = new Date();
-		this.fechaFinLicitacion = fechaFinLicitacion;
+	public Proyect(String name, String description, Date startTenderDate, Date endTenderDate, byte[] tender) {		
+		this.name = name;
+		this.description = description;
+		this.startTenderDate = startTenderDate;		
+		this.creationDate = new Date();
+		this.endTenderDate = endTenderDate;
+		this.tender = tender;
 	}
 	
 	@Override

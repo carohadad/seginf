@@ -50,7 +50,9 @@ ratpack {
 							session.auth = true
 							session.username = form.username
 							session.role = 'offerer'
-						}
+						} else {
+							render groovyTemplate("login.html", error: "Usuario o contraseña no validas")			
+						} 
 					}
 					if (session.auth) {
 						redirect '/'
@@ -151,16 +153,16 @@ ratpack {
 			println "getting Proyect with ID " + pathTokens.id
 			def proyect = repoProyect.get((pathTokens.id).toInteger())
 				  
-			render groovyTemplate("/proyect/edit.html", id: proyect.id, nombre: proyect.nombre)
+			render groovyTemplate("/proyect/edit.html", id: proyect.id, name: proyect.name)
 		}
 
 		get ("proyect/offerts/:id") {
 			def proyect = repoProyect.get((pathTokens.id).toInteger())
-		    render groovyTemplate("/proyect/offerts.html", proyect: proyect, offertsList:repoTenderOffer.listWithProyect(proyect.id))
+		    	render groovyTemplate("/proyect/offerts.html", proyect: proyect, offertsList:repoTenderOffer.listWithProyect(proyect.id))
 		}		
 
-		get("proyect/delete/:id/:nombre"){
-			render groovyTemplate("/proyect/delete.html", id: pathTokens.id, nombre: pathTokens.nombre)
+		get("proyect/delete/:id/:name"){
+			render groovyTemplate("/proyect/delete.html", id: pathTokens.id, name: pathTokens.name)
 		}
 
 		get ("tenderOffer/new/:id") {
@@ -220,15 +222,22 @@ ratpack {
 			def form = context.parse(form())
 	
 			SimpleDateFormat dateFormat = new SimpleDateFormat("dd/mm/yyyy");
-			Date inicioLicitacionDate = dateFormat.parse(form.fechaInicioLicitacion);
-			Date finLicitacionDate = dateFormat.parse(form.fechaFinLicitacion);
-			
-			def proyect = repoProyect.create(form.name, form.descripcion, inicioLicitacionDate, finLicitacionDate)
+			Date startTenderDate = dateFormat.parse(form.startTenderDate);
+			Date endTenderDate = dateFormat.parse(form.endTenderDate);
 
-			def message = "Just created Proyect " + proyect.nombre + " with id " + proyect.id
-			println message
-			redirect "/" 
+			def uploaded = form.file('file');
 
+			if(endTenderDate < startTenderDate ) {
+
+				render groovyTemplate("/proyect/new.html", error: "las fechas ingresadas son invalidas") 
+			    
+			}else{
+				def proyect = repoProyect.create(form.name, form.description, startTenderDate, endTenderDate, uploaded.getBytes())
+
+				def message = "Just created Proyect " + proyect.name + " with id " + proyect.id
+				println message
+				redirect "/" 
+			}
 		}	
 
 		

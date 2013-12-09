@@ -20,12 +20,12 @@
 
 <table class="gridtable">
     <tr>
-      <th>ID</th><th>NOMBRE</th><th>DESCRIPCION</th><th>FECHA CREACION</th><th>FECHA INICIO LICITACION</th><th>FECHA FIN LICITACION</th><th>OFERTAR</th><th>EDIT</th><th>DELETE</th>
+      <th>ID</th><th>NOMBRE</th><th>DESCRIPCION</th><th>FECHA CREACION</th><th>FECHA INICIO LICITACION</th><th>FECHA FIN LICITACION</th><th>LICITACION</th><th>OFERTAR</th><th>EDIT</th><th>DELETE</th>
     </tr>
 
 <%model.proyectList.each() { %>
 	<% 
-	def nombreProject = it.nombre;
+	def nombreProject = it.name;
 	if (nombreProject.size() == 0)
 		nombreProject = "Sin Nombre";		
 	%>
@@ -33,11 +33,12 @@
     <tr>
 	<td>${it.id}</td>
 	
-	<td><a href="/proyect/offerts/${it.id}" title="ver ofertas">${it.nombre}</td>	  
-	<td>${it.descripcion}</td>	 
-	<td>${it.fechaCreacion}</td>	 
-	<td>${it.fechaInicioLicitacion}</td>
-	<td>${it.fechaFinLicitacion}</td>	
+	<td><a href="/proyect/offerts/${it.id}" title="ver ofertas">${it.name}</td>	  
+	<td>${it.description}</td>	 
+	<td>${it.creationDate}</td>	 
+	<td>${it.startTenderDate}</td>
+	<td>${it.endTenderDate}</td>	
+	<td><a href="/proyect/download/${it.id}"><img src="/images/download.png" /></td>
 	<td><a href="/tenderOffer/new/${it.id}">Ofertar</td> 	 
 	<td><a href="/proyect/edit/${it.id}"><img src="/images/edit.png" /></td>
 	<td><a href="/proyect/delete/${it.id}/${nombreProject}"><img src="/images/delete.png" /></td>

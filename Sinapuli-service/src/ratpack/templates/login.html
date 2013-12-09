@@ -21,6 +21,11 @@
      <input type="submit" value="Login">
      <a href="/register">Registrarse como nuevo oferente</a>
    </p>
+   <p>    
+      <% if (model.error) { %>
+          <font color="red"><i>${model.error}<i></font>
+      <% } %>
+   </p>
  </form>
 </body>
 
