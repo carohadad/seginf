@@ -62,10 +62,12 @@ ratpack {
 				}
 			}
 		}
+
 		get('logout') {
 			get(Session).terminate()
 			redirect '/'
 		}
+
 		handler('register') {
 			byMethod {
 				get {
@@ -79,14 +81,17 @@ ratpack {
 					//valida que ingresa los datos
 					if( form.username?.trim() && 						
 						form.password?.trim() &&
-						form.repeat_password?.trim() ) {
+						form.repeat_password?.trim() &&
+						form.publicKey?.trim()) {
   						
   						//valida que password y repeat_password sean iguales  						
 						if(form.password == form.repeat_password){
 
-							offerer.username = form.username							
-							offerer.password = form.password								
 							offerer.name = form.name
+							offerer.publicKey = form.publicKey
+							offerer.username = form.username							
+							offerer.password = form.password
+
 							offerer = repoOfferer.create(offerer)
 							println "Oferente registrado: " + offerer
 							redirect '/login'
@@ -102,6 +107,7 @@ ratpack {
 			}
 		}
 
+		/*
 		handler('upload') {
 		  byMethod {
 			get {
@@ -115,6 +121,7 @@ ratpack {
 			}
 		  }
 		}
+		*/
 
 		handler {
 			// default route
@@ -127,12 +134,19 @@ ratpack {
 		
 		get {
 			def session = get(SessionStorage)
-			render groovyTemplate("index.html", loggedIn: session.auth, loginName: session.username, proyectList:repoProyect.list(), offererList:repoOfferer.list(), tenderOfferList:repoTenderOffer.list())			
+			render groovyTemplate("index.html", 
+						loggedIn: session.auth, 
+						loginName: session.username, 
+						proyectList:repoProyect.list(), 
+						offererList:repoOfferer.list(), 
+						tenderOfferList:repoTenderOffer.list())			
 		}
 
+		/*
 		get("offerer/new"){
 			render groovyTemplate("/offerer/new.html") 
 		}
+		*/
 
 		get("offerer/edit/:id"){		  
 			println "getting Offerer with ID " + pathTokens.id
@@ -171,7 +185,6 @@ ratpack {
 		    	render groovyTemplate("/tenderOffer/new.html", proyect: proyect)
 		}
 
-
 		get("tenderOffer/edit/:id"){		  
 			println "getting Offerer with ID " + pathTokens.id
 			def tenderOffer = repoTenderOffer.get((pathTokens.id).toInteger())
@@ -188,6 +201,7 @@ ratpack {
 		// POSTs
 		// --------------------------------------------------------------------
 
+		/*
 		post ("offerer/submit") {
 			def form = context.parse(form())
 	
@@ -199,7 +213,8 @@ ratpack {
 
 			redirect "/" 
 		}									
-
+		*/		
+	
 		post ("update/offerer/:id") {
 			def form = context.parse(form())
 
@@ -224,7 +239,7 @@ ratpack {
 			SimpleDateFormat dateFormat = new SimpleDateFormat("dd/mm/yyyy");
 			Date startTenderDate = dateFormat.parse(form.startTenderDate);
 			Date endTenderDate = dateFormat.parse(form.endTenderDate);
-
+			
 			def uploaded = form.file('file');
 
 			if(endTenderDate < startTenderDate ) {
@@ -232,14 +247,17 @@ ratpack {
 				render groovyTemplate("/proyect/new.html", error: "las fechas ingresadas son invalidas") 
 			    
 			}else{
-				def proyect = repoProyect.create(form.name, form.description, startTenderDate, endTenderDate, uploaded.getBytes())
+				def proyect = repoProyect.create(form.name, 
+								form.description, 
+								startTenderDate, 
+								endTenderDate, 
+								uploaded.getBytes())
 
 				def message = "Just created Proyect " + proyect.name + " with id " + proyect.id
 				println message
 				redirect "/" 
 			}
 		}	
-
 		
 		post ("update/proyect/:id") {
 			def form = context.parse(form())
@@ -255,8 +273,7 @@ ratpack {
 			println "Now deleting proyect with ID: ${pathTokens.id}"
 			repoProyect.delete(form.proyectId.toInteger())
 			redirect "/"						
-		}
-		
+		}		
 
 		post ("tenderOffer/submit") {
 			def form = context.parse(form())
@@ -288,4 +305,3 @@ ratpack {
 		}									
 	}
 }
-

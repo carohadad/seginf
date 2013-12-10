@@ -104,6 +104,14 @@ ratpack {
       render groovyTemplate("pdf.html")
     }
 
+    post("pades"){
+
+      def f = context.parse(form())
+      //html2pdf(f.url)
+	println "entro al post de pades"
+      render groovyTemplate("pdf.html")
+    }
+
     assets "public"
   }
 

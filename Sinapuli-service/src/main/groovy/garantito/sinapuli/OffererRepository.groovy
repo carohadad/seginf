@@ -70,12 +70,14 @@ public class OffererRepository {
 		return offererDao.queryForId(id);
 	}
 
+	/*
 	public Offerer create(String name) throws Exception {
 		Offerer offerer = new Offerer(name);
 
 		offererDao.create(offerer);
 		return offerer;
 	}
+	*/
 
 	public Offerer create(Offerer offerer) throws Exception {
 

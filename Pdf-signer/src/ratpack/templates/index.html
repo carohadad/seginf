@@ -3,12 +3,22 @@ direccion de pagina web(ej. http://dc.uba.ar): <input type="text" name="url">
 <input type="submit" value="Convertir a pdf">
 </form>
 <br><br><br>
+<!--
 <form action="generatePDF" method="get">
 <input type="submit" value="Generar un pdf de prueba">
 </form>
 <br><br><br>
-<form action="pades" method="get">s
-<input type="submit" value="Generar pdf firmado">
-(toma pdf y firma hardcodeadas...)
+-->
+<form method="post" action="pades" enctype="multipart/form-data">
+    <p>
+     <label for="publicKey">Clave Publica:</label>
+     <textarea name="publicKey"></textarea>
+    </p>
+
+    <label for="file">Pdf:</label>
+    <input name="file" type="file" id="file">
+
+    <input type="submit" value="Generar pdf firmado">
+
 </form>
 <br><br><br>

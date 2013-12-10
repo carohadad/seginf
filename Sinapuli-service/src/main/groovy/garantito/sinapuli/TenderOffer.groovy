@@ -25,8 +25,8 @@ class TenderOffer {
 
         public TenderOffer(String hash, Offerer offerer, Proyect proyect) {
                 this.hash = hash;
-				this.offerer = offerer;		
-				this.proyect = proyect;
+		this.offerer = offerer;		
+		this.proyect = proyect;
         }
 
         public int getId() {
