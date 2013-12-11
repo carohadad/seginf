@@ -58,11 +58,13 @@ ratpack {
       render groovyTemplate("index.html")
     }
 
+    /*
     get("pades") {
       pades(true, true) //TODO: levantar estos boolean de un check
       render groovyTemplate("pdf.html")
     }
-
+    */
+    
     get("generatePDF") {
 
       def document = null
@@ -105,11 +107,28 @@ ratpack {
     }
 
     post("pades"){
-
+      
       def f = context.parse(form())
-      //html2pdf(f.url)
-	println "entro al post de pades"
-      render groovyTemplate("pdf.html")
+
+      
+      if( f.file('keystoreFile').getBytes() != null &&
+            f.password?.trim() &&
+            f.file('pdfFile').getBytes() != null) {
+
+          def keystore = f.file('keystoreFile').getBytes()
+          def password = f.password
+
+          def pdf = f.file('pdfFile').getBytes()
+          def filename = f.file('pdfFile').fileName
+
+          
+          pades(keystore, pdf, filename, password, false, false)
+
+          render groovyTemplate("pdf.html")
+      } else {
+          render groovyTemplate("index.html", error: "Debe ingresar los tres campos")     
+      }
+      
     }
 
     assets "public"
@@ -168,11 +187,13 @@ public void html2pdf(String url){
 }
 
 
-//public void pades(String src, String dest, boolean withTS, boolean withOCSP)
-public void pades(boolean withTS, boolean withOCSP){
 
-  PdfReader reader = new PdfReader(new FileInputStream("EnunciadosTP.pdf"));
-  FileOutputStream fout = new FileOutputStream("EnunciadosTP_signed_2.pdf");
+//public void pades(boolean withTS, boolean withOCSP){
+public void pades(byte[] keystore, byte[] pdf, String filename, String password, boolean withTS, boolean withOCSP){  
+
+  //PdfReader reader = new PdfReader(new FileInputStream("EnunciadosTP.pdf"));
+  PdfReader reader = new PdfReader(pdf);
+  FileOutputStream fout = new FileOutputStream("signed_" + filename);
 
   //------- Creo un area para el firmado -----------------//
   /*
@@ -191,24 +212,37 @@ public void pades(boolean withTS, boolean withOCSP){
    */
 
   //------- firmado ------------------------------------//
-  String KEYSTORE = "../../signer.jks";
+  //String KEYSTORE = "../../signer.jks";
 
-  char[] PASSWORD = "garantito".toCharArray();
+  //char[] PASSWORD = "garantito".toCharArray();
   //password = garantito, luego generar interfaz con usuario :P
 
+  //----------------------------------------------------//
   BouncyCastleProvider provider = new BouncyCastleProvider();
   //BouncyCastle, es el security provider
   Security.addProvider(provider);
   KeyStore ks = KeyStore.getInstance(KeyStore.getDefaultType());
   //keystore generada con:
   //keytool -genkeypair -alias sha256 -keyalg RSA -keysize 2048 -sigalg SHA256withRSA -keystore ks
-  ks.load(new FileInputStream(KEYSTORE), PASSWORD);
+  
+  //ks.load(new FileInputStream(KEYSTORE), PASSWORD);
+  
+  //-- asco!!!!
+  FileOutputStream fos = new FileOutputStream("keystore.tmp");
+  fos.write(keystore);
+  fos.close();
+  ks.load(new FileInputStream("keystore.tmp"), password.toCharArray());
+  //**--
+  
+
   //cargo keystore, y le paso la pass
   String alias = (String)ks.aliases().nextElement();
-  PrivateKey pk = (PrivateKey) ks.getKey(alias, PASSWORD);
+  //PrivateKey pk = (PrivateKey) ks.getKey(alias, PASSWORD);
+  PrivateKey pk = (PrivateKey) ks.getKey(alias, password.toCharArray());
   Certificate[] chain = ks.getCertificateChain(alias);
-  String digestAlgorithm = DigestAlgorithms.SHA256;
 
+  //-----------------------------------------------
+  String digestAlgorithm = DigestAlgorithms.SHA256;
   //creating stamper
   PdfStamper stamper = PdfStamper.createSignature(reader, fout, (char)'\0');
   // Creating the appearance
@@ -216,8 +250,8 @@ public void pades(boolean withTS, boolean withOCSP){
 
   //se le pueden agregar atributos:
   //appearance.setVisibleSignature("mySig");
-  appearance.setReason("Estoy probando para el tp");
-  appearance.setLocation("desde mi pc, man");
+  //appearance.setReason("Estoy probando para el tp");
+  //appearance.setLocation("desde mi pc, man");
   //appearance.setVisibleSignature(new Rectangle(36, 748, 144, 780), 1, "sig");
 
 
@@ -227,9 +261,7 @@ public void pades(boolean withTS, boolean withOCSP){
   ExternalSignature signature = new PrivateKeySignature(pk, "SHA256", "BC");
   //BC = BouncyCastle, es el security provider
 
-
   // If we add a time stamp:
-
   TSAClient tsc = null;
 
   if (withTS) {
@@ -257,4 +289,3 @@ public void pades(boolean withTS, boolean withOCSP){
   //CMS = Cryptographic Message Syntax
 
 }
-

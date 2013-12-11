@@ -1,5 +1,6 @@
 <form name="input" action="html2pdf" method="post">
 direccion de pagina web(ej. http://dc.uba.ar): <input type="text" name="url">
+<br>
 <input type="submit" value="Convertir a pdf">
 </form>
 <br><br><br>
@@ -10,15 +11,26 @@ direccion de pagina web(ej. http://dc.uba.ar): <input type="text" name="url">
 <br><br><br>
 -->
 <form method="post" action="pades" enctype="multipart/form-data">
-    <p>
-     <label for="publicKey">Clave Publica:</label>
-     <textarea name="publicKey"></textarea>
-    </p>
+    
+	
+    (OBVIAMENTE, despues tambien habria que darlo como un servicio script
+    sino se pierde todo el concepto de seguridad, ya que estariamos subiendo 
+    el keystore a un servidor en texto plano!)
 
-    <label for="file">Pdf:</label>
-    <input name="file" type="file" id="file">
-
+    <br><br>
+    <label for="keystoreFile">keystore:</label>
+    <input name="keystoreFile" type="file" id="keystoreFile">
+	<br>   
+    <label for="password">Contraseña keystore:</label>
+    <input id="password" type="password" name="password">   
+	<br>
+    <label for="pdfFile">Pdf:</label>
+    <input name="pdfFile" type="file" id="pdfFile">
+	<br>
     <input type="submit" value="Generar pdf firmado">
-
+    <p>    
+      <% if (model.error) { %>
+          <font color="red"><i>${model.error}<i></font>
+      <% } %>
+   </p>
 </form>
-<br><br><br>
