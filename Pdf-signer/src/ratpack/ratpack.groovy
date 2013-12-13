@@ -34,6 +34,10 @@ import java.security.Security;
 import java.security.KeyStore;
 import java.security.PrivateKey;
 import java.security.cert.Certificate;
+import java.security.Signature;
+import java.security.spec.RSAPublicKeySpec;
+import java.security.KeyFactory;
+import java.security.PublicKey;
 
 import org.pdfbox.exceptions.*
 import org.pdfbox.pdmodel.PDDocument
@@ -64,6 +68,11 @@ ratpack {
       render groovyTemplate("pdf.html")
     }
     */
+    
+    get("getPublicKey") {
+      def publicKey = getPublicKey()
+      render groovyTemplate("index.html", publicKey: publicKey)     
+    }
     
     get("generatePDF") {
 
@@ -106,6 +115,16 @@ ratpack {
       render groovyTemplate("pdf.html")
     }
 
+    post("pdfSignature"){
+
+      def f = context.parse(form())
+      def pdf = f.file('pdfFile').getText()
+
+      byte[] signature = pdfSignature(pdf)
+
+      render groovyTemplate("index.html", signature: signature)     
+    }
+
     post("pades"){
       
       def f = context.parse(form())
@@ -131,6 +150,18 @@ ratpack {
       
     }
 
+
+    post("checkHash"){
+
+      def f = context.parse(form())
+      def pdf = f.file('pdfFile').getBytes()
+      def hash = f.hash.getBytes()
+      def result = checkHash(hash, pdf)	
+
+      render groovyTemplate("index.html", result: result)     
+
+    }
+
     assets "public"
   }
 
@@ -139,36 +170,34 @@ ratpack {
 /*
    public void html2pdf(String url){
 
-   String cleanFile = "cleaned.html"
-   OutputStream cleanOS = new FileOutputStream(cleanFile)
+	   String cleanFile = "cleaned.html"
+	   OutputStream cleanOS = new FileOutputStream(cleanFile)
 
-   InputStream is = new URL(url).openStream();
+	   InputStream is = new URL(url).openStream();
 
-   String outputFile = "html.pdf"
-   OutputStream os = new FileOutputStream(outputFile)
+	   String outputFile = "html.pdf"
+	   OutputStream os = new FileOutputStream(outputFile)
 
-   Tidy tidy = new Tidy();	
+	   Tidy tidy = new Tidy();	
 
-   try{		
+	   try{		
 
-   tidy.setXHTML(true);
-   tidy.setMakeClean(true);
+		   tidy.setXHTML(true);
+		   tidy.setMakeClean(true);
 
-   Document converted = tidy.parseDOM(is,cleanOS)		
+		   Document converted = tidy.parseDOM(is,cleanOS)		
 
-   ITextRenderer renderer = new ITextRenderer()		
-   renderer.setDocument("cleaned.html")
+		   ITextRenderer renderer = new ITextRenderer()		
+		   renderer.setDocument("cleaned.html")
 
-   renderer.layout()
-   renderer.createPDF(os)
-   }
-   finally
-   {
-   if( os != null )
-   {		
-   os.close();			
-   }
-   }
+		   renderer.layout()
+		   renderer.createPDF(os)
+	} finally {
+
+		   if( os != null ){		
+			   os.close();			
+		   }
+	}
 
    }
  */
@@ -186,6 +215,143 @@ public void html2pdf(String url){
   println "stdout: ${proc.in.text}" // *out* from the external program is *in* for groovy
 }
 
+public boolean checkHash(byte[] sigToVerify, /*publiKey,*/ byte[] pdf){
+
+	Signature sig = Signature.getInstance("SHA256withRSA");
+
+	//cambiar por lo que venga en el form
+	PublicKey pubKey = readPublicKeyFromFile("../../public.key");
+	sig.initVerify(pubKey); 
+	
+	sig.update(pdf);
+
+	boolean verifies = sig.verify(sigToVerify);
+
+	return verifies
+}
+
+public String getPublicKey(){
+
+	// Levantar una key
+	String KEYSTORE = "../../signer.jks";
+	char[] PASSWORD = "garantito".toCharArray();
+
+	KeyStore ks = KeyStore.getInstance(KeyStore.getDefaultType());
+	ks.load(new FileInputStream(KEYSTORE), PASSWORD);
+
+	String alias = (String)ks.aliases().nextElement();
+	PrivateKey privateKey = (PrivateKey) ks.getKey(alias, PASSWORD);
+
+	// Get certificate of public key
+	Certificate cert = ks.getCertificate(alias);
+	PublicKey publicKey = cert.getPublicKey();
+
+	//la grabo en un archivo	
+	//---
+	KeyFactory keyFactory = KeyFactory.getInstance("RSA");
+	RSAPublicKeySpec rsaPubKeySpec = keyFactory.getKeySpec(publicKey, RSAPublicKeySpec.class);  
+
+	saveKeys("../../public.key", rsaPubKeySpec.getModulus(), rsaPubKeySpec.getPublicExponent());  
+	//---
+	//Alternativa: 
+	/*
+		byte[] key = publicKey.getEncoded();
+		FileOutputStream keyfos = new FileOutputStream("public");
+		keyfos.write(key);
+		keyfos.close();
+
+	*/
+
+	return publicKey.toString();
+}
+
+
+
+private void saveKeys(String fileName,BigInteger mod,BigInteger exp) throws IOException{  
+	FileOutputStream fos = null;  
+	ObjectOutputStream oos = null;  
+	  
+	try {  
+	    System.out.println("Generating "+fileName + "...");  
+	    fos = new FileOutputStream(fileName);  
+	    oos = new ObjectOutputStream(new BufferedOutputStream(fos));  
+	      
+	    oos.writeObject(mod);  
+	    oos.writeObject(exp);             
+	      
+	    System.out.println(fileName + " generated successfully");  
+	} catch (Exception e) {  
+	    e.printStackTrace();  
+	}  
+	finally{  
+	    if(oos != null){  
+		oos.close();  
+		  
+		if(fos != null){  
+		    fos.close();  
+		}  
+	    }  
+	}         
+}  
+
+
+public PublicKey readPublicKeyFromFile(String fileName) throws IOException{  
+	FileInputStream fis = null;  
+	ObjectInputStream ois = null;  
+
+	try {  
+	    fis = new FileInputStream(new File(fileName));  
+	    ois = new ObjectInputStream(fis);  
+	      
+	    BigInteger modulus = (BigInteger) ois.readObject();  
+	    BigInteger exponent = (BigInteger) ois.readObject();  
+	      
+	    //Get Public Key  
+	    RSAPublicKeySpec rsaPublicKeySpec = new RSAPublicKeySpec(modulus, exponent);  
+	    KeyFactory fact = KeyFactory.getInstance("RSA");  
+	    PublicKey publicKey = fact.generatePublic(rsaPublicKeySpec);  
+		          
+	    return publicKey;  
+	      
+	} catch (Exception e) {  
+	    e.printStackTrace();  
+	}  
+	finally{  
+	    if(ois != null){  
+		ois.close();  
+		if(fis != null){  
+		    fis.close();  
+		}  
+	    }  
+	}  
+
+	return null;  
+} 
+
+
+public byte[] pdfSignature(String pdf){
+
+	// Levantar una key
+	String KEYSTORE = "../../signer.jks";
+	char[] PASSWORD = "garantito".toCharArray();
+
+	KeyStore ks = KeyStore.getInstance(KeyStore.getDefaultType());
+	ks.load(new FileInputStream(KEYSTORE), PASSWORD);
+
+	String alias = (String)ks.aliases().nextElement();
+	PrivateKey privateKey = (PrivateKey) ks.getKey(alias, PASSWORD);
+
+	
+	// Compute signature
+	Signature instance = Signature.getInstance("SHA256withRSA");
+	instance.initSign(privateKey);
+
+	instance.update((pdf).getBytes()); //ver lo de getText getByte
+
+	//byte[] signature = instance.sign();
+	return instance.sign();
+
+}
 
 
 //public void pades(boolean withTS, boolean withOCSP){
