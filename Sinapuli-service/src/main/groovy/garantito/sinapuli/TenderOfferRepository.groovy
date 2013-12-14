@@ -9,7 +9,7 @@ import com.j256.ormlite.table.TableUtils
 import java.sql.SQLException;
 import java.util.List;
 
-@Singleton(lazy = true, strict =false)
+@Singleton(lazy = true, strict = false)
 public class TenderOfferRepository {
 
 	String DATABASE_URL = "jdbc:h2:~/seginf/Sinapuli-service/SinapuliDB;DB_CLOSE_DELAY=-1";
@@ -17,7 +17,7 @@ public class TenderOfferRepository {
 	JdbcConnectionSource connectionSource = null;
 	Dao<TenderOffer, Integer> tenderOfferDao = null;
 
-	TenderOfferRepository() {
+	private TenderOfferRepository() {
 		try {
 			if(connectionSource == null){
 				// create our data source			

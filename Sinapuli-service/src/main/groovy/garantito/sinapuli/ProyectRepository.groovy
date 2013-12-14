@@ -10,7 +10,7 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.Date;
 
-@Singleton(lazy = true, strict =false)
+@Singleton(lazy = true, strict = false)
 public class ProyectRepository {
 
 	String DATABASE_URL = "jdbc:h2:~/seginf/Sinapuli-service/SinapuliDB;DB_CLOSE_DELAY=-1";
@@ -18,7 +18,7 @@ public class ProyectRepository {
 	JdbcConnectionSource connectionSource = null;
 	Dao<Proyect, Integer> proyectDao = null;
 
-	ProyectRepository() {
+	private ProyectRepository() {
 		try {
 			if(connectionSource == null){
 				// create our data source			
