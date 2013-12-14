@@ -20,7 +20,7 @@ public class TSAClient {
     // Setup the time stamp request
     def tsqGenerator = new TimeStampRequestGenerator()
     tsqGenerator.certReq = true
-    tsqGenerator.reqPolicy = new ASN1ObjectIdentifier("1.3.6.1.4.1.13762.3")
+    //tsqGenerator.reqPolicy = new ASN1ObjectIdentifier("1.3.6.1.4.1.13762.3")
     def nonce = BigInteger.valueOf(System.currentTimeMillis())
     def request = tsqGenerator.generate(algoIdentifier.objectId, imprint, nonce)
     byte[] requestBytes = request.encoded

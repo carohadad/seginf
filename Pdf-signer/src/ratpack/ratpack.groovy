@@ -141,7 +141,7 @@ ratpack {
           def filename = f.file('pdfFile').fileName
 
           
-          pades(keystore, pdf, filename, password, false, false)
+          pades(keystore, pdf, filename, password, true, false)
 
           render groovyTemplate("pdf.html")
       } else {
@@ -393,13 +393,7 @@ public void pades(byte[] keystore, byte[] pdf, String filename, String password,
   
   //ks.load(new FileInputStream(KEYSTORE), PASSWORD);
   
-  //-- asco!!!!
-  FileOutputStream fos = new FileOutputStream("keystore.tmp");
-  fos.write(keystore);
-  fos.close();
-  ks.load(new FileInputStream("keystore.tmp"), password.toCharArray());
-  //**--
-  
+  ks.load(new ByteArrayInputStream(keystore), password.toCharArray());
 
   //cargo keystore, y le paso la pass
   String alias = (String)ks.aliases().nextElement();
@@ -431,12 +425,9 @@ public void pades(byte[] keystore, byte[] pdf, String filename, String password,
   TSAClient tsc = null;
 
   if (withTS) {
-    //String tsa_url    = "http://localhost:5050/timestamp"
-    //String tsa_login  = null
-    //String tsa_passw  = null
-    String tsa_url    = "http://ca.signfiles.com/tsa/get.aspx"
-    String tsa_login  = "garantito"
-    String tsa_passw  = "garantito"
+    String tsa_url    = "http://localhost:5050/timestamp"
+    String tsa_login  = null
+    String tsa_passw  = null
     tsc = new TSAClientBouncyCastle(tsa_url, tsa_login, tsa_passw);
   }
 

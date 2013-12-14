@@ -81,7 +81,7 @@ class TSAModule {
     def signerInfoGen = sigBuilder.build(contentSigner, certHolder)
 
     def digestCalculator = calcProv.get(new AlgorithmIdentifier(TSPAlgorithms.SHA256))
-    def tsaPolicy = request.reqPolicy
+    def tsaPolicy = request.reqPolicy ?: new ASN1ObjectIdentifier("1.3.6.1.4.1.13762.3")
 
     def tokenGen = new TimeStampTokenGenerator(signerInfoGen, digestCalculator, tsaPolicy)
 

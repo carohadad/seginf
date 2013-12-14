@@ -25,10 +25,11 @@ ratpack {
     }
 
     post("timestamp") {
+      def inputStream = request.getInputStream()
+      def requestBytes = inputStream.bytes
+      //new File('tsa-request') << requestBytes
 
-      rawRequest = request.getInputStream()
-
-      def tsaRequest = new TimeStampRequest(rawRequest)
+      def tsaRequest = new TimeStampRequest(requestBytes)
       println "Imprint algorithm: " + tsaRequest.messageImprintAlgOID
       println "Imprint digest length: " + tsaRequest.messageImprintDigest.length
 
