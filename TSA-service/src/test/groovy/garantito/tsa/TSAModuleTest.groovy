@@ -53,7 +53,8 @@ class TSAModuleTest extends spock.lang.Specification {
 
   private def loadKeyStore() {
     def keyStore = KeyStore.getInstance("JKS")
-    keyStore.load(new File('tsa.jks').newInputStream(), 'garantito'.toCharArray())
+    def keyStoreStream = getClass().classLoader.getResourceAsStream('test.jks')
+    keyStore.load(keyStoreStream, 'garantito'.toCharArray())
     keyStore
   }
 

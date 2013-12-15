@@ -53,8 +53,7 @@ ratpack {
 
 def loadKeyStore() {
   def keyStore = KeyStore.getInstance("JKS")
-  keyStore.load(new File('../../tsa.jks').newInputStream(), 'garantito'.toCharArray())
+  keyStore.load(new File('tsa.jks').newInputStream(), 'garantito'.toCharArray())
   keyStore
 }
-
 

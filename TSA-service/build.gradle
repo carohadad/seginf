@@ -14,11 +14,7 @@ repositories {
   maven { url "http://repo.springsource.org/repo" } // for springloaded
 }
 
-// The “ratpack” plugin applies the “application” plugin, making it easy to
-// create a standalone application.  See:
-// http://gradle.org/docs/current/userguide/application_plugin.html
 apply plugin: "ratpack-groovy"
-
 
 dependencies {
   testCompile "org.spockframework:spock-core:0.7-groovy-2.0", {
@@ -32,4 +28,5 @@ task wrapper(type: Wrapper) {
   gradleVersion = '1.8'
 }
 
-run.jvmArgs = ['-Dratpack.port=5050']
+mainClassName = 'garantito.tsa.TSAMain'
+
