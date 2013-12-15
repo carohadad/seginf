@@ -75,7 +75,7 @@ ratpack {
 		handler('register') {
 			byMethod {
 				get {
-					render groovyTemplate('register.html')
+					render handlebarsTemplate('register.html')
 				}
 				post {
 					
@@ -101,11 +101,11 @@ ratpack {
 							redirect '/login'
 
 						} else {
-							render groovyTemplate("register.html", error: "Las contraseñas no coinciden")			
+							render handlebarsTemplate("register.html", error: "Las contraseñas no coinciden")			
 						}  						
 
 					} else {						
-						render groovyTemplate("register.html", error: "Le falto ingresar alguno de los campos")			
+						render handlebarsTemplate("register.html", error: "Le falto ingresar alguno de los campos")			
 					}					
 				}
 			}
