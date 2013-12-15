@@ -45,10 +45,24 @@ class TSAModuleTest extends spock.lang.Specification {
 
     when:
     def resp = tsa.generate(request)
-    println tsa.encode(resp)
 
     then:
-    resp != null
+    resp != null && resp.failInfo == null
+  }
+
+  def "should generate tokens for sample requests"() {
+    setup:
+    def tsa = buildTSAModule()
+
+    when:
+    def tsq = loadTSQ(name)
+    def tsr = tsa.generate(tsq)
+
+    then:
+    tsr != null && tsr.failInfo == null
+
+    where:
+    name << ["tsa-client.tsq", "tsa-pdf-signer.tsq", "tsa-client-no-policy.tsq"]
   }
 
   private def loadKeyStore() {
@@ -58,5 +72,9 @@ class TSAModuleTest extends spock.lang.Specification {
     keyStore
   }
 
+  private def loadTSQ(filename) {
+    def stream = getClass().classLoader.getResourceAsStream(filename)
+    new TimeStampRequest(stream)
+  }
 }
 
