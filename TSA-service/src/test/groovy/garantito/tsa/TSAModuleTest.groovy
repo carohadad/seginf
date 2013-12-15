@@ -8,7 +8,9 @@ import java.security.*
 class TSAModuleTest extends spock.lang.Specification {
 
   private buildTSAModule() {
-    new TSAModule(loadKeyStore())
+    def module = new TSAModule()
+    module.keyStore = loadKeyStore()
+    module
   }
 
   def "request validation: SHA256 should be valid"() {

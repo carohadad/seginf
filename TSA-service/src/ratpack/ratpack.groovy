@@ -4,43 +4,42 @@ import java.security.KeyStore
 
 import garantito.tsa.TSAModule
 
-ratpack {
-  handlers {
+def loadKeyStore() {
+  def keyStore = KeyStore.getInstance("JKS")
+  keyStore.load(new File('tsa.jks').newInputStream(), 'garantito'.toCharArray())
+  keyStore
+}
 
-    get("get_timestamp") {
+ratpack {
+  modules {
+    bind KeyStore, loadKeyStore()
+    bind TSAModule
+  }
+
+  handlers {
+    get("get_timestamp") { TSAModule tsa ->
 
       def reqGen = new TimeStampRequestGenerator()
       def request = reqGen.generate(TSPAlgorithms.SHA256, new byte[32])
 
-
-      TSAModule tsa = new TSAModule(loadKeyStore())
       tsa.validate(request)
 
       def resp = tsa.generate(request)
-
       def encodedResponse = tsa.encode(resp)
 
       response.contentType("application/timestamp-reply")
       response.send "${encodedResponse}"
     }
 
-    post("timestamp") {
+    post("timestamp") { TSAModule tsa ->
       def inputStream = request.getInputStream()
       def requestBytes = inputStream.bytes
-      //new File('tsa-request') << requestBytes
 
       def tsaRequest = new TimeStampRequest(requestBytes)
-      println "Imprint algorithm: " + tsaRequest.messageImprintAlgOID
-      println "Imprint digest length: " + tsaRequest.messageImprintDigest.length
 
-      TSAModule tsa = new TSAModule(loadKeyStore())
       tsa.validate(tsaRequest)
 
       def resp = tsa.generate(tsaRequest)
-
-      println 'Response status: ' + resp.status
-      println "Response status string: " + resp.statusString
-      println 'Failure info: ' + resp.failInfo?.intValue()
       def encodedResponse = tsa.encode(resp)
 
       response.contentType("application/timestamp-reply")
@@ -49,11 +48,5 @@ ratpack {
       response.send "${encodedResponse}"
     }
   }
-}
-
-def loadKeyStore() {
-  def keyStore = KeyStore.getInstance("JKS")
-  keyStore.load(new File('tsa.jks').newInputStream(), 'garantito'.toCharArray())
-  keyStore
 }
 
