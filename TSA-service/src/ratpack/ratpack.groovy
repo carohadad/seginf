@@ -3,6 +3,7 @@ import org.bouncycastle.tsp.*
 import java.security.KeyStore
 
 import garantito.tsa.TSAModule
+import garantito.tsa.KeyProvider
 
 def loadKeyStore() {
   def keyStore = KeyStore.getInstance("JKS")

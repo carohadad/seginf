@@ -19,6 +19,8 @@ class TSAModule {
 
   def acceptedAlgorithms = [TSPAlgorithms.SHA256] as Set
 
+  static final def DEFAULT_POLICY = new ASN1ObjectIdentifier("1.3.6.1.4.1.13762.3")
+
   def validate(TimeStampRequest request) {
     request.validate(acceptedAlgorithms, null, null)
   }
@@ -48,7 +50,7 @@ class TSAModule {
     def signerInfoGen = sigBuilder.build(contentSigner, certHolder)
 
     def digestCalculator = calcProv.get(new AlgorithmIdentifier(TSPAlgorithms.SHA256))
-    def tsaPolicy = request.reqPolicy ?: new ASN1ObjectIdentifier("1.3.6.1.4.1.13762.3")
+    def tsaPolicy = request.reqPolicy ?: DEFAULT_POLICY
 
     def tokenGen = new TimeStampTokenGenerator(signerInfoGen, digestCalculator, tsaPolicy)
 
