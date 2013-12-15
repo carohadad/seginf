@@ -18,7 +18,7 @@ ratpack {
 	ProyectRepository repoProyect = ProyectRepository.instance
 
 	modules {
-		register new MapSessionsModule(10, 5)
+		register new MapSessionsModule(100, 15)
 	}
 	
 	handlers {
