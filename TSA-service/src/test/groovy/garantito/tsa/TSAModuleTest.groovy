@@ -8,10 +8,26 @@ import java.security.*
 class TSAModuleTest extends spock.lang.Specification {
 
   private buildTSAModule() {
+    def keyProvider = new KeyProvider()
+    keyProvider.keyStore = loadKeyStore()
+
     def module = new TSAModule()
-    module.keyStore = loadKeyStore()
+    module.keyProvider = keyProvider
     module
   }
+
+  private def loadKeyStore() {
+    def keyStore = KeyStore.getInstance("JKS")
+    def keyStoreStream = getClass().classLoader.getResourceAsStream('test.jks')
+    keyStore.load(keyStoreStream, 'garantito'.toCharArray())
+    keyStore
+  }
+
+  private def loadTSQ(filename) {
+    def stream = getClass().classLoader.getResourceAsStream(filename)
+    new TimeStampRequest(stream)
+  }
+
 
   def "request validation: SHA256 should be valid"() {
     setup:
@@ -65,18 +81,6 @@ class TSAModuleTest extends spock.lang.Specification {
 
     where:
     name << ["tsa-client.tsq", "tsa-pdf-signer.tsq", "tsa-client-no-policy.tsq"]
-  }
-
-  private def loadKeyStore() {
-    def keyStore = KeyStore.getInstance("JKS")
-    def keyStoreStream = getClass().classLoader.getResourceAsStream('test.jks')
-    keyStore.load(keyStoreStream, 'garantito'.toCharArray())
-    keyStore
-  }
-
-  private def loadTSQ(filename) {
-    def stream = getClass().classLoader.getResourceAsStream(filename)
-    new TimeStampRequest(stream)
   }
 }
 

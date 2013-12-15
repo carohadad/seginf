@@ -1,7 +1,5 @@
 package garantito.tsa
 
-import java.security.KeyStore
-
 import com.google.inject.Inject
 import org.bouncycastle.asn1.ASN1ObjectIdentifier
 import org.bouncycastle.asn1.x509.AlgorithmIdentifier
@@ -17,7 +15,7 @@ import org.bouncycastle.tsp.TSPAlgorithms
 
 class TSAModule {
   @Inject
-  KeyStore keyStore
+  KeyProvider keyProvider
 
   def acceptedAlgorithms = [TSPAlgorithms.SHA256] as Set
 
@@ -30,12 +28,11 @@ class TSAModule {
   }
 
   def getPrivateKey() {
-    keyStore.getKey('tsa', 'garantito'.toCharArray()) 
+    keyProvider.privateKey
   }
 
   def buildCertHolder() {
-    def certificate = keyStore.getCertificate('tsa')
-    new X509CertificateHolder(certificate.encoded)
+    new X509CertificateHolder(keyProvider.certificate.encoded)
   }
 
   def generate(request) {

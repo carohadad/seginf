@@ -13,6 +13,7 @@ def loadKeyStore() {
 ratpack {
   modules {
     bind KeyStore, loadKeyStore()
+    bind KeyProvider
     bind TSAModule
   }
 
