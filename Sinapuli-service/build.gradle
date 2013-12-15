@@ -25,6 +25,7 @@ dependencies {
   compile "com.j256.ormlite:ormlite-jdbc:4.47"
   compile "com.j256.ormlite:ormlite-core:4.47"
   compile "com.h2database:h2:1.3.174"
+  compile "io.ratpack:ratpack-handlebars:0.9.0-SNAPSHOT"
 }
 
 task wrapper(type: Wrapper) {

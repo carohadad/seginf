@@ -1,0 +1,27 @@
+{{#partial "content"}}
+<div class="row">
+  {{#if error}}
+    <div class="alert alert-danger">{{error}}</div>
+  {{/if}}
+
+  <form method="POST" role="form" class="col-md-5">
+    <div class="form-group">
+     <label for="username">Nombre de usuario</label>
+     <input id="username" name="username" class="form-control">
+    </div>
+    <div class="form-group">
+      <label for="password">Contraseña</label>
+      <input id="password" type="password" name="password" class="form-control">
+    </div>
+
+    <button type="submit" class="btn btn-default">Login</button>
+
+    <p class="login-options">
+      <a href="/register">Registrarse como nuevo oferente</a>
+    </p>
+  </form>
+</div>
+{{/partial}}
+
+{{> layout/main}}
+

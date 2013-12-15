@@ -5,10 +5,12 @@ import ratpack.session.store.MapSessionsModule
 import ratpack.session.store.SessionStorage
 import ratpack.session.store.SessionStore
 
-import java.security.MessageDigest;
+import ratpack.handlebars.HandlebarsModule
+import static ratpack.handlebars.Template.handlebarsTemplate
 
-import java.text.*
-import java.util.*
+import java.security.MessageDigest
+import java.text.SimpleDateFormat
+
 import garantito.sinapuli.*
 
 ratpack {    	
@@ -19,6 +21,7 @@ ratpack {
 
 	modules {
 		register new MapSessionsModule(100, 15)
+    register new HandlebarsModule()
 	}
 	
 	handlers {
@@ -36,7 +39,7 @@ ratpack {
 		handler('login') {
 			byMethod {
 				get {
-					render groovyTemplate("login.html")
+					render handlebarsTemplate("login.html")
 				}
 				post {
 					def form = parse(form())
@@ -51,7 +54,8 @@ ratpack {
 							session.username = form.username
 							session.role = 'offerer'
 						} else {
-							render groovyTemplate("login.html", error: "Usuario o contraseña no validas")			
+							render handlebarsTemplate("login.html", error: "Usuario o contraseña no válidos")
+              return
 						} 
 					}
 					if (session.auth) {
