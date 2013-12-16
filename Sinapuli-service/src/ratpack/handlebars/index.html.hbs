@@ -1,0 +1,73 @@
+{{#block "content"}}
+<div class="row">
+  <div class="col-md-offset-1 col-md-10">
+    <h2>Proyectos</h2>
+    <table class="table">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>NOMBRE</th>
+          <th>DESCRIPCION</th>
+          <th>FECHA INICIO LICITACION</th>
+          <th>FECHA FIN LICITACION</th>
+          <th>LICITACION</th>
+          <th>OFERTAR</th>
+          <th>EDIT</th>
+          <th>DELETE</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        {{#each proyectList}}
+        <tr>
+          <td>{{id}}</td>
+          <td><a href="/proyect/offerts/{{id}}" title="ver ofertas">{{name}}</a></td>	  
+          <td>{{description}}</td>	 
+          <td>{{startTenderDate}}</td>
+          <td>{{endTenderDate}}</td>	
+          <td><a href="/proyect/download/{{id}}"><img src="/images/download.png" /></a></td>
+          <td><a href="/tenderOffer/new/{{id}}">Ofertar</a></td>
+          <td><a href="/proyect/edit/{{id}}"><img src="/images/edit.png"/></a></td>
+          <td><a href="/proyect/delete/{{it}}"><img src="/images/delete.png"/></a></td>
+        </tr>
+        {{/each}}
+      </tbody>
+    </table>
+
+    <br>
+    <br>
+    <p><a href="/proyect/new" class="btn btn-primary">Agregue un nuevo Proyecto!</a></p>
+
+    <h2>Oferentes registrados</h2>
+
+    <table class="table">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>NAME</th>
+          <th>EDIT</th>
+          <th>DELETE</th>
+        </tr>
+      </thead>
+      <tbody>
+        {{#each offererList}}
+        <tr>
+          <td>{{id}}</td>
+          <td>{{name}}</td>	  
+          <td><a href="/offerer/edit/{{id}}"><img src="/images/edit.png" /></a></td>
+          <td><a href="/offerer/delete/{{id}}"><img src="/images/delete.png" /></a></td>
+        </tr>
+        {{/each}}
+      </tbody>
+    </table>
+    <br>
+    <br>
+
+    <p><a href="/offerer/new" class="btn btn-primary">Registrar nuevo oferente!</a></p>
+
+  </div>
+</div>
+{{/block}}
+
+{{> layout/main}}
+

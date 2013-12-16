@@ -4,8 +4,10 @@ import ratpack.session.Session
 import ratpack.session.store.MapSessionsModule
 import ratpack.session.store.SessionStorage
 import ratpack.session.store.SessionStore
+import ratpack.groovy.handling.GroovyContext
 
 import ratpack.handlebars.HandlebarsModule
+import ratpack.handlebars.NamedHelper
 import static ratpack.handlebars.Template.handlebarsTemplate
 
 import java.security.MessageDigest
@@ -13,18 +15,23 @@ import java.text.SimpleDateFormat
 
 import garantito.sinapuli.*
 
+def withAuthModel(Map model, session) {
+  model.auth = [
+    loggedIn: session.auth,
+    username: session.username,
+    role: session.role
+  ]
+  model
+}
+
 ratpack {    	
-
-	OffererRepository repoOfferer = OffererRepository.instance
-	TenderOfferRepository repoTenderOffer = TenderOfferRepository.instance
-	ProyectRepository repoProyect = ProyectRepository.instance
-
 	modules {
 		register new MapSessionsModule(100, 15)
     register new HandlebarsModule()
+    register new SinapuliModule()
 	}
 	
-	handlers {
+	handlers { OffererRepository repoOfferer, TenderOfferRepository repoTenderOffer, ProyectRepository repoProyect ->
 
 		prefix('css') {
 			assets "public/css"
@@ -34,42 +41,6 @@ ratpack {
 		}
 		prefix('scripts') {
 			assets 'public/scripts'
-		}
-
-		handler('login') {
-			byMethod {
-				get {
-					render handlebarsTemplate("login.html")
-				}
-				post {
-					def form = parse(form())
-					def session = get(SessionStorage)
-					if (form.username == 'admin' && form.password == 'admin') {
-						session.auth = true
-						session.username = form.username
-						session.role = 'admin'
-					} else {
-						if (repoOfferer.authenticate(form.username, form.password)) {
-							session.auth = true
-							session.username = form.username
-							session.role = 'offerer'
-						} else {
-							render handlebarsTemplate("login.html", error: "Usuario o contraseña no válidos")
-              return
-						} 
-					}
-					if (session.auth) {
-						redirect '/'
-					} else {
-						redirect '/login'
-					}
-				}
-			}
-		}
-
-		get('logout') {
-			get(Session).terminate()
-			redirect '/'
 		}
 
 		handler('register') {
@@ -127,23 +98,15 @@ ratpack {
 		}
 		*/
 
-		handler {
-			// default route
-			if (!get(SessionStorage).auth) {
-				redirect '/login'
-				return
-			}
-			next()
-		}
-		
+    handler registry.get(AuthHandlers)
+
 		get {
 			def session = get(SessionStorage)
-			render groovyTemplate("index.html", 
-						loggedIn: session.auth, 
-						loginName: session.username, 
-						proyectList:repoProyect.list(), 
-						offererList:repoOfferer.list(), 
-						tenderOfferList:repoTenderOffer.list())			
+			render handlebarsTemplate("index.html", 
+            withAuthModel(session, 
+              proyectList:repoProyect.list(), 
+              offererList:repoOfferer.list(), 
+              tenderOfferList:repoTenderOffer.list()))
 		}
 
 		/*

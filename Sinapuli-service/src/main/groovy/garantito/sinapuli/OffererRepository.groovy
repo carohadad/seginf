@@ -7,7 +7,6 @@ import com.j256.ormlite.dao.DaoManager
 import com.j256.ormlite.table.TableUtils
 
 import java.sql.SQLException;
-import java.util.List;
 
 import sun.misc.BASE64Decoder;
 import sun.misc.BASE64Encoder;
@@ -16,8 +15,8 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.security.SecureRandom;
 
+import javax.inject.Inject
 
-@Singleton(lazy = true, strict = false)
 public class OffererRepository {
 
 	String DATABASE_URL = "jdbc:h2:~/seginf/Sinapuli-service/SinapuliDB;DB_CLOSE_DELAY=-1";
@@ -26,7 +25,8 @@ public class OffererRepository {
 	JdbcConnectionSource connectionSource = null;
 	Dao<Offerer, Integer> offererDao = null;
 
-	private OffererRepository() {
+  @Inject
+	OffererRepository() {
 		try {
 			if(connectionSource == null){
 				// create our data source			

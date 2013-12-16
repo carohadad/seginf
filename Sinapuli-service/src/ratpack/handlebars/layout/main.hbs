@@ -16,8 +16,18 @@
     <![endif]-->
   </head>
   <body>
-    <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
-      <a class="navbar-brand" href="/">Sistema Nacional Público de Licitaciones</a>
+    <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+      <div class="container">
+        <a class="navbar-brand" href="/">Sistema Nacional Público de Licitaciones</a>
+        <ul class="nav navbar-nav navbar-right">
+        {{#if auth.loggedIn}}
+          <li><p class="navbar-text">{{auth.username}}</p></li>
+          <li><a href="/logout">Logout</a></li>
+        {{else}}
+          <li><a href="/login">Login</a></li>
+        {{/if}}
+        </ul>
+      </div>
     </nav>
 
     <div class="container">

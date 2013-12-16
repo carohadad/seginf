@@ -7,9 +7,9 @@ import com.j256.ormlite.dao.DaoManager
 import com.j256.ormlite.table.TableUtils
 
 import java.sql.SQLException;
-import java.util.List;
 
-@Singleton(lazy = true, strict = false)
+import javax.inject.Inject
+
 public class TenderOfferRepository {
 
 	String DATABASE_URL = "jdbc:h2:~/seginf/Sinapuli-service/SinapuliDB;DB_CLOSE_DELAY=-1";
@@ -17,7 +17,8 @@ public class TenderOfferRepository {
 	JdbcConnectionSource connectionSource = null;
 	Dao<TenderOffer, Integer> tenderOfferDao = null;
 
-	private TenderOfferRepository() {
+  @Inject
+	TenderOfferRepository() {
 		try {
 			if(connectionSource == null){
 				// create our data source			
