@@ -17,6 +17,9 @@ class SinapuliModule extends AbstractModule {
     bind(ProjectRepository.class).in(Scopes.SINGLETON)
 
     bind(AuthHandlers.class).in(Scopes.SINGLETON)
+    bind(RegisterHandler.class).in(Scopes.SINGLETON)
+    bind(AdminHandlers.class).in(Scopes.SINGLETON)
+    bind(OffererHandlers.class).in(Scopes.SINGLETON)
   }
 }
 
