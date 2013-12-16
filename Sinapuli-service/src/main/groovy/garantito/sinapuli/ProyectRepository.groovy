@@ -2,45 +2,28 @@ package garantito.sinapuli
 
 import com.j256.ormlite.jdbc.JdbcConnectionSource
 import com.j256.ormlite.support.ConnectionSource
-import com.j256.ormlite.dao.Dao;
+import com.j256.ormlite.dao.Dao
 import com.j256.ormlite.dao.DaoManager
 import com.j256.ormlite.table.TableUtils
 
-import java.sql.SQLException;
-import java.util.Date;
+import java.sql.SQLException
+import java.util.Date
 
 import javax.inject.Inject
 
 public class ProyectRepository {
 
-	String DATABASE_URL = "jdbc:h2:~/seginf/Sinapuli-service/SinapuliDB;DB_CLOSE_DELAY=-1";
-
-	JdbcConnectionSource connectionSource = null;
-	Dao<Proyect, Integer> proyectDao = null;
+	private Dao<Proyect, Integer> proyectDao
 
   @Inject
-	ProyectRepository() {
-		try {
-			if(connectionSource == null){
-				// create our data source			
-				connectionSource = new JdbcConnectionSource(DATABASE_URL);
-				// setup our database and DAOs
-				setupDatabase(connectionSource);
-				System.out.println("\n\nIt seems to have worked\n\n");		
-			}
-		} finally {
-			// destroy the data source which should close underlying connections
-			if (connectionSource != null) {
-				connectionSource.close();
-			}
-		}
+	ProyectRepository(ConnectionSource connectionSource) {
+    setupDatabase(connectionSource)
 	}
 
 	/**
 	 * Setup our database and DAOs	 
 	 */
 	private void setupDatabase(ConnectionSource connectionSource) throws Exception {
-
 		proyectDao = DaoManager.createDao(connectionSource, Proyect.class);
 		// if you need to create the table
 		TableUtils.createTableIfNotExists(connectionSource, Proyect.class);

@@ -19,35 +19,19 @@ import javax.inject.Inject
 
 public class OffererRepository {
 
-	String DATABASE_URL = "jdbc:h2:~/seginf/Sinapuli-service/SinapuliDB;DB_CLOSE_DELAY=-1";
-	int ITERATION_NUMBER = 1000;
+	int ITERATION_NUMBER = 1000
 
-	JdbcConnectionSource connectionSource = null;
-	Dao<Offerer, Integer> offererDao = null;
+	Dao<Offerer, Integer> offererDao
 
   @Inject
-	OffererRepository() {
-		try {
-			if(connectionSource == null){
-				// create our data source			
-				connectionSource = new JdbcConnectionSource(DATABASE_URL);
-				// setup our database and DAOs
-				setupDatabase(connectionSource);
-				System.out.println("\n\nIt seems to have worked\n\n");		
-			}
-		} finally {
-			// destroy the data source which should close underlying connections
-			if (connectionSource != null) {
-				connectionSource.close();
-			}
-		}
+	OffererRepository(ConnectionSource connectionSource) {
+    setupDatabase(connectionSource)
 	}
 
 	/**
 	 * Setup our database and DAOs
 	 */
 	private void setupDatabase(ConnectionSource connectionSource) throws Exception {
-
 		offererDao = DaoManager.createDao(connectionSource, Offerer.class);
 		// if you need to create the table
 		TableUtils.createTableIfNotExists(connectionSource, Offerer.class);

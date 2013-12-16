@@ -1,45 +1,27 @@
 package garantito.sinapuli
 
-import com.j256.ormlite.jdbc.JdbcConnectionSource
 import com.j256.ormlite.support.ConnectionSource
-import com.j256.ormlite.dao.Dao;
+import com.j256.ormlite.dao.Dao
 import com.j256.ormlite.dao.DaoManager
 import com.j256.ormlite.table.TableUtils
 
-import java.sql.SQLException;
+import java.sql.SQLException
+import javax.sql.DataSource
 
 import javax.inject.Inject
 
 public class TenderOfferRepository {
-
-	String DATABASE_URL = "jdbc:h2:~/seginf/Sinapuli-service/SinapuliDB;DB_CLOSE_DELAY=-1";
-
-	JdbcConnectionSource connectionSource = null;
-	Dao<TenderOffer, Integer> tenderOfferDao = null;
+	private Dao<TenderOffer, Integer> tenderOfferDao
 
   @Inject
-	TenderOfferRepository() {
-		try {
-			if(connectionSource == null){
-				// create our data source			
-				connectionSource = new JdbcConnectionSource(DATABASE_URL);
-				// setup our database and DAOs
-				setupDatabase(connectionSource);
-				System.out.println("\n\nIt seems to have worked\n\n");		
-			}
-		} finally {
-			// destroy the data source which should close underlying connections
-			if (connectionSource != null) {
-				connectionSource.close();
-			}
-		}
+	TenderOfferRepository(ConnectionSource connectionSource) {
+    setupDatabase(connectionSource)
 	}
 
 	/**
 	 * Setup our database and DAOs
 	 */
 	private void setupDatabase(ConnectionSource connectionSource) throws Exception {
-
 		tenderOfferDao = DaoManager.createDao(connectionSource, TenderOffer.class);
 		// if you need to create the table
 		TableUtils.createTableIfNotExists(connectionSource, TenderOffer.class);

@@ -10,6 +10,8 @@ import ratpack.handlebars.HandlebarsModule
 import ratpack.handlebars.NamedHelper
 import static ratpack.handlebars.Template.handlebarsTemplate
 
+import ratpack.h2.H2Module
+
 import java.security.MessageDigest
 import java.text.SimpleDateFormat
 
@@ -24,8 +26,11 @@ def withAuthModel(Map model, session) {
   model
 }
 
+String DATABASE_URL = "jdbc:h2:data/SinapuliDB;DB_CLOSE_DELAY=-1"
+
 ratpack {    	
 	modules {
+    register new H2Module('', '', DATABASE_URL)
 		register new MapSessionsModule(100, 15)
     register new HandlebarsModule()
     register new SinapuliModule()
