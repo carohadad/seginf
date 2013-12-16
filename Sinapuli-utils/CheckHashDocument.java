@@ -13,8 +13,6 @@ public class CheckHashDocument {
 
 	public static void main(String[] args) throws Exception {
 
-		int ITERATION_NUMBER = 1000;
-
 		String docPath = args[0]; 
 		String hashDocPath = args[1]; 
 
@@ -23,27 +21,24 @@ public class CheckHashDocument {
 
 		FileInputStream hashDocFile = new FileInputStream(hashDocPath);
 		byte[] hashDoc=new byte[hashDocFile.available()];
-
-		//byte[] bDigest = base64ToByte(obj.password);
-		//byte[] bSalt = base64ToByte(obj.salt);
+		hashDocFile.read(hashDoc);
 
 		// Compute the new DIGEST
-		byte[] proposedDigest = getHash(ITERATION_NUMBER, password, bSalt);
-		//return proposedDigest == bDigest
+		byte[] proposedDigest = getHash(doc);
+		//return proposedDigest == hashDoc;	
 
-		System.out.println("Done");
+		System.out.println("¿El Hash se corresponde con el documento?");
+		System.out.println(Arrays.equals(proposedDigest, hashDoc));
 	}
 
 
-	public static byte[] getHash(int iterationNb, byte[] doc, byte[] salt) throws Exception {
+	public static byte[] getHash(byte[] doc) throws Exception {
+
 		MessageDigest digest = MessageDigest.getInstance("SHA-256");
 		digest.reset();
-		digest.update(salt);
+
 		byte[] input = digest.digest(doc);
-		for (int i = 0; i < iterationNb; i++) {
-			digest.reset();
-			input = digest.digest(input);
-		}
+
 		return input;
 	}
 
