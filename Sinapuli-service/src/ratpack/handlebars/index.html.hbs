@@ -18,17 +18,17 @@
       </thead>
 
       <tbody>
-        {{#each proyectList}}
+        {{#each projectList}}
         <tr>
           <td>{{id}}</td>
-          <td><a href="/proyect/offerts/{{id}}" title="ver ofertas">{{name}}</a></td>	  
+          <td><a href="/project/offerts/{{id}}" title="ver ofertas">{{name}}</a></td>	  
           <td>{{description}}</td>	 
           <td>{{startTenderDate}}</td>
           <td>{{endTenderDate}}</td>	
-          <td><a href="/proyect/download/{{id}}"><img src="/images/download.png" /></a></td>
+          <td><a href="/project/download/{{id}}"><img src="/images/download.png" /></a></td>
           <td><a href="/tenderOffer/new/{{id}}">Ofertar</a></td>
-          <td><a href="/proyect/edit/{{id}}"><img src="/images/edit.png"/></a></td>
-          <td><a href="/proyect/delete/{{it}}"><img src="/images/delete.png"/></a></td>
+          <td><a href="/project/edit/{{id}}"><img src="/images/edit.png"/></a></td>
+          <td><a href="/project/delete/{{it}}"><img src="/images/delete.png"/></a></td>
         </tr>
         {{/each}}
       </tbody>
@@ -36,7 +36,7 @@
 
     <br>
     <br>
-    <p><a href="/proyect/new" class="btn btn-primary">Agregue un nuevo Proyecto!</a></p>
+    <p><a href="/project/new" class="btn btn-primary">Agregue un nuevo Proyecto!</a></p>
 
     <h2>Oferentes registrados</h2>
 

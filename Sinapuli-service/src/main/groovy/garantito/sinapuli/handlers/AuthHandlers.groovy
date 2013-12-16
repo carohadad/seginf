@@ -1,4 +1,4 @@
-package garantito.sinapuli
+package garantito.sinapuli.handlers
 
 import static ratpack.handlebars.Template.handlebarsTemplate
 import static ratpack.form.Forms.form
@@ -9,6 +9,8 @@ import ratpack.groovy.handling.GroovyContext
 import ratpack.groovy.handling.GroovyHandler
 
 import javax.inject.Inject
+
+import garantito.sinapuli.model.OffererRepository
 
 class AuthHandlers extends GroovyHandler {
   private final OffererRepository repoOfferer

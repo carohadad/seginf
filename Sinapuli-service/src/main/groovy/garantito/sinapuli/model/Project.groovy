@@ -1,4 +1,4 @@
-package garantito.sinapuli
+package garantito.sinapuli.model
 
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.field.DataType;
@@ -6,8 +6,8 @@ import com.j256.ormlite.table.DatabaseTable;
 
 import java.util.Date;
 
-@DatabaseTable(tableName = "proyect")
-class Proyect {
+@DatabaseTable(tableName = "projects")
+class Project {
 
 	@DatabaseField(generatedId = true)
 	int id;
@@ -24,11 +24,11 @@ class Proyect {
         @DatabaseField(dataType = DataType.BYTE_ARRAY)
 	byte[] tender;	
 
-	Proyect() {
+	Project() {
 		// all persisted classes must define a no-arg constructor with at least package visibility
 	}
 	
-	public Proyect(String name, String description, Date startTenderDate, Date endTenderDate, byte[] tender) {		
+	public Project(String name, String description, Date startTenderDate, Date endTenderDate, byte[] tender) {		
 		this.name = name;
 		this.description = description;
 		this.startTenderDate = startTenderDate;		
@@ -47,6 +47,6 @@ class Proyect {
 		if (other == null || other.getClass() != getClass()) {
 				return false;
 		}
-		return hash.equals(((Proyect) other).hash);
+		return hash.equals(((Project) other).hash);
 	}
 }

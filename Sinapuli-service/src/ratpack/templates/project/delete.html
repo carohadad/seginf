@@ -14,9 +14,9 @@
 
 	<p>Desea eliminar el Projecto: <em>"${model.name.replace("%20"," ")}"</em> (id: ${model.id})?</p>
 	
-	<form action="/proyect/delete" method="post">
+	<form action="/project/delete" method="post">
 		<input type="submit" value="Si, elimnar">
-		<input type="hidden" value="${model.id}" name="proyectId">
+		<input type="hidden" value="${model.id}" name="projectId">
 		<a href="/">Cancel</a>
 	</form>
 	

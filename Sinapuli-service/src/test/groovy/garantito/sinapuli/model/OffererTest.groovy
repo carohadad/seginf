@@ -1,4 +1,4 @@
-package garantito.sinapuli
+package garantito.sinapuli.model
 
 import spock.lang.Specification
 

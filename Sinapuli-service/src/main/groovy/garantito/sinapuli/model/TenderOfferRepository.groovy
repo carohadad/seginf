@@ -1,4 +1,4 @@
-package garantito.sinapuli
+package garantito.sinapuli.model
 
 import com.j256.ormlite.support.ConnectionSource
 import com.j256.ormlite.dao.Dao
@@ -43,8 +43,8 @@ public class TenderOfferRepository {
 		return tenderOfferDao.queryForId(id);
 	}
 
-	public TenderOffer create(String hash, Offerer offerer, Proyect proyect) throws Exception {
-		TenderOffer tenderOffer = new TenderOffer(hash, offerer, proyect);
+	public TenderOffer create(String hash, Offerer offerer, Project project) throws Exception {
+		TenderOffer tenderOffer = new TenderOffer(hash, offerer, project);
 
 		tenderOfferDao.create(tenderOffer);
 		return tenderOffer;
@@ -58,9 +58,9 @@ public class TenderOfferRepository {
 		}
 	}
 
-	public List<TenderOffer> listWithProyect(int idProyect) {
+	public List<TenderOffer> listWithProject(int idProject) {
 		try {
-		    return tenderOfferDao.queryForEq("proyect_id", idProyect);
+		    return tenderOfferDao.queryForEq("project_id", idProject);
 		} catch (SQLException e) {
 		    e.printStackTrace();
 		}

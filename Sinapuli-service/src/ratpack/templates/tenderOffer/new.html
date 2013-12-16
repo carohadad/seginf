@@ -8,7 +8,7 @@
   <body>
     </div>
 
-<h1>Nueva oferta para proyecto ${model.proyect.name}</h1>
+<h1>Nueva oferta para proyecto ${model.project.name}</h1>
 <p>Complete el formulario.</p>
 <form action="/tenderOffer/submit" method="post" accept-charset="utf-8">
 
@@ -20,7 +20,7 @@
   <input type="text" name="email">
   <br><br>
 
-  <input type="hidden" name="idProyect" value="${model.proyect.id}">
+  <input type="hidden" name="idProject" value="${model.project.id}">
 
   <p>
     <button type="submit">Save</button>

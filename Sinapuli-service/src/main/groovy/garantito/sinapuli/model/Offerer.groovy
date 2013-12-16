@@ -1,9 +1,9 @@
-package garantito.sinapuli
+package garantito.sinapuli.model
 
-import com.j256.ormlite.field.DatabaseField;
-import com.j256.ormlite.table.DatabaseTable;
+import com.j256.ormlite.field.DatabaseField
+import com.j256.ormlite.table.DatabaseTable
 
-@DatabaseTable(tableName = "offerer")
+@DatabaseTable(tableName = "offerers")
 class Offerer {
 
 	// for QueryBuilder to be able to find the fields

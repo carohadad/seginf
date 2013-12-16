@@ -1,10 +1,10 @@
-package garantito.sinapuli
+package garantito.sinapuli.model
 
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.field.DataType;
 import com.j256.ormlite.table.DatabaseTable;
 
-@DatabaseTable(tableName = "tenderOffer")
+@DatabaseTable(tableName = "tenderOffers")
 class TenderOffer {
 
 	@DatabaseField(generatedId = true)
@@ -16,17 +16,17 @@ class TenderOffer {
         @DatabaseField(foreign = true, foreignAutoRefresh = true)
 	private Offerer offerer;
         @DatabaseField(foreign = true, foreignAutoRefresh = true)
-	private Proyect proyect;
+	private Project project;
     
 
         TenderOffer() {
                 // all persisted classes must define a no-arg constructor with at least package visibility
         }
 
-        public TenderOffer(String hash, Offerer offerer, Proyect proyect) {
+        public TenderOffer(String hash, Offerer offerer, Project project) {
                 this.hash = hash;
 		this.offerer = offerer;		
-		this.proyect = proyect;
+		this.project = project;
         }
 
         public int getId() {
@@ -57,12 +57,12 @@ class TenderOffer {
                 this.offerer = offerer;
         }
 
-        public Proyect getProyect() {
-                return proyect;
+        public Project getProject() {
+                return project;
         }
 
-        public void setProyect(Proyect idProyect) {
-                this.proyect = proyect;
+        public void setProject(Project idProject) {
+                this.project = project;
         }
         @Override
         public int hashCode() {

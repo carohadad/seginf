@@ -16,6 +16,8 @@ import java.security.MessageDigest
 import java.text.SimpleDateFormat
 
 import garantito.sinapuli.*
+import garantito.sinapuli.model.*
+import garantito.sinapuli.handlers.*
 
 def withAuthModel(Map model, session) {
   model.auth = [
@@ -36,7 +38,7 @@ ratpack {
     register new SinapuliModule()
 	}
 	
-	handlers { OffererRepository repoOfferer, TenderOfferRepository repoTenderOffer, ProyectRepository repoProyect ->
+	handlers { OffererRepository repoOfferer, TenderOfferRepository repoTenderOffer, ProjectRepository repoProject ->
 
 		prefix('css') {
 			assets "public/css"
@@ -109,7 +111,7 @@ ratpack {
 			def session = get(SessionStorage)
 			render handlebarsTemplate("index.html", 
             withAuthModel(session, 
-              proyectList:repoProyect.list(), 
+              projectList:repoProject.list(), 
               offererList:repoOfferer.list(), 
               tenderOfferList:repoTenderOffer.list()))
 		}
@@ -131,30 +133,30 @@ ratpack {
 			render groovyTemplate("/offerer/delete.html", id: pathTokens.id)
 		}
 
-		get ("proyect/new") {
-		    render groovyTemplate("/proyect/new.html")
+		get ("project/new") {
+		    render groovyTemplate("/project/new.html")
 		}
 
-		get("proyect/edit/:id"){		  
-			println "getting Proyect with ID " + pathTokens.id
-			def proyect = repoProyect.get((pathTokens.id).toInteger())
+		get("project/edit/:id"){		  
+			println "getting Project with ID " + pathTokens.id
+			def project = repoProject.get((pathTokens.id).toInteger())
 				  
-			render groovyTemplate("/proyect/edit.html", id: proyect.id, name: proyect.name)
+			render groovyTemplate("/project/edit.html", id: project.id, name: project.name)
 		}
 
-		get ("proyect/offerts/:id") {
-			def proyect = repoProyect.get((pathTokens.id).toInteger())
-		    	render groovyTemplate("/proyect/offerts.html", proyect: proyect, offertsList:repoTenderOffer.listWithProyect(proyect.id))
+		get ("project/offerts/:id") {
+			def project = repoProject.get((pathTokens.id).toInteger())
+		    	render groovyTemplate("/project/offerts.html", project: project, offertsList:repoTenderOffer.listWithproject(project.id))
 		}		
 
-		get("proyect/delete/:id/:name"){
-			render groovyTemplate("/proyect/delete.html", id: pathTokens.id, name: pathTokens.name)
+		get("project/delete/:id/:name"){
+			render groovyTemplate("/project/delete.html", id: pathTokens.id, name: pathTokens.name)
 		}
 
 		get ("tenderOffer/new/:id") {
-			println "getting Proyect with ID " + pathTokens.id
-			def proyect = repoProyect.get((pathTokens.id).toInteger())
-		    	render groovyTemplate("/tenderOffer/new.html", proyect: proyect)
+			println "getting project with ID " + pathTokens.id
+			def project = repoProject.get((pathTokens.id).toInteger())
+		    	render groovyTemplate("/tenderOffer/new.html", project: project)
 		}
 
 		get("tenderOffer/edit/:id"){		  
@@ -205,7 +207,7 @@ ratpack {
 			redirect "/" 			
 		}	
 
-		post ("proyect/submit") {
+		post ("project/submit") {
 			def form = context.parse(form())
 	
 			SimpleDateFormat dateFormat = new SimpleDateFormat("dd/mm/yyyy");
@@ -216,34 +218,34 @@ ratpack {
 
 			if(endTenderDate < startTenderDate ) {
 
-				render groovyTemplate("/proyect/new.html", error: "las fechas ingresadas son invalidas") 
+				render groovyTemplate("/project/new.html", error: "las fechas ingresadas son invalidas") 
 			    
 			}else{
-				def proyect = repoProyect.create(form.name, 
+				def project = repoProject.create(form.name, 
 								form.description, 
 								startTenderDate, 
 								endTenderDate, 
 								uploaded.getBytes())
 
-				def message = "Just created Proyect " + proyect.name + " with id " + proyect.id
+				def message = "Just created project " + project.name + " with id " + project.id
 				println message
 				redirect "/" 
 			}
 		}	
 		
-		post ("update/proyect/:id") {
+		post ("update/project/:id") {
 			def form = context.parse(form())
 
 			// Update is a save with an id	
-			repoProyect.update(form.id.toInteger(), form.name)
+			repoProject.update(form.id.toInteger(), form.name)
 
 			redirect "/" 
 		}											
 
-		post ("proyect/delete") {
+		post ("project/delete") {
 			def form = context.parse(form())
-			println "Now deleting proyect with ID: ${pathTokens.id}"
-			repoProyect.delete(form.proyectId.toInteger())
+			println "Now deleting project with ID: ${pathTokens.id}"
+			repoProject.delete(form.projectId.toInteger())
 			redirect "/"						
 		}		
 
@@ -252,9 +254,9 @@ ratpack {
 
 			def offerer = repoOfferer.create(form.email)
 			println "CREADO offerer " + offerer.id
-			def proyect = repoProyect.get(form.idProyect.toInteger())
+			def project = repoProject.get(form.idproject.toInteger())
 	
-			def tenderOffer = repoTenderOffer.create(form.hash, offerer, proyect)
+			def tenderOffer = repoTenderOffer.create(form.hash, offerer, project)
 
 			redirect "/"		
 		}									

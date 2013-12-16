@@ -1,19 +1,19 @@
-package garantito.sinapuli
+package garantito.sinapuli.model
 
 import com.j256.ormlite.jdbc.JdbcConnectionSource
 import com.j256.ormlite.support.ConnectionSource
-import com.j256.ormlite.dao.Dao;
+import com.j256.ormlite.dao.Dao
 import com.j256.ormlite.dao.DaoManager
 import com.j256.ormlite.table.TableUtils
 
-import java.sql.SQLException;
+import java.sql.SQLException
 
-import sun.misc.BASE64Decoder;
-import sun.misc.BASE64Encoder;
-import java.security.MessageDigest;
-import java.io.IOException;
-import java.util.Arrays;
-import java.security.SecureRandom;
+import sun.misc.BASE64Decoder
+import sun.misc.BASE64Encoder
+import java.security.MessageDigest
+import java.io.IOException
+import java.util.Arrays
+import java.security.SecureRandom
 
 import javax.inject.Inject
 

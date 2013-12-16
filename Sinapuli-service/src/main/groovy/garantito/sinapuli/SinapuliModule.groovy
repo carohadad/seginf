@@ -4,6 +4,9 @@ import com.google.inject.AbstractModule
 import com.google.inject.Scopes
 import com.j256.ormlite.support.ConnectionSource
 
+import garantito.sinapuli.model.*
+import garantito.sinapuli.handlers.*
+
 class SinapuliModule extends AbstractModule {
   @Override
   protected void configure() {
@@ -11,7 +14,7 @@ class SinapuliModule extends AbstractModule {
 
     bind(OffererRepository.class).in(Scopes.SINGLETON)
     bind(TenderOfferRepository.class).in(Scopes.SINGLETON)
-    bind(ProyectRepository.class).in(Scopes.SINGLETON)
+    bind(ProjectRepository.class).in(Scopes.SINGLETON)
 
     bind(AuthHandlers.class).in(Scopes.SINGLETON)
   }
