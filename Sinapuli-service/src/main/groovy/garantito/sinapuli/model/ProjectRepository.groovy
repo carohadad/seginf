@@ -42,40 +42,21 @@ public class ProjectRepository {
 		projectDao.update(project);
 	}	
 	
-	/*
-	// Este update no se deberia usar, si se necesita hay que modificar para no cambiar algunos campos
-	public void update(int id, String name, String description, Date creationDate, Date startTenderDate, Date endTenderDate, byte[] tender) throws SQLException, Exception {	
-		def project = get(id);
-		
-		project.name = name;
-		project.description = description;
-		project.creationDate = creationDate;
-		project.startTenderDate = startTenderDate;
-		project.endTenderDate = endTenderDate;
-		project.tender = tender;
-
-
-		tenderOfferDao.update(project);
-	}
-	*/
-	
-	public Project get(int id) throws SQLException, Exception {
-		return projectDao.queryForId(id);
+	public Project get(int id) {
+		projectDao.queryForId(id)
 	}
 
-	public Project create(String name, String description, Date startTenderDate, Date endTenderDate, byte[] tender) throws Exception {
-		Project project = new Project(name, description, startTenderDate, endTenderDate, tender);
-
-		projectDao.create(project);
-		return project;
+	public Project create(Project project) {
+		projectDao.create(project)
+		project
 	}
 
-	public List<Project> list() {
-		try {
-		    return projectDao.queryForAll();
-		} catch (SQLException e) {
-		    e.printStackTrace();
-		}
-	}
-
+  public List<Project> list() {
+    try {
+      projectDao.queryForAll()
+    } catch (SQLException e) {
+      e.printStackTrace()
+      []
+    }
+  }
 }

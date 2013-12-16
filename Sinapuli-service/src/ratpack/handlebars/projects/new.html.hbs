@@ -1,0 +1,44 @@
+{{#partial "content"}}
+<div class="page-header">
+  <h1>Crear Proyecto</h1>
+</div>
+
+<div class="row">
+  {{#if error}}
+    <div class="alert alert-danger">{{error}}</div>
+  {{/if}}
+
+  <form action="/projects" method="POST" role="form" class="col-md-7" enctype="multipart/form-data">
+    <div class="form-group">
+      <label for="name">Nombre</label>
+      <input type="text" name="name" class="form-control" value="{{project.name}}">
+    </div>
+
+    <div class="form-group">
+      <label for="description">Descripción</label>
+      <input type="text" name="description" class="form-control" value="{{project.description}}">
+    </div>
+    
+    <div class="form-group">
+      <label for="file">Pliego de Licitación</label>
+      <input name="file" type="file" id="file">
+    </div>
+
+    <div class="form-group">
+      <label for="startTenderDate">Apertura de la Licitación</label>
+      <input type="datetime" name="startTenderDate" class="form-control" value="{{project.startTenderDate}}">
+    </div>
+
+    <div class="form-group">
+      <label for="endTenderDate">Fin de la Licitación</label>
+      <input type="datetime" name="endTenderDate" class="form-control" value="{{project.endTenderDate}}">
+    </div>
+
+    <button type="submit" class="btn btn-primary">Crear</button>
+    <a href="/projects" class="btn">Cancelar</a>
+  </form>
+</div>
+{{/partial}}
+
+{{> layout/main}}
+

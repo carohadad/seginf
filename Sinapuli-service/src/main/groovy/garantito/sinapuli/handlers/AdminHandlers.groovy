@@ -22,10 +22,8 @@ import static garantito.sinapuli.Util.*
 class AdminHandlers extends GroovyHandler {
   def handlers = { ->
     get { ProjectRepository repoProject, OffererRepository repoOfferer ->
-      render handlebarsTemplate("index.html", 
-            withAuthModel(context, 
-              projectList: repoProject.list(), 
-              offererList: repoOfferer.list()))
+      render handlebarsTemplate("projects/index.html", 
+        buildModel(context, projectList: repoProject.list()))
     }
 
     prefix('offerer') { OffererRepository repoOfferer ->
@@ -57,9 +55,40 @@ class AdminHandlers extends GroovyHandler {
       }	
     }
 
-    prefix('project') { ProjectRepository repoProject ->
+    prefix('projects') { ProjectRepository repoProject ->
+      handler('') {
+        byMethod {
+          get {
+            render handlebarsTemplate('projects/index.html', 
+              buildModel(context, projectList: repoProject.list()))
+          }
+
+          post {
+            def form = context.parse(form())
+
+            SimpleDateFormat dateFormat = new SimpleDateFormat("dd/mm/yyyy");
+            Date startTenderDate = dateFormat.parse(form.startTenderDate);
+            Date endTenderDate = dateFormat.parse(form.endTenderDate);
+            
+            def uploaded = form.file('file');
+            def errorMessage
+            def project = new Project(form.name, form.description, startTenderDate, endTenderDate, uploaded.bytes)
+            if (endTenderDate < startTenderDate) {
+              errorMessage = "Las fechas ingresadas son inválidas"
+            } else {
+              project = repoProject.create(project)
+
+              println "Proyecto ${project.name} creado con id ${project.id}"
+              redirect "/projects"
+              return
+            }
+            render handlebarsTemplate("projects/new.html", buildModel(context, error: errorMessage, project: project))
+          }	
+        }
+      }
+
       get("new") {
-          render groovyTemplate("/project/new.html")
+        render handlebarsTemplate("projects/new.html", buildModel(context, project: new Project()))
       }
 
       get("edit/:id"){		  
@@ -78,32 +107,6 @@ class AdminHandlers extends GroovyHandler {
         render groovyTemplate("/project/delete.html", id: pathTokens.id, name: pathTokens.name)
       }
 
-      post("submit") {
-        def form = context.parse(form())
-
-        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/mm/yyyy");
-        Date startTenderDate = dateFormat.parse(form.startTenderDate);
-        Date endTenderDate = dateFormat.parse(form.endTenderDate);
-        
-        def uploaded = form.file('file');
-
-        if(endTenderDate < startTenderDate ) {
-
-          render groovyTemplate("/project/new.html", error: "las fechas ingresadas son invalidas") 
-            
-        }else{
-          def project = repoProject.create(form.name, 
-                  form.description, 
-                  startTenderDate, 
-                  endTenderDate, 
-                  uploaded.getBytes())
-
-          def message = "Just created project " + project.name + " with id " + project.id
-          println message
-          redirect "/" 
-        }
-      }	
-      
       post ("update/:id") {
         def form = context.parse(form())
 

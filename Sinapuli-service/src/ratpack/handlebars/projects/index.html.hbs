@@ -1,0 +1,39 @@
+{{#block "content"}}
+<div class="row">
+  <div class="col-md-offset-1 col-md-10">
+    <h2>Proyectos</h2>
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Nombre</th>
+          <th>Apertura</th>
+          <th>Finalización</th>
+          <th></th>
+        </tr>
+      </thead>
+
+      <tbody>
+        {{#each projectList}}
+        <tr>
+          <td><a href="/projects/{{id}}" title="Detalle del Proyecto">{{name}}</a></td>	  
+          <td>{{startTenderDate}}</td>
+          <td>{{endTenderDate}}</td>	
+          <td>
+            <a href="/projects/{{id}}" class="btn btn-primary btn-sm">Ver</a>
+            <a href="/projects/{{id}}" class="btn btn-danger btn-sm">Eliminar</a>
+          </td>
+        </tr>
+        {{/each}}
+      </tbody>
+    </table>
+
+    <br>
+    <br>
+    <p><a href="/projects/new" class="btn btn-primary">Nuevo Proyecto</a></p>
+  </div>
+</div>
+{{/block}}
+
+{{> layout/main}}
+
+
