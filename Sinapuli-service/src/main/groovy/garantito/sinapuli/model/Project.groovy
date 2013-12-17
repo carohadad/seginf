@@ -38,6 +38,9 @@ class Project {
   @DatabaseField
   String tenderContentType
 
+  @DatabaseField
+  String tenderFilename
+
   Project() {
     creationDate = new Date()
     startTenderDate = new DateTime().plus(Period.days(1)).withTime(10,0,0,0).toDate()

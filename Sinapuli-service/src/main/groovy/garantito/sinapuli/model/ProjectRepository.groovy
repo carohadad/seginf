@@ -7,6 +7,7 @@ import com.j256.ormlite.table.TableUtils
 
 import javax.inject.Inject
 import groovy.util.logging.Log
+import java.util.logging.Level
 import java.sql.SQLException
 
 @Log
@@ -51,7 +52,7 @@ public class ProjectRepository {
     try {
       projectDao.queryForAll()
     } catch (SQLException e) {
-      log.warn "failed to get project list", e
+      log.log Level.WARNING, "failed to get project list", e
       []
     }
   }
