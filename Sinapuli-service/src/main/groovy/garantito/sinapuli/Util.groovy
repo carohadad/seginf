@@ -31,5 +31,17 @@ class Util {
       throw new IllegalArgumentException('invalid date')
     }
   }
+
+  static boolean isBlank(String value) {
+    value == null || value.trim() == ''
+  }
+
+  static boolean isEmpty(byte[] value) {
+    value == null || value.length == 0
+  }
+
+  static boolean isNull(value) {
+    value == null
+  }
 }
 

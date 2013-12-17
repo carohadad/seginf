@@ -30,6 +30,12 @@
 
     <div class="extra-actions">
       <a href="/projects">Volver al listado</a>
+      <span class="pull-right">
+        <form action="/projects/{{project.id}}/delete" method="POST" class="inline-form" 
+          data-confirm="Por favor, confirme la eliminación del proyecto '{{project.name}}'.">
+          <button type="submit" class="btn btn-danger btn-sm">Eliminar</button>
+        </form>
+      </span>
     </div>
 
   </div>

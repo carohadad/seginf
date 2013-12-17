@@ -24,5 +24,15 @@ $(function() {
     return true;
   });
 
+  $('form[data-confirm]').on('submit', function(evt) {
+    var resp = window.prompt($(this).data('confirm') + ' (s/S/y/Y/n/N)').toLowerCase();
+    if (resp != 's' && resp != 'y') {
+      evt.preventDefault();
+      evt.stopPropagation();
+      return false;
+    } else {
+      return true;
+    }
+  });
 });
 

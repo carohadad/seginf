@@ -8,6 +8,7 @@ import groovy.transform.EqualsAndHashCode
 
 import org.joda.time.*
 import static garantito.sinapuli.Util.*
+import garantito.sinapuli.ValidationException
 
 
 @EqualsAndHashCode
@@ -58,6 +59,24 @@ class Project {
   
   public void setEndTenderDate(value) {
     this.endTenderDate = parseUserDateTime(value)
+  }
+
+  public void validate() {
+    if (isBlank(name)) {
+      throw new ValidationException('El nombre no puede estar vacío')
+    }
+    if (isBlank(description)) {
+      throw new ValidationException('La descripción no puede estar vacía')
+    }
+    if (isNull(startTenderDate) || isNull(endTenderDate)) {
+      throw new ValidationException('Falta completar las fechas')
+    }
+    if (startTenderDate > endTenderDate) {
+      throw new ValidationException('La fecha de cierre no puede ser anterior a la de apertura')
+    }
+    if (isEmpty(tender)) {
+      throw new ValidationException('Falta el documento del pliego') 
+    }
   }
 }
 

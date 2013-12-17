@@ -32,20 +32,27 @@ public class ProjectRepository {
   }
 
   public void delete(int id) {
-    def project = get(id)
-    if (project) {
-      projectDao.delete(project)
-    }
+    projectDao.deleteById(id)
+  }
+
+  public void delete(Project project) {
+    projectDao.delete(project)
   }
 
   public Project create(Project project) {
+    project.validate()
     projectDao.create(project)
     project
   }
 
   public Project update(Project project) {
-    projectDao.update(project)
-    project
+    if (project.id) {
+      project.validate()
+      projectDao.update(project)
+      project
+    } else {
+      throw new IllegalStateException('project is not saved yet')
+    }
   }
 
   public List<Project> list() {

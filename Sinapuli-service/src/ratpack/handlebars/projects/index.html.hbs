@@ -20,7 +20,10 @@
           <td>{{userDateTime endTenderDate}}</td>	
           <td>
             <a href="/projects/{{id}}" class="btn btn-primary btn-sm">Ver</a>
-            <a href="/projects/{{id}}" class="btn btn-danger btn-sm">Eliminar</a>
+            <form action="/projects/{{id}}/delete" method="POST" class="inline-form" 
+              data-confirm="Por favor, confirme la eliminación del proyecto '{{name}}'.">
+              <button type="submit" class="btn btn-danger btn-sm">Eliminar</button>
+            </form>
           </td>
         </tr>
         {{/each}}

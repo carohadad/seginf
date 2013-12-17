@@ -17,6 +17,7 @@ import java.security.MessageDigest
 import java.text.SimpleDateFormat
 
 import garantito.sinapuli.model.*
+import garantito.sinapuli.ValidationException
 import static garantito.sinapuli.Util.*
 
 class AdminHandlers extends GroovyHandler {
@@ -65,28 +66,28 @@ class AdminHandlers extends GroovyHandler {
 
           post {
             def form = context.parse(form())
-
             def uploaded = form.file('file')
-            def errorMessage
-            def project = new Project(
-              name: form.name, 
-              description: form.description, 
-              startTenderDate: form.startTenderDate, 
-              endTenderDate: form.endTenderDate)
-            project.tender = uploaded.bytes
-            project.tenderContentType = uploaded.contentType
-            project.tenderFilename = uploaded.fileName
+            def project
 
-            if (project.endTenderDate < project.startTenderDate) {
-              errorMessage = "Las fechas ingresadas son inválidas"
-            } else {
+            try {
+              project = new Project(
+                name: form.name, 
+                description: form.description, 
+                startTenderDate: form.startTenderDate, 
+                endTenderDate: form.endTenderDate)
+              project.tender = uploaded.bytes
+              project.tenderContentType = uploaded.contentType
+              project.tenderFilename = uploaded.fileName
+
               project = repoProject.create(project)
 
               println "Proyecto ${project.name} creado con id ${project.id}"
               redirect "/projects"
-              return
+
+            } catch (ValidationException e) {
+              render handlebarsTemplate("projects/new.html", 
+                buildModel(context, error: e.message, project: project))
             }
-            render handlebarsTemplate("projects/new.html", buildModel(context, error: errorMessage, project: project))
           }	
         }
       }
@@ -114,31 +115,11 @@ class AdminHandlers extends GroovyHandler {
         response.send project.tenderContentType, project.tender
       }
 
-      get ("offerts/:id") {
-        def project = repoProject.get((pathTokens.id).toInteger())
-        render groovyTemplate("/project/offerts.html", project: project, offertsList:repoTenderOffer.listWithproject(project.id))
-      }		
-
-      get("delete/:id/:name"){
-        render groovyTemplate("/project/delete.html", id: pathTokens.id, name: pathTokens.name)
+      post(':id/delete') {
+        println "deleting Project with ID ${pathTokens.id}"
+        repoProject.delete(pathTokens.id.toInteger())
+        redirect '/projects'
       }
-
-      post ("update/:id") {
-        def form = context.parse(form())
-
-        // Update is a save with an id	
-        repoProject.update(form.id.toInteger(), form.name)
-
-        redirect "/" 
-      }											
-
-      post ("delete") {
-        def form = context.parse(form())
-        println "Now deleting project with ID: ${pathTokens.id}"
-        repoProject.delete(form.projectId.toInteger())
-        redirect "/"						
-      }		
-
     }
 
     prefix('tenderOffer') { TenderOfferRepository repoTenderOffer ->
