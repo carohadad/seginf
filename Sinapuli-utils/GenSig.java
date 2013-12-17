@@ -43,17 +43,23 @@ class GenSig {
  
         if (args.length != 5) {
             System.out.println("Usage: GenSig nameOfFileToSign keystore password sign publicKey");
+
             }
         else try{
 
 
+	    System.out.println("nameOfFileToSign: " + args[0] );
+	    System.out.println("keystore: " + args[1] );
+	    System.out.println("password: " + args[2] );
+	    System.out.println("sign: " + args[3] );
+	    System.out.println("publicKey: " + args[4] );
+
 	    KeyStore ks = KeyStore.getInstance(KeyStore.getDefaultType());
 	    ks.load(new FileInputStream(args[1]), args[2].toCharArray());
-
+	    
 	    String alias = (String)ks.aliases().nextElement();
 	    PrivateKey privateKey = (PrivateKey) ks.getKey(alias, args[2].toCharArray());
 
- 
 	    Certificate cert = ks.getCertificate(alias);
 
 	    // Get public key	
