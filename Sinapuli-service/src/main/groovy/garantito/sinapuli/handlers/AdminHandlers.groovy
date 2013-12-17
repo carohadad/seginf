@@ -66,14 +66,17 @@ class AdminHandlers extends GroovyHandler {
           post {
             def form = context.parse(form())
 
-            SimpleDateFormat dateFormat = new SimpleDateFormat("dd/mm/yyyy");
-            Date startTenderDate = dateFormat.parse(form.startTenderDate);
-            Date endTenderDate = dateFormat.parse(form.endTenderDate);
-            
-            def uploaded = form.file('file');
+            def uploaded = form.file('file')
             def errorMessage
-            def project = new Project(form.name, form.description, startTenderDate, endTenderDate, uploaded.bytes)
-            if (endTenderDate < startTenderDate) {
+            def project = new Project(
+              name: form.name, 
+              description: form.description, 
+              startTenderDate: form.startTenderDate, 
+              endTenderDate: form.endTenderDate)
+            project.tender = uploaded.bytes
+            project.tenderContentType = uploaded.contentType
+
+            if (project.endTenderDate < project.startTenderDate) {
               errorMessage = "Las fechas ingresadas son inválidas"
             } else {
               project = repoProject.create(project)
@@ -106,7 +109,7 @@ class AdminHandlers extends GroovyHandler {
         println "getting document for Project with ID " + pathTokens.id
         def project = repoProject.get(pathTokens.id.toInteger())
             
-        response.send project.tender
+        response.send project.tenderContentType, project.tender
       }
 
       get ("offerts/:id") {

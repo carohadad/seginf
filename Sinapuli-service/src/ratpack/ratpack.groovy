@@ -22,11 +22,15 @@ import ratpack.h2.H2Module
 import garantito.sinapuli.*
 import garantito.sinapuli.model.*
 import garantito.sinapuli.handlers.*
+import garantito.sinapuli.helpers.*
 
 String DATABASE_URL = "jdbc:h2:data/SinapuliDB;DB_CLOSE_DELAY=-1"
 
 ratpack {    	
 	modules {
+    bind IsoDateTimeHelper
+    bind UserDateTimeHelper
+
     register new H2Module('', '', DATABASE_URL)
     register new SessionModule()
 		register new MapSessionsModule(100, 15)

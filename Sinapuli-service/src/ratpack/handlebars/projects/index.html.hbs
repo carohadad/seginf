@@ -16,8 +16,8 @@
         {{#each projectList}}
         <tr>
           <td><a href="/projects/{{id}}" title="Detalle del Proyecto">{{name}}</a></td>	  
-          <td>{{startTenderDate}}</td>
-          <td>{{endTenderDate}}</td>	
+          <td>{{userDateTime startTenderDate}}</td>
+          <td>{{userDateTime endTenderDate}}</td>	
           <td>
             <a href="/projects/{{id}}" class="btn btn-primary btn-sm">Ver</a>
             <a href="/projects/{{id}}" class="btn btn-danger btn-sm">Eliminar</a>

@@ -11,27 +11,32 @@
   <form action="/projects" method="POST" role="form" class="col-md-7" enctype="multipart/form-data">
     <div class="form-group">
       <label for="name">Nombre</label>
-      <input type="text" name="name" class="form-control" value="{{project.name}}">
+      <input type="text" name="name" class="form-control" value="{{project.name}}" placeholder="Nombre del proyecto" required="true">
     </div>
 
     <div class="form-group">
       <label for="description">Descripción</label>
-      <textarea name="description" class="form-control" rows="4">{{project.description}}</textarea>
+      <textarea name="description" class="form-control" rows="4" placeholder="Descripción general del pryecto y las condiciones de licitación" required="true">{{project.description}}</textarea>
     </div>
     
     <div class="form-group">
       <label for="file">Pliego de Licitación</label>
-      <input name="file" type="file" id="file">
+      <input name="file" type="file" id="file" required="true">
+      <span class="help-block">Documento del pliego completo de la licitación que descagarán los oferentes</span>
     </div>
 
     <div class="form-group">
       <label for="startTenderDate">Apertura de la Licitación</label>
-      <input type="datetime" name="startTenderDate" class="form-control" value="{{project.startTenderDate}}">
+      <input type="text" name="startTenderDate" class="form-control datetime" 
+        value="{{isoDateTime project.startTenderDate}}" required="true">
+      <span class="help-block">A partir de este momento los oferentes pueden realizar ofertas.</span>
     </div>
 
     <div class="form-group">
-      <label for="endTenderDate">Fin de la Licitación</label>
-      <input type="datetime" name="endTenderDate" class="form-control" value="{{project.endTenderDate}}">
+      <label for="endTenderDate">Cierre de la Licitación</label>
+      <input type="text" name="endTenderDate" class="form-control datetime" 
+        value="{{isoDateTime project.endTenderDate}}" required="true">
+      <span class="help-block">Límite para presentación de ofertas y comienzo de período de presentación final de oferta.</span>
     </div>
 
     <button type="submit" class="btn btn-primary">Crear</button>

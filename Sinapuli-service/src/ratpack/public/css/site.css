@@ -2,11 +2,15 @@ body {
   margin-top: 60px;
 }
 
-.login-options {
-  margin-top: 10px;
+.extra-actions {
+  margin-top: 20px;
 }
 
 .page-header {
   margin-top: 0;
+}
+
+.project-description {
+  white-space: pre-wrap;
 }
 

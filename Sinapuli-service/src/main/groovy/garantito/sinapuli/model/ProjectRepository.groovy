@@ -1,62 +1,59 @@
 package garantito.sinapuli.model
 
-import com.j256.ormlite.jdbc.JdbcConnectionSource
 import com.j256.ormlite.support.ConnectionSource
 import com.j256.ormlite.dao.Dao
 import com.j256.ormlite.dao.DaoManager
 import com.j256.ormlite.table.TableUtils
 
-import java.sql.SQLException
-import java.util.Date
-
 import javax.inject.Inject
+import groovy.util.logging.Log
+import java.sql.SQLException
 
+@Log
 public class ProjectRepository {
-
-	private Dao<Project, Integer> projectDao
+  private Dao<Project, Integer> projectDao
 
   @Inject
-	ProjectRepository(ConnectionSource connectionSource) {
+  ProjectRepository(ConnectionSource connectionSource) {
     setupDatabase(connectionSource)
-	}
+  }
 
-	/**
-	 * Setup our database and DAOs	 
-	 */
-	private void setupDatabase(ConnectionSource connectionSource) throws Exception {
-		projectDao = DaoManager.createDao(connectionSource, Project.class);
-		// if you need to create the table
-		TableUtils.createTableIfNotExists(connectionSource, Project.class);
-	}
+  /**
+   * Setup our database and DAOs
+   */
+  private void setupDatabase(ConnectionSource connectionSource) {
+    projectDao = DaoManager.createDao(connectionSource, Project.class)
+    TableUtils.createTableIfNotExists(connectionSource, Project.class)
+  }
 
-	public void delete(int id) throws SQLException, Exception {
-		def project = get(id);
-		projectDao.delete(project);
-	}
+  public Project get(int id) {
+    projectDao.queryForId(id)
+  }
 
-	
-	public void update(int id, String name) throws SQLException, Exception {	
-		def project = get(id);		
-		
-		project.name = name;	
-		projectDao.update(project);
-	}	
-	
-	public Project get(int id) {
-		projectDao.queryForId(id)
-	}
+  public void delete(int id) {
+    def project = get(id)
+    if (project) {
+      projectDao.delete(project)
+    }
+  }
 
-	public Project create(Project project) {
-		projectDao.create(project)
-		project
-	}
+  public Project create(Project project) {
+    projectDao.create(project)
+    project
+  }
+
+  public Project update(Project project) {
+    projectDao.update(project)
+    project
+  }
 
   public List<Project> list() {
     try {
       projectDao.queryForAll()
     } catch (SQLException e) {
-      e.printStackTrace()
+      log.warn "failed to get project list", e
       []
     }
   }
 }
+

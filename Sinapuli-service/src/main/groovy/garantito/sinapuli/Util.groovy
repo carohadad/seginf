@@ -3,6 +3,8 @@ package garantito.sinapuli
 import ratpack.handling.Context
 import ratpack.session.store.SessionStorage
 
+import org.joda.time.*
+
 class Util {
   static def buildModel(Context context) {
     buildModel([:], context)
@@ -18,6 +20,16 @@ class Util {
       ]
     ]
     authModel + model
+  }
+
+  static Date parseUserDateTime(value) {
+    if (value instanceof Date) {
+      value
+    } else if (value instanceof String) {
+      DateTime.parse(value).toDate()
+    } else {
+      throw new IllegalArgumentException('invalid date')
+    }
   }
 }
 

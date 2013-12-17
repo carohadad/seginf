@@ -11,19 +11,24 @@
       </div>
 
       <ul class="list-group">
-        <li class="list-group-item"><b>Apertura de licitación:</b> {{project.startTenderDate}}</li>
-        <li class="list-group-item"><b>Cierre de licitación:</b> {{project.endTenderDate}}</li>
+        <li class="list-group-item">
+          <b>Apertura de licitación:</b>
+          {{userDateTime project.startTenderDate}}
+        </li>
+        <li class="list-group-item">
+          <b>Cierre de licitación:</b>
+          {{userDateTime project.endTenderDate}}
+        </li>
       </ul>
     </div>
 
-    <p class="lead">{{project.description}}</p>
+    <p class="lead project-description">{{project.description}}</p>
 
     <div>
       <a href="/projects/{{project.id}}/document" class="btn btn-default" target="_blank">Descargar Pliego</a>
     </div>
 
-    <br>
-    <div>
+    <div class="extra-actions">
       <a href="/projects">Volver al listado</a>
     </div>
 

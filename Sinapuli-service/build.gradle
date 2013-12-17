@@ -28,6 +28,7 @@ dependencies {
   compile "com.j256.ormlite:ormlite-core:4.47"
   compile "io.ratpack:ratpack-handlebars:${RATPACK_VERSION}"
   compile "io.ratpack:ratpack-h2:${RATPACK_VERSION}"
+  compile 'joda-time:joda-time:2.3'
 }
 
 task wrapper(type: Wrapper) {
@@ -35,4 +36,9 @@ task wrapper(type: Wrapper) {
 }
 
 mainClassName = 'garantito.sinapuli.Main'
+
+task(console, dependsOn: 'classes', type: JavaExec) {
+  main = 'groovy.ui.Console'
+  classpath = sourceSets.main.runtimeClasspath
+}
 
