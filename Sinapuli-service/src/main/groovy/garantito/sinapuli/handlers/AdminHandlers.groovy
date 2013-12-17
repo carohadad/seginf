@@ -91,16 +91,27 @@ class AdminHandlers extends GroovyHandler {
         render handlebarsTemplate("projects/new.html", buildModel(context, project: new Project()))
       }
 
-      get("edit/:id"){		  
-        println "getting Project with ID " + pathTokens.id
-        def project = repoProject.get((pathTokens.id).toInteger())
+      handler(':id') {
+        byMethod {
+          get {
+            println "getting Project with ID " + pathTokens.id
+            def project = repoProject.get(pathTokens.id.toInteger())
+                
+            render handlebarsTemplate("projects/show.html", buildModel(context, project: project))
+          }
+        }
+      }
+
+      get(':id/document') {
+        println "getting document for Project with ID " + pathTokens.id
+        def project = repoProject.get(pathTokens.id.toInteger())
             
-        render groovyTemplate("/project/edit.html", id: project.id, name: project.name)
+        response.send project.tender
       }
 
       get ("offerts/:id") {
         def project = repoProject.get((pathTokens.id).toInteger())
-            render groovyTemplate("/project/offerts.html", project: project, offertsList:repoTenderOffer.listWithproject(project.id))
+        render groovyTemplate("/project/offerts.html", project: project, offertsList:repoTenderOffer.listWithproject(project.id))
       }		
 
       get("delete/:id/:name"){

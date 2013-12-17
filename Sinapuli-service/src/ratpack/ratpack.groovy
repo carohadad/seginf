@@ -2,6 +2,7 @@ import ratpack.groovy.Groovy
 import static ratpack.groovy.Groovy.*
 import static ratpack.form.Forms.form
 import ratpack.session.Session
+import ratpack.session.SessionModule
 import ratpack.session.store.MapSessionsModule
 import ratpack.session.store.SessionStorage
 import ratpack.session.store.SessionStore
@@ -27,6 +28,7 @@ String DATABASE_URL = "jdbc:h2:data/SinapuliDB;DB_CLOSE_DELAY=-1"
 ratpack {    	
 	modules {
     register new H2Module('', '', DATABASE_URL)
+    register new SessionModule()
 		register new MapSessionsModule(100, 15)
     register new HandlebarsModule()
 
