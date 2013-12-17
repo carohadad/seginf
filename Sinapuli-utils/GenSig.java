@@ -41,17 +41,17 @@ class GenSig {
  
         /* Generate a RSA signature */
  
-        if (args.length != 1) {
-            System.out.println("Usage: GenSig nameOfFileToSign");
+        if (args.length != 5) {
+            System.out.println("Usage: GenSig nameOfFileToSign keystore password sign publicKey");
             }
         else try{
 
 
 	    KeyStore ks = KeyStore.getInstance(KeyStore.getDefaultType());
-	    ks.load(new FileInputStream("myKeystore.jks"), "sinalupi".toCharArray());
+	    ks.load(new FileInputStream(args[1]), args[2].toCharArray());
 
 	    String alias = (String)ks.aliases().nextElement();
-	    PrivateKey privateKey = (PrivateKey) ks.getKey(alias, "sinalupi".toCharArray());
+	    PrivateKey privateKey = (PrivateKey) ks.getKey(alias, args[2].toCharArray());
 
  
 	    Certificate cert = ks.getCertificate(alias);
@@ -86,7 +86,7 @@ class GenSig {
  
          
             /* Save the signature in a file */
-            FileOutputStream sigfos = new FileOutputStream("sig");
+            FileOutputStream sigfos = new FileOutputStream(args[3]);
             sigfos.write(realSig);
  
             sigfos.close();
@@ -94,7 +94,7 @@ class GenSig {
  
             /* Save the public key in a file */
 	    byte[] key = publicKey.getEncoded();
-            FileOutputStream keyfos = new FileOutputStream("suepk");
+            FileOutputStream keyfos = new FileOutputStream(args[4]);
             keyfos.write(key);
  
             keyfos.close();
