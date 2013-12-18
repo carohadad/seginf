@@ -71,6 +71,26 @@ verSig(){
 
 }
 
+sinalupiToken(){
+
+
+	echo -n "Ingrese el nombre del documento: "
+	read docPath
+	echo -n "Ingrese el nombre del archivo de salida: "
+	read outputPath
+	echo -n "Ingrese el nombre de su archivo keystore: "
+	read keystore
+	echo -n "Ingrese la password para el keystore: "
+	read password
+	echo -n "Ingrese el nombre del archivo de salida para su clave publica: "
+	read publicKey
+
+	java SinalupiToken "$docPath" "$outputPath" "$keystore" "$password" "$publicKey"
+
+}
+
+
+
 PS3="Seleccione una opcion: "
 options=(
 "Quiero generar mi keystore" 
@@ -78,6 +98,7 @@ options=(
 "Quiero comparar un documento con un hash" 
 "Quiero firmar un documento" 
 "Quiero verificar la firma de un documento" 
+"Quiero subir una oferta en Sinapuli"
 "Salir")
 
 
@@ -99,6 +120,9 @@ do
         "Quiero verificar la firma de un documento" )
             echo "eligio la opcion 5"
             verSig ;;
+        "Quiero subir una oferta en Sinapuli" )
+            echo "eligio la opcion 6"		
+            sinalupiToken ;;
         "Salir")
             break
             ;;

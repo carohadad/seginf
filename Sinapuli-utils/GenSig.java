@@ -47,13 +47,6 @@ class GenSig {
             }
         else try{
 
-
-	    System.out.println("nameOfFileToSign: " + args[0] );
-	    System.out.println("keystore: " + args[1] );
-	    System.out.println("password: " + args[2] );
-	    System.out.println("sign: " + args[3] );
-	    System.out.println("publicKey: " + args[4] );
-
 	    KeyStore ks = KeyStore.getInstance(KeyStore.getDefaultType());
 	    ks.load(new FileInputStream(args[1]), args[2].toCharArray());
 	    
