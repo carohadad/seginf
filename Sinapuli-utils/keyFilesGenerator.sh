@@ -17,6 +17,16 @@ genKeystore(){
 }
 
 
+printCertificate(){
+
+	echo -n "Ingrese el nombre del keystore: "
+	read keystoreName
+  keytool -keystore "$keystoreName.jks" -alias sinapuli -export -rfc
+
+}
+
+
+
 hashDocument(){
 
 	echo -n "Ingrese el nombre del documento: "
@@ -74,6 +84,7 @@ verSig(){
 PS3="Seleccione una opcion: "
 options=(
 "Quiero generar mi keystore" 
+"Quiero imprimir mi clave pública"
 "Quiero Hashear un documento" 
 "Quiero comparar un documento con un hash" 
 "Quiero firmar un documento" 
@@ -87,9 +98,11 @@ do
         "Quiero generar mi keystore" )
             echo "eligio la opcion 1"
             genKeystore ;;
+        "Quiero imprimir mi clave pública" )
+            printCertificate ;;
         "Quiero Hashear un documento" )
             echo "eligio la opcion 2"
-	    hashDocument ;;
+            hashDocument ;;
         "Quiero comparar un documento con un hash" )
             echo "eligio la opcion 3"
             checkHashDocument ;;

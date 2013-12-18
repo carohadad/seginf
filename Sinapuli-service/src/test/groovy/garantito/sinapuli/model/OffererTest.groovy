@@ -1,15 +1,72 @@
 package garantito.sinapuli.model
 
+import garantito.sinapuli.*
 import spock.lang.Specification
 
 class OffererTest extends Specification {
-  def "different offerers have different hash codes"() {
+  def "hash encrypts password on set"() {
     when:
-    def off1 = new Offerer("oferente 1")
-    def off2 = new Offerer("oferente 2")
+    def offerer = new Offerer(password: 'foo')
 
     then:
-    off1.hashCode() != off2.hashCode()
+    offerer.password != 'foo'
+  }
+
+  def "can set password and repeat password"() {
+    setup:
+    def offerer = new Offerer()
+
+    when:
+    offerer.password = 'password'
+    offerer.repeatPassword = 'password'
+
+    then:
+    notThrown(Exception)
+  }
+
+  def "can check password"() {
+    when:
+    def offerer = new Offerer(password: 'foo')
+
+    then:
+    offerer.checkPassword('foo')
+    !offerer.checkPassword('bar')
+  }
+
+  def "validates passwords match"() {
+    setup:
+    def offerer = new Offerer()
+
+    when:
+    offerer.with {
+      name = 'Oferente'
+      username = 'of'
+      password = 'foo'
+      repeatPassword = 'foo'
+      publicKey = validPublicKey()
+    }
+    offerer.validate()
+
+    then:
+    notThrown(ValidationException)
+
+    when:
+    offerer.repeatPassword = 'bar'
+    offerer.validate()
+
+    then:
+    thrown(ValidationException)
+
+    when:
+    offerer.repeatPassword = null
+    offerer.validate()
+
+    then:
+    thrown(ValidationException)
+  }
+
+  private String validPublicKey() {
+    getClass().classLoader.getResourceAsStream('cert.pem').text
   }
 }
 
