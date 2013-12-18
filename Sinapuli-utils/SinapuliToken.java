@@ -76,7 +76,6 @@ class SinapuliToken {
 		/* Save the token in a file */
 		FileOutputStream sinapulifos = new FileOutputStream(outputPath);
 		sinapulifos.write(bDigest);
-		sinapulifos.write("----------Sinapuli----------".getBytes());//separador de Sinapuli.
 		sinapulifos.write(realSig);
 
 		sinapulifos.close();

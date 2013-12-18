@@ -21,7 +21,7 @@ printCertificate(){
 
 	echo -n "Ingrese el nombre del keystore: "
 	read keystoreName
-  keytool -keystore "$keystoreName.jks" -alias sinapuli -export -rfc
+	keytool -keystore "$keystoreName.jks" -alias sinapuli -export -rfc
 
 }
 
@@ -81,7 +81,7 @@ verSig(){
 
 }
 
-sinalupiToken(){
+sinapuliToken(){
 
 
 	echo -n "Ingrese el nombre del documento: "
@@ -95,10 +95,22 @@ sinalupiToken(){
 	echo -n "Ingrese el nombre del archivo de salida para su clave publica: "
 	read publicKey
 
-	java SinalupiToken "$docPath" "$outputPath" "$keystore" "$password" "$publicKey"
+	java SinapuliToken "$docPath" "$outputPath" "$keystore" "$password" "$publicKey"
 
 }
 
+sinapuliTokenRead(){
+
+
+	echo -n "Ingrese el nombre del documento de oferta: "
+	read sinapuliToken
+	echo -n "Ingrese el nombre del archivo de salida para el hash: "
+	read hashOutput
+	echo -n "Ingrese el nombre del archivo de salida para la firma: "
+	read signOutput
+
+	java SinapuliTokenRead "$sinapuliToken" "$hashOutput" "$signOutput"
+}
 
 
 PS3="Seleccione una opcion: "
@@ -110,6 +122,7 @@ options=(
 "Quiero firmar un documento" 
 "Quiero verificar la firma de un documento" 
 "Quiero subir una oferta en Sinapuli"
+"Quiero extraer el hash y la firma de una oferta en Sinapuli"
 "Salir")
 
 
@@ -120,22 +133,26 @@ do
             echo "eligio la opcion 1"
             genKeystore ;;
         "Quiero imprimir mi clave pública" )
+            echo "eligio la opcion 2"
             printCertificate ;;
         "Quiero Hashear un documento" )
-            echo "eligio la opcion 2"
+            echo "eligio la opcion 3"
             hashDocument ;;
         "Quiero comparar un documento con un hash" )
-            echo "eligio la opcion 3"
+            echo "eligio la opcion 4"
             checkHashDocument ;;
         "Quiero firmar un documento" )
-            echo "eligio la opcion 4"
+            echo "eligio la opcion 5"
             genSig ;;
         "Quiero verificar la firma de un documento" )
-            echo "eligio la opcion 5"
+            echo "eligio la opcion 6"
             verSig ;;
         "Quiero subir una oferta en Sinapuli" )
-            echo "eligio la opcion 6"		
-            sinalupiToken ;;
+            echo "eligio la opcion 7"		
+            sinapuliToken ;;
+        "Quiero extraer el hash y la firma de una oferta en Sinapuli" )
+            echo "eligio la opcion 8"		
+            sinapuliTokenRead ;;
         "Salir")
             break
             ;;
