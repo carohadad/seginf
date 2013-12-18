@@ -6,6 +6,9 @@ import ratpack.session.store.SessionStorage
 import org.joda.time.*
 import java.security.MessageDigest
 import java.security.SecureRandom
+import java.security.cert.CertificateFactory
+import java.security.cert.CertificateException
+import java.security.cert.X509Certificate
 
 class Util {
 	public static final int PASSWORD_HASHING_ROUNDS = 1000
@@ -86,6 +89,15 @@ class Util {
 
   public static byte[] passwordSalt(String password) {
     password[0..SALT_BYTES*2-1].decodeHex()
+  }
+
+  public static X509Certificate importCertificate(String pem) {
+    def cf = CertificateFactory.getInstance('X.509')
+    try {
+      cf.generateCertificate(new ByteArrayInputStream(pem.bytes))
+    } catch (CertificateException e) {
+      null
+    }
   }
 }
 

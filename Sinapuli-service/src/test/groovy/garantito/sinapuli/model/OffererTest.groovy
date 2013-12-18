@@ -65,6 +65,31 @@ class OffererTest extends Specification {
     thrown(ValidationException)
   }
 
+  def "validates public key"() {
+    setup:
+    def offerer = new Offerer()
+
+    when:
+    offerer.with {
+      name = 'Oferente'
+      username = 'of'
+      password = 'foo'
+      repeatPassword = 'foo'
+      publicKey = validPublicKey()
+    }
+    offerer.validate()
+
+    then:
+    notThrown(ValidationException)
+
+    when:
+    offerer.publicKey = 'invalid certificate'
+    offerer.validate()
+
+    then:
+    thrown(ValidationException)
+  }
+
   private String validPublicKey() {
     getClass().classLoader.getResourceAsStream('cert.pem').text
   }

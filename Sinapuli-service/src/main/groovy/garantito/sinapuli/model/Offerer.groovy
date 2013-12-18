@@ -6,6 +6,8 @@ import com.j256.ormlite.table.DatabaseTable
 
 import groovy.transform.EqualsAndHashCode
 
+import java.security.cert.X509Certificate
+
 import garantito.sinapuli.ValidationException
 import static garantito.sinapuli.Util.*
 
@@ -29,6 +31,7 @@ class Offerer {
 
   private String plainPassword
   private String plainRepeatPassword
+  private X509Certificate certificate
 
   Offerer() {
     // all persisted classes must define a no-arg constructor with at least package visibility
@@ -56,6 +59,9 @@ class Offerer {
       plainRepeatPassword != plainPassword) {
       throw new ValidationException('Las contraseñas no coinciden')
     }
+    if (getCertificate() == null) {
+      throw new ValidationException('La clave pública no es un certificado X.509 válido')
+    }
   }
 
   public void setPassword(String value) {
@@ -73,6 +79,20 @@ class Offerer {
 
   public boolean checkPassword(String plain) {
     password == encryptPassword(plain, passwordSalt(password))
+  }
+
+  public X509Certificate getCertificate() {
+    if (this.certificate == null) {
+      if (publicKey) {
+        this.certificate = importCertificate(publicKey)
+      }
+    }
+    this.certificate
+  }
+
+  public void setPublicKey(value) {
+    this.publicKey = value
+    this.certificate = null
   }
 }
 

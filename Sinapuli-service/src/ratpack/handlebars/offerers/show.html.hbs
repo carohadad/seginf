@@ -5,7 +5,44 @@
 
 <div class="row">
   <div class="col-md-12">
-    <p class="public-key">{{offerer.publicKey}}</p>
+    <div class="panel panel-info">
+      <div class="panel-heading">
+        <h4 class="panel-title">Certificado de clave pública</h4>
+      </div>
+
+      {{#with certificate}}
+      <table class="table">
+        <thead>
+        </thead>
+        <tbody>
+          <tr>
+            <th>Sujeto</th>
+            <td>{{subjectX500Principal}}</td>
+          </tr>
+          <tr>
+            <th>Emisor</th>
+            <td>{{issuerX500Principal}}</td>
+          </tr>
+          <tr>
+            <th>Número de serie</th>
+            <td>{{serialNumber}}</td>
+          </tr>
+          <tr>
+            <th>Algoritmo</th>
+            <td>{{sigAlgName}}</td>
+          </tr>
+          <tr>
+            <th>Validez</th>
+            <td>{{notBefore}} &mdash; {{notAfter}}</td>
+          </tr>
+        </tbody>
+      </table>
+      {{/with}}
+    </div>
+
+    <div>
+      <a href="/offerers/{{offerer.id}}/key" class="btn btn-default" target="_blank">Descargar Certificado</a>
+    </div>
 
     <div class="extra-actions">
       <a href="/offerers">Volver al listado</a>

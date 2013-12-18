@@ -34,28 +34,29 @@ class AdminHandlers extends GroovyHandler {
       }
 
       handler(":id") {
+        def id = pathTokens.asInt('id')
         byMethod {
           get {
-            println "getting Offerer with ID " + pathTokens.id
-            def offerer = repoOfferer.get((pathTokens.id).toInteger())
+            println "getting Offerer with ID ${id}"
+            def offerer = repoOfferer.get(id)
 
-            render handlebarsTemplate("offerers/show.html", buildModel(context, offerer: offerer))
-          }
-          
-          post {
-            def form = context.parse(form())
-
-            // Update is a save with an id
-            repoOfferer.update(form.id.toInteger(), form.name)
-
-            redirect "/offerers"
+            render handlebarsTemplate("offerers/show.html", 
+              buildModel(context, offerer: offerer, certificate: offerer.certificate))
           }
         }
       }
 
-      post (":id/delete") {
-        println "Now deleting offerer with ID: ${pathTokens.id}"
-        repoOfferer.delete(pathTokens.id.toInteger())
+      get(':id/key') {
+        def id = pathTokens.asInt('id')
+        def offerer = repoOfferer.get(id)
+        response.headers.add 'Content-disposition', "filename=offerer-${id}.pem"
+        response.send 'application/x-pem-file', offerer.publicKey
+      }
+
+      post(":id/delete") {
+        def id = pathTokens.asInt('id')
+        println "Now deleting offerer with ID: ${id}"
+        repoOfferer.delete(id)
         redirect "/offerers"
       }
     }
