@@ -1,0 +1,62 @@
+{{#partial "content"}}
+<div class="page-header">
+  <h1>{{offerer.name}} <span class="small">{{offerer.username}}</span></h1>
+</div>
+
+<div class="row">
+  <div class="col-md-12">
+    <div class="panel panel-info">
+      <div class="panel-heading">
+        <h4 class="panel-title">Certificado de clave pública</h4>
+      </div>
+
+      {{#with certificate}}
+      <table class="table">
+        <thead>
+        </thead>
+        <tbody>
+          <tr>
+            <th>Sujeto</th>
+            <td>{{subjectX500Principal}}</td>
+          </tr>
+          <tr>
+            <th>Emisor</th>
+            <td>{{issuerX500Principal}}</td>
+          </tr>
+          <tr>
+            <th>Número de serie</th>
+            <td>{{serialNumber}}</td>
+          </tr>
+          <tr>
+            <th>Algoritmo</th>
+            <td>{{sigAlgName}}</td>
+          </tr>
+          <tr>
+            <th>Validez</th>
+            <td>{{notBefore}} &mdash; {{notAfter}}</td>
+          </tr>
+        </tbody>
+      </table>
+      {{/with}}
+    </div>
+
+    <div>
+      <a href="/offerers/{{offerer.id}}/key" class="btn btn-default" target="_blank">Descargar Certificado</a>
+    </div>
+
+    <div class="extra-actions">
+      <a href="/offerers">Volver al listado</a>
+      <span class="pull-right">
+        <form action="/offerers/{{offerer.id}}/delete" method="POST" class="inline-form" 
+          data-confirm="Por favor, confirme la eliminación del oferente '{{offerer.name}}'.">
+          <button type="submit" class="btn btn-danger btn-sm">Eliminar</button>
+        </form>
+      </span>
+    </div>
+
+  </div>
+</div>
+{{/partial}}
+
+{{> layout/main}}
+

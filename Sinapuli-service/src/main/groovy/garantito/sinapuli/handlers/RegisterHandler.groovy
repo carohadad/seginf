@@ -10,6 +10,7 @@ import ratpack.groovy.handling.GroovyHandler
 
 import javax.inject.Inject
 
+import garantito.sinapuli.ValidationException
 import garantito.sinapuli.model.Offerer
 import garantito.sinapuli.model.OffererRepository
 
@@ -25,40 +26,28 @@ class RegisterHandler extends GroovyHandler {
   protected void handle(GroovyContext context) {
     context.byMethod {
       get {
-        render handlebarsTemplate('register.html')
+        render handlebarsTemplate('register.html', offerer: new Offerer())
       }
       post {
-        def form = parse(form())
-        def offerer = new Offerer()
-        def errorMessage
+        def form = context.parse(form())
+        def offerer
 
-        // valida que ingresa los datos
-        if (form.username?.trim() && 
-          form.password?.trim() &&
-          form.repeat_password?.trim() &&
-          form.publicKey?.trim()) {
+        try {
+          offerer = new Offerer(
+            name: form.name,
+            username: form.username,
+            publicKey: form.publicKey,
+            password: form.password,
+            repeatPassword: form.repeatPassword)
 
-          // valida que password y repeat_password sean iguales 
-          if (form.password == form.repeat_password) {
-            offerer.name = form.name
-            offerer.publicKey = form.publicKey
-            offerer.username = form.username
-            offerer.password = form.password
+          offerer = repoOfferer.create(offerer)
 
-            offerer = repoOfferer.create(offerer)
-            println "Oferente registrado: " + offerer
-            redirect '/login'
-            return
+          println "Oferente registrado: " + offerer
+          redirect '/login'
 
-          } else {
-            errorMessage = "Las contraseñas no coinciden"
-          }
-
-        } else {	
-          errorMessage = "Le faltó ingresar alguno de los campos"
+        } catch (ValidationException e) {
+          render handlebarsTemplate("register.html", error: e.message, offerer: offerer)
         }
-
-        render handlebarsTemplate("register.html", error: errorMessage)
       }
     }
   }

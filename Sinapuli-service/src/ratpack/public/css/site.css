@@ -19,3 +19,8 @@ form.inline-form {
   display: inline;
 }
 
+.public-key {
+  font-family: Courier New, monospace;
+  white-space: pre-wrap;
+}
+

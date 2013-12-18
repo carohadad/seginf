@@ -1,0 +1,35 @@
+{{#partial "content"}}
+<div class="row">
+  <div class="col-md-10">
+    <h2>Oferents</h2>
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Usuario</th>
+          <th>Nombre</th>
+          <th></th>
+        </tr>
+      </thead>
+
+      <tbody>
+        {{#each offerersList}}
+        <tr>
+          <td><a href="/offerers/{{id}}" title="Ver Oferente">{{username}}</a></td>	  
+          <td>{{name}}</td>
+          <td>
+            <a href="/offerers/{{id}}" class="btn btn-primary btn-sm">Ver</a>
+            <form action="/offerers/{{id}}/delete" method="POST" class="inline-form" 
+              data-confirm="Por favor, confirme la eliminación del oferente '{{name}}'.">
+              <button type="submit" class="btn btn-danger btn-sm">Eliminar</button>
+            </form>
+          </td>
+        </tr>
+        {{/each}}
+      </tbody>
+    </table>
+  </div>
+</div>
+{{/partial}}
+
+{{> layout/main}}
+

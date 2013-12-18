@@ -22,45 +22,50 @@ import static garantito.sinapuli.Util.*
 
 class AdminHandlers extends GroovyHandler {
   def handlers = { ->
-    get { ProjectRepository repoProject, OffererRepository repoOfferer ->
-      render handlebarsTemplate("projects/index.html", 
+    get { ProjectRepository repoProject ->
+      render handlebarsTemplate("projects/index.html",
         buildModel(context, projectList: repoProject.list()))
     }
 
-    prefix('offerer') { OffererRepository repoOfferer ->
-      get("edit/:id"){		  
-        println "getting Offerer with ID " + pathTokens.id
-        def offerer = repoOfferer.get((pathTokens.id).toInteger())
-            
-        render groovyTemplate("/offerer/edit.html", id: offerer.id, name: offerer.name) 
-      }		
-
-      get("delete/:id"){
-        render groovyTemplate("/offerer/delete.html", id: pathTokens.id)
+    prefix('offerers') { OffererRepository repoOfferer ->
+      get {
+        render handlebarsTemplate('offerers/index.html',
+          buildModel(context, offerersList: repoOfferer.list()))
       }
 
-      post ("update/:id") {
-        def form = context.parse(form())
+      handler(":id") {
+        def id = pathTokens.asInt('id')
+        byMethod {
+          get {
+            println "getting Offerer with ID ${id}"
+            def offerer = repoOfferer.get(id)
 
-        // Update is a save with an id	
-        repoOfferer.update(form.id.toInteger(), form.name)
+            render handlebarsTemplate("offerers/show.html", 
+              buildModel(context, offerer: offerer, certificate: offerer.certificate))
+          }
+        }
+      }
 
-        redirect "/" 
-      }											
+      get(':id/key') {
+        def id = pathTokens.asInt('id')
+        def offerer = repoOfferer.get(id)
+        response.headers.add 'Content-disposition', "filename=offerer-${id}.pem"
+        response.send 'application/x-pem-file', offerer.publicKey
+      }
 
-      post ("delete/:id") {
-        println "Now deleting offerer with ID: ${pathTokens.id}"
-        repoOfferer.delete(pathTokens.id.toInteger())
-
-        redirect "/" 			
-      }	
+      post(":id/delete") {
+        def id = pathTokens.asInt('id')
+        println "Now deleting offerer with ID: ${id}"
+        repoOfferer.delete(id)
+        redirect "/offerers"
+      }
     }
 
     prefix('projects') { ProjectRepository repoProject ->
       handler('') {
         byMethod {
           get {
-            render handlebarsTemplate('projects/index.html', 
+            render handlebarsTemplate('projects/index.html',
               buildModel(context, projectList: repoProject.list()))
           }
 
@@ -71,9 +76,9 @@ class AdminHandlers extends GroovyHandler {
 
             try {
               project = new Project(
-                name: form.name, 
-                description: form.description, 
-                startTenderDate: form.startTenderDate, 
+                name: form.name,
+                description: form.description,
+                startTenderDate: form.startTenderDate,
                 endTenderDate: form.endTenderDate)
               project.tender = uploaded.bytes
               project.tenderContentType = uploaded.contentType
@@ -85,10 +90,10 @@ class AdminHandlers extends GroovyHandler {
               redirect "/projects"
 
             } catch (ValidationException e) {
-              render handlebarsTemplate("projects/new.html", 
+              render handlebarsTemplate("projects/new.html",
                 buildModel(context, error: e.message, project: project))
             }
-          }	
+          }
         }
       }
 
@@ -101,7 +106,7 @@ class AdminHandlers extends GroovyHandler {
           get {
             println "getting Project with ID " + pathTokens.id
             def project = repoProject.get(pathTokens.id.toInteger())
-                
+
             render handlebarsTemplate("projects/show.html", buildModel(context, project: project))
           }
         }
@@ -110,7 +115,7 @@ class AdminHandlers extends GroovyHandler {
       get(':id/document') {
         println "getting document for Project with ID " + pathTokens.id
         def project = repoProject.get(pathTokens.id.toInteger())
-            
+
         response.headers.add "Content-disposition", "filename=\"${project.tenderFilename}\""
         response.send project.tenderContentType, project.tender
       }
@@ -132,9 +137,9 @@ class AdminHandlers extends GroovyHandler {
       get("edit/:id") {
         println "getting Offerer with ID " + pathTokens.id
         def tenderOffer = repoTenderOffer.get((pathTokens.id).toInteger())
-            
-        render groovyTemplate("/tenderOffer/edit.html", id: tenderOffer.id, hash: tenderOffer.hash) 
-      }		
+
+        render groovyTemplate("/tenderOffer/edit.html", id: tenderOffer.id, hash: tenderOffer.hash)
+      }
 
       get("delete/:id") {
         render groovyTemplate("/tenderOffer/delete.html", id: pathTokens.id)
@@ -149,24 +154,24 @@ class AdminHandlers extends GroovyHandler {
 
         def tenderOffer = repoTenderOffer.create(form.hash, offerer, project)
 
-        redirect "/"		
-      }									
+        redirect "/"
+      }
 
       post ("update/:id") {
         def form = context.parse(form())
 
-        // Update is a save with an id	
+        // Update is a save with an id
         repoTenderOffer.update(form.id.toInteger(), form.hash)
 
-        redirect "/" 			
-      }											
+        redirect "/"
+      }
 
       post ("delete/:id") {
         println "Now deleting trendeOffer with ID: ${pathTokens.id}"
         repoTenderOffer.delete(pathTokens.id.toInteger())
 
-        redirect "/" 
-      }									
+        redirect "/"
+      }
     }
   }
 

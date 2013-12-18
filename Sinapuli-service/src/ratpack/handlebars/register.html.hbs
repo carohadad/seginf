@@ -8,29 +8,34 @@
     <div class="alert alert-danger">{{error}}</div>
   {{/if}}
 
-  <form method="POST" role="form" class="col-md-6">
+  <form method="POST" role="form" class="col-md-8">
     <div class="form-group">
-      <label for="name">Nombre</label>
-      <input id="name" name="name" class="form-control">
+      <label for="username">Nombre de usuario</label>
+      <input id="username" name="username" class="form-control" value="{{offerer.username}}"
+        placeholder="Usuario para el ingreso" required="true">
+    </div>
+    <div class="form-group">
+      <label for="name">Nombre legal</label>
+      <input id="name" name="name" class="form-control" value="{{offerer.name}}"
+        placeholder="Nombre legal completo" required="true">
     </div>
     <div class="form-group">
       <label for="publicKey">Clave Pública</label>
-      <textarea name="publicKey" class="form-control"></textarea>
+      <textarea name="publicKey" class="form-control public-key" rows="6" required="true" 
+        placeholder="Certificado de clave pública X.509 codificado con PEM">{{offerer.publicKey}}</textarea>
     </div>
     </p>
-    <div class="form-group">
-      <label for="username">Nombre de usuario</label>
-      <input id="username" name="username" class="form-control">
-    </div>
     </p>
     <div class="form-group">
       <label for="password">Contraseña</label>
-      <input id="password" type="password" name="password" class="form-control">
+      <input id="password" type="password" name="password" class="form-control" required="true"
+        placeholder="Contraseña para el ingreso">
     </div>
     </p>
     <div class="form-group">
-      <label for="repeat_password">Repetir Contraseña</label>
-      <input id="repeat_password" type="password" name="repeat_password" class="form-control">
+      <label for="repeatPassword">Repetir Contraseña</label>
+      <input id="repeatPassword" type="password" name="repeatPassword" class="form-control" 
+        required="true" placeholder="Contraseña para el ingreso">
     </div>
 
     <button type="submit" class="btn btn-default">Registrar nuevo oferente</div>
@@ -39,7 +44,6 @@
       <a href="/login">Login</a>
     </p>
   </form>
-
 </div>
 {{/partial}}
 

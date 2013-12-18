@@ -50,7 +50,7 @@ class Project {
 
   @Override
   public String toString() {
-		"<Project ${id}, name=${name}>"
+    "<Project ${id}, name=${name}>"
   }
 
   public void setStartTenderDate(value) {
