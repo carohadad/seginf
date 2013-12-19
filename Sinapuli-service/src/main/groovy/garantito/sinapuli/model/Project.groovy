@@ -10,10 +10,20 @@ import org.joda.time.*
 import static garantito.sinapuli.Util.*
 import garantito.sinapuli.ValidationException
 
+import org.joda.time.DateTime
+import org.joda.time.Period
 
 @EqualsAndHashCode
 @DatabaseTable(tableName = "projects")
 class Project {
+  public static final Period CLOSING_PERIOD = Period.hours(48)
+
+  public static enum Status {
+    PENDING,
+    OPEN,
+    CLOSED,
+    FINISHED
+  }
 
   @DatabaseField(generatedId = true)
   Integer id
@@ -61,6 +71,10 @@ class Project {
     this.endTenderDate = parseUserDateTime(value)
   }
 
+  public Date getFinishTenderDate() {
+    new DateTime(endTenderDate).plus(CLOSING_PERIOD).toDate()
+  }
+
   public void validate() {
     if (isBlank(name)) {
       throw new ValidationException('El nombre no puede estar vacío')
@@ -71,11 +85,25 @@ class Project {
     if (isNull(startTenderDate) || isNull(endTenderDate)) {
       throw new ValidationException('Falta completar las fechas')
     }
-    if (startTenderDate > endTenderDate) {
+    if (startTenderDate >= endTenderDate) {
       throw new ValidationException('La fecha de cierre no puede ser anterior a la de apertura')
     }
     if (isEmpty(tender)) {
       throw new ValidationException('Falta el documento del pliego') 
+    }
+  }
+
+  public Status getStatus() {
+    def now = new Date()
+
+    if (now < startTenderDate) {
+      Status.PENDING
+    } else if (now < endTenderDate) {
+      Status.OPEN
+    } else if (now < finishTenderDate) {
+      Status.CLOSED
+    } else {
+      Status.FINISHED
     }
   }
 }

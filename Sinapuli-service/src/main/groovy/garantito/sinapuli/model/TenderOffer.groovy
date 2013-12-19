@@ -1,79 +1,44 @@
 package garantito.sinapuli.model
 
-import com.j256.ormlite.field.DatabaseField;
-import com.j256.ormlite.field.DataType;
-import com.j256.ormlite.table.DatabaseTable;
+import com.j256.ormlite.field.DatabaseField
+import com.j256.ormlite.field.DataType
+import com.j256.ormlite.table.DatabaseTable
 
+import groovy.transform.EqualsAndHashCode
+
+import garantito.sinapuli.ValidationException
+import static garantito.sinapuli.Util.*
+
+@EqualsAndHashCode
 @DatabaseTable(tableName = "tenderOffers")
 class TenderOffer {
 
-	@DatabaseField(generatedId = true)
-	private int id;
-	@DatabaseField
-	private String hash;
-        @DatabaseField(dataType = DataType.BYTE_ARRAY)
-	private byte[] document;	
-        @DatabaseField(foreign = true, foreignAutoRefresh = true)
-	private Offerer offerer;
-        @DatabaseField(foreign = true, foreignAutoRefresh = true)
-	private Project project;
-    
+  @DatabaseField(generatedId = true)
+  Integer id
 
-        TenderOffer() {
-                // all persisted classes must define a no-arg constructor with at least package visibility
-        }
+  @DatabaseField
+  String hash
 
-        public TenderOffer(String hash, Offerer offerer, Project project) {
-                this.hash = hash;
-		this.offerer = offerer;		
-		this.project = project;
-        }
+  @DatabaseField(dataType = DataType.BYTE_ARRAY)
+  byte[] document
 
-        public int getId() {
-                return id;
-        }
+  @DatabaseField
+  String documentType
 
-        public String getHash() {
-                return hash;
-        }
+  @DatabaseField
+  String documentFilename
 
-        public void setHash(String hash) {
-                this.hash = hash;
-        }
+  @DatabaseField(foreign = true, foreignAutoRefresh = true)
+  Offerer offerer
 
-        public String getDocument() {
-                return document;
-        }
+  @DatabaseField(foreign = true, foreignAutoRefresh = true)
+  Project project
 
-        public void setDocument(String document) {
-                this.document = document;
-        }
+  TenderOffer() {
+  }
 
-        public Offerer getOfferer() {
-                return offerer;
-        }
-
-        public void setOfferer(String offerer) {
-                this.offerer = offerer;
-        }
-
-        public Project getProject() {
-                return project;
-        }
-
-        public void setProject(Project idProject) {
-                this.project = project;
-        }
-        @Override
-        public int hashCode() {
-                return hash.hashCode();
-        }
-
-        @Override
-        public boolean equals(Object other) {
-                if (other == null || other.getClass() != getClass()) {
-                        return false;
-                }
-                return hash.equals(((TenderOffer) other).hash);
-        }
+  @Override
+  public String toString() {
+    "<TenderOffer ${id}, offerer=${offerer.id}, project=${project.id}>"
+  }
 }
