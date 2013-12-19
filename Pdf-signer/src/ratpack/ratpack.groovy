@@ -3,9 +3,11 @@ import static ratpack.form.Forms.form
 
 import java.io.*;
 import java.security.*;
+import java.security.cert.Certificate;
 import com.itextpdf.text.pdf.*;
 import com.itextpdf.text.pdf.security.*;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
+import com.itextpdf.text.pdf.security.MakeSignature.CryptoStandard;
 
 ratpack {
 
@@ -14,11 +16,38 @@ ratpack {
       render groovyTemplate("index.html")
     }
 
+    /*	
+    get ("download"){
+	println "download"
+
+	FileInputStream downloadFile = new FileInputStream("download.pdf");
+	byte[] download=new byte[downloadFile.available()];
+	downloadFile.read(download);
+
+	response.send(download);
+        return
+    }
+
     post("html2pdf"){
 
       def f = context.parse(form())
       html2pdf(f.url)
-      render groovyTemplate("pdf.html", filename: "signed_" + f.url  + ".pdf")
+      render groovyTemplate("pdf.html")
+    }
+    */
+
+
+    post("html2pdf"){
+
+	def f = context.parse(form())
+	html2pdf(f.url)
+
+	FileInputStream downloadFile = new FileInputStream("download.pdf");
+	byte[] download=new byte[downloadFile.available()];
+	downloadFile.read(download);
+
+	response.send(download);
+	return	
     }
 
     assets "public"
@@ -39,16 +68,14 @@ public void html2pdf(String url){
   println "stderr: ${proc.err.text}"
   println "stdout: ${proc.in.text}" // *out* from the external program is *in* for groovy
 
-  pades(url, true, false)
+  pades(true, true)
 }
 
 
-public void pades(String filename, boolean withTS, boolean withOCSP){
-//public void pades(byte[] keystore, byte[] pdf, String filename, String password, boolean withTS, boolean withOCSP){  
+public void pades(boolean withTS, boolean withOCSP){
 
   PdfReader reader = new PdfReader(new FileInputStream("html2pdf.pdf"));
-  //PdfReader reader = new PdfReader(pdf);
-  FileOutputStream fout = new FileOutputStream("signed_" + filename + ".pdf");
+  FileOutputStream fout = new FileOutputStream("download.pdf");
 
   //------- firmado ------------------------------------//
   String KEYSTORE = "../../signer.jks";
@@ -104,5 +131,7 @@ public void pades(String filename, boolean withTS, boolean withOCSP){
 
   MakeSignature.signDetached(appearance, digest, signature, chain, null, ocsp, tsc, 0, CryptoStandard.CMS);
   //CMS = Cryptographic Message Syntax
+
+
 
 }
