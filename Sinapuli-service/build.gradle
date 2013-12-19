@@ -42,3 +42,9 @@ task(console, dependsOn: 'classes', type: JavaExec) {
   classpath = sourceSets.main.runtimeClasspath
 }
 
+task(seedData, dependsOn: 'classes', type: JavaExec) {
+  main = 'garantito.sinapuli.SeedData'
+  classpath = sourceSets.main.runtimeClasspath
+  workingDir = file('src/ratpack')
+}
+

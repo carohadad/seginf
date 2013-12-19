@@ -30,6 +30,8 @@ ratpack {
 	modules {
     bind IsoDateTimeHelper
     bind UserDateTimeHelper
+    bind StatusLabelHelper
+    bind StatusCssHelper
 
     register new H2Module('', '', DATABASE_URL)
     register new SessionModule()

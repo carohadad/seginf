@@ -8,6 +8,7 @@
           <th>Nombre</th>
           <th>Apertura</th>
           <th>Finalización</th>
+          <th>Estado</th>
           <th></th>
         </tr>
       </thead>
@@ -18,6 +19,7 @@
           <td><a href="/projects/{{id}}" title="Detalle del Proyecto">{{name}}</a></td>	  
           <td>{{userDateTime startTenderDate}}</td>
           <td>{{userDateTime endTenderDate}}</td>	
+          <td><span class="label label-{{statusCss status}}">{{statusLabel status}}</span></td>
           <td>
             <a href="/projects/{{id}}" class="btn btn-primary btn-sm">Ver</a>
             <form action="/projects/{{id}}/delete" method="POST" class="inline-form" 

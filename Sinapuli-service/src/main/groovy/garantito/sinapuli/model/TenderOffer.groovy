@@ -17,6 +17,9 @@ class TenderOffer {
   Integer id
 
   @DatabaseField
+  Date offerDate
+
+  @DatabaseField
   String hash
 
   @DatabaseField(dataType = DataType.BYTE_ARRAY)
@@ -35,10 +38,26 @@ class TenderOffer {
   Project project
 
   TenderOffer() {
+    offerDate = new Date()
   }
 
   @Override
   public String toString() {
     "<TenderOffer ${id}, offerer=${offerer.id}, project=${project.id}>"
+  }
+
+  public void validate() {
+    if (offerDate == null) {
+      throw new ValidationException("La fecha de la oferta no puede ser nula")
+    }
+    if (isBlank(hash)) {
+      throw new ValidationException("El hash de la oferta no puede estar vacío")
+    }
+    if (offerer == null) {
+      throw new ValidationException("El oferente no puede ser nulo")
+    }
+    if (project == null) {
+      throw new ValidationException("El proyecto no puede ser nulo")
+    }
   }
 }

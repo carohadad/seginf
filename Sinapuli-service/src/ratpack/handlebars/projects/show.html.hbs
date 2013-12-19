@@ -1,6 +1,6 @@
 {{#partial "content"}}
 <div class="page-header">
-  <h1>{{project.name}}</h1>
+  <h1>{{project.name}} <span class="label label-{{statusCss project.status}}">{{statusLabel project.status}}</span></h1>
 </div>
 
 <div class="row">
@@ -28,6 +28,7 @@
       <a href="/projects/{{project.id}}/document" class="btn btn-default" target="_blank">Descargar Pliego</a>
     </div>
 
+    <div class="clearfix"></div>
     <div class="extra-actions">
       <a href="/projects">Volver al listado</a>
       <span class="pull-right">
