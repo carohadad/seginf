@@ -110,5 +110,9 @@ class Project {
   public boolean isOpen() {
     status == Status.OPEN
   }
+
+  public boolean isClosed() {
+    status == Status.CLOSED
+  }
 }
 

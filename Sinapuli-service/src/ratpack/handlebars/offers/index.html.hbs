@@ -1,0 +1,38 @@
+{{#partial "content"}}
+<div class="row">
+  <div class="col-md-8">
+    <h2>Ofertas Realizadas</h2>
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Proyecto</th>
+          <th>Fecha</th>
+          <th>Completa</th>
+          <th></th>
+        </tr>
+      </thead>
+
+      <tbody>
+        {{#each offerList}}
+        <tr>
+          <td>{{project.name}}</td>
+          <td><a href="/offers/{{id}}">{{userDateTime offerDate}}</a></td>
+          <td>
+            {{#if complete}}
+            <span class="label label-success">SI</span>
+            {{else}}
+            <span class="label label-danger">NO</span>{{/if}}
+          </td>
+          <td>
+            <a href="/offers/{{id}}" class="btn btn-default btn-xs">Ver/Completar</a>
+          </td>
+        </tr>
+        {{/each}}
+      </tbody>
+    </table>
+  </div>
+</div>
+{{/partial}}
+
+{{> layout/main}}
+

@@ -78,5 +78,16 @@ public class TenderOfferRepository {
       []
 		}
 	}
+
+  public List<TenderOffer> listForProjectAndOfferer(int projectId, int offererId) {
+    try {
+      def query = tenderOfferDao.queryBuilder()
+      query.where().eq('offerer_id', offererId).and().eq('project_id', projectId)
+      query.query()
+    } catch (SQLException e) {
+      log.log Level.WARNING, "failed to get offers for project ${projectId}, offerer ${offererId}", e
+      []
+    }
+  }
 }
 

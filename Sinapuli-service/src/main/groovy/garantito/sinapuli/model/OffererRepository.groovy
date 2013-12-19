@@ -54,12 +54,11 @@ public class OffererRepository {
   }
 
   public boolean authenticate(String username, String password) {
-    def results = offererDao.queryForFieldValuesArgs(username: username)
+    def offerer = findByUsername(username)
 
-    if (results.size() < 1) {
+    if (offerer == null) {
       false
     } else {
-      def offerer = results.get(0)
       offerer.checkPassword(password)
     }
   }
@@ -72,4 +71,14 @@ public class OffererRepository {
       []
     }
   }
+
+  public Offerer findByUsername(String username) {
+    def results = offererDao.queryForFieldValuesArgs(username: username)
+    if (results.size() < 1) {
+      null
+    } else {
+      results.get(0)
+    }
+  }
 }
+

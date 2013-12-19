@@ -8,16 +8,28 @@
     {{#if error}}
     <div class="alert alert-danger">{{error}}</div>
     {{/if}}
+    {{#if validationError}}
+    <div class="alert alert-danger">{{validationError}}</div>
+    {{/if}}
 
     {{#unless error}}
     <form method="POST" role="form">
       <div class="form-group">
         <label for="hash">Hash de la oferta</label>
-        <textarea id="hash" name="hash" rows="6" class="form-control"
-          placeholder="Hash SHA-256 incluyendo firma" required="true">{{offer.hash}}</textarea>
+        <input type="text" id="hash" name="hash" class="form-control" value="{{offer.hash}}"
+          placeholder="Hash SHA-256 del documento de la oferta" required="true">
         <p class="help-block">El hash del documento de la oferta con la firma
           digital generada con la clave privada correspondiente a su clave
           pública registrada</p>
+      </div>
+
+      <div class="form-group">
+        <label for="hashSignature">Firma digital de la oferta</label>
+        <textarea id="hashSignature" name="hashSignature" rows="6" class="form-control"
+          placeholder="Firma digital del hash" required="true">{{offer.hashSignature}}</textarea>
+        <p class="help-block">Firma digital de la oferta generada usando la
+          clave privada correspondiente correspondiente a su clave pública
+          registrada</p>
       </div>
 
       <button type="submit" class="btn btn-default">Ofertar</button>

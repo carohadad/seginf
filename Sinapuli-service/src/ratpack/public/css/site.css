@@ -5,6 +5,11 @@ body {
 
 .extra-actions {
   margin-top: 20px;
+  margin-bottom: 20px;
+}
+
+.extra-actions a {
+  margin-right: 20px;
 }
 
 .page-header {

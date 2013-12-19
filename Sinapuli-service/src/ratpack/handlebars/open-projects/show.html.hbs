@@ -35,6 +35,23 @@
       <a href="/projects">Volver al listado</a>
     </div>
 
+    {{#if offers}}
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <h4 class="panel-title">Ofertas realizadas en la licitación</h4>
+      </div>
+      <table class="table">
+        <thead>
+        {{#each offers}}
+        <tr>
+          <td><a href="/offers/{{id}}">{{userDateTime offerDate}}<a></td>
+          <td>{{hash}}</td>
+        </tr>
+        {{/each}}
+      </thead>
+      </table>
+    </div>
+    {{/if}}
   </div>
 </div>
 {{/partial}}

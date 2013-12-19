@@ -59,8 +59,10 @@ class AuthHandlers extends GroovyHandler {
             session.role = 'admin'
           } else {
             if (repoOfferer.authenticate(form.username, form.password)) {
+              def offerer = repoOfferer.findByUsername(form.username)
               session.auth = true
               session.username = form.username
+              session.offererId = offerer.id
               session.role = 'offerer'
             } else {
               render handlebarsTemplate("login.html", error: "Usuario o contraseña no válidos")
