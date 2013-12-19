@@ -1,0 +1,36 @@
+{{#partial "content"}}
+<div class="row">
+  <div class="col-md-10">
+    <h2>Licitaciones Abiertas</h2>
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Nombre</th>
+          <th>Apertura</th>
+          <th>Finalización</th>
+          <th>Estado</th>
+          <th></th>
+        </tr>
+      </thead>
+
+      <tbody>
+        {{#each projectList}}
+        <tr>
+          <td><a href="/projects/{{id}}" title="Detalle del Proyecto">{{name}}</a></td>	  
+          <td>{{userDateTime startTenderDate}}</td>
+          <td>{{userDateTime endTenderDate}}</td>	
+          <td><span class="label label-{{statusCss status}}">{{statusLabel status}}</span></td>
+          <td>
+            <a href="/projects/{{id}}" class="btn btn-primary btn-sm">Ver/Ofertar</a>
+          </td>
+        </tr>
+        {{/each}}
+      </tbody>
+    </table>
+  </div>
+</div>
+{{/partial}}
+
+{{> layout/main}}
+
+

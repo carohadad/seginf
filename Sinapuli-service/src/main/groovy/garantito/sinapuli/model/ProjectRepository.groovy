@@ -57,7 +57,19 @@ public class ProjectRepository {
 
   public List<Project> list() {
     try {
-      projectDao.queryForAll()
+      projectDao.queryBuilder().orderBy('startTenderDate', true).query()
+    } catch (SQLException e) {
+      log.log Level.WARNING, "failed to get project list", e
+      []
+    }
+  }
+
+  public List<Project> listOpenOrPending() {
+    try {
+      def query = projectDao.queryBuilder()
+      query.where().gt('endTenderDate', new Date())
+      query.orderBy('startTenderDate', true)
+      query.query()
     } catch (SQLException e) {
       log.log Level.WARNING, "failed to get project list", e
       []

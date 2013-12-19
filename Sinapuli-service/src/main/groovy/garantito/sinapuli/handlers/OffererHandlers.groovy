@@ -13,15 +13,51 @@ import ratpack.launch.LaunchConfig
 
 import static ratpack.handlebars.Template.handlebarsTemplate
 
-import java.security.MessageDigest
-import java.text.SimpleDateFormat
-
 import garantito.sinapuli.model.*
+import static garantito.sinapuli.Util.*
+
 
 class OffererHandlers extends GroovyHandler {
   def handlers = {
-    get {
-      render 'offerer'
+    get { ProjectRepository repoProject ->
+      render handlebarsTemplate("open-projects/index.html",
+        buildModel(context, projectList: repoProject.listOpenOrPending()))
+    }
+
+    prefix('projects') { ProjectRepository repoProject ->
+      get { 
+        render handlebarsTemplate("open-projects/index.html",
+          buildModel(context, projectList: repoProject.listOpenOrPending()))
+      }
+
+      get(':id') {
+        def project = repoProject.get(pathTokens.asInt('id'))
+        render handlebarsTemplate("open-projects/show.html",
+          buildModel(context, project: project))
+      }
+
+      get(':id/document') {
+        def project = repoProject.get(pathTokens.asInt('id'))
+        response.headers.add "Content-disposition", "filename=\"${project.tenderFilename}\""
+        response.send project.tenderContentType, project.tender
+      }
+
+      handler(':id/offer') {
+        byMethod {
+          get {
+            def project = repoProject.get(pathTokens.asInt('id'))
+            def model
+            if (project.open) {
+              model = buildModel(context, project: project)
+            } else {
+              model = buildModel(context, project: project, error: "La licitación no está abierta")
+            }
+            render handlebarsTemplate("open-projects/offer.html", model)
+          }
+          post {
+          }
+        }
+      }
     }
   }
 

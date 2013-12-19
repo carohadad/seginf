@@ -1,0 +1,44 @@
+{{#partial "content"}}
+<div class="page-header">
+  <h1>{{project.name}} <span class="label label-{{statusCss project.status}}">{{statusLabel project.status}}</span></h1>
+</div>
+
+<div class="row">
+  <div class="col-md-12">
+    <div class="pull-right panel panel-info">
+      <div class="panel-heading">
+        <h4 class="panel-title">Fechas</h4>
+      </div>
+
+      <ul class="list-group">
+        <li class="list-group-item">
+          <b>Apertura de licitación:</b>
+          {{userDateTime project.startTenderDate}}
+        </li>
+        <li class="list-group-item">
+          <b>Cierre de licitación:</b>
+          {{userDateTime project.endTenderDate}}
+        </li>
+      </ul>
+    </div>
+
+    <p class="lead project-description">{{project.description}}</p>
+
+    <div>
+      <a href="/projects/{{project.id}}/document" class="btn btn-default" target="_blank">Descargar Pliego</a>
+      {{#if project.open}}
+      <a href="/projects/{{project.id}}/offer" class="btn btn-primary">Ofertar</a>
+      {{/if}}
+    </div>
+
+    <div class="extra-actions">
+      <a href="/projects">Volver al listado</a>
+    </div>
+
+  </div>
+</div>
+{{/partial}}
+
+{{> layout/main}}
+
+

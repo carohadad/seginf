@@ -1,0 +1,35 @@
+{{#partial "content"}}
+<div class="page-header">
+  <h1>Ofertar en &quot;{{project.name}}&quot;</h1>
+</div>
+
+<div class="row">
+  <div class="col-md-12">
+    {{#if error}}
+    <div class="alert alert-danger">{{error}}</div>
+    {{/if}}
+
+    {{#unless error}}
+    <form method="POST" role="form">
+      <div class="form-group">
+        <label for="hash">Hash de la oferta</label>
+        <textarea id="hash" name="hash" rows="6" class="form-control"
+          placeholder="Hash SHA-256 incluyendo firma" required="true">{{offer.hash}}</textarea>
+        <p class="help-block">El hash del documento de la oferta con la firma
+          digital generada con la clave privada correspondiente a su clave
+          pública registrada</p>
+      </div>
+
+      <button type="submit" class="btn btn-default">Ofertar</button>
+    </form>
+    {{/unless}}
+    <div class="extra-actions">
+      <a href="/projects/{{project.id}}">Volver</a>
+    </div>
+  </div>
+</div>
+{{/partial}}
+
+{{> layout/main}}
+
+

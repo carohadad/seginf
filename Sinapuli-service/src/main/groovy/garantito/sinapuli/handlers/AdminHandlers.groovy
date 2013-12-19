@@ -13,9 +13,6 @@ import ratpack.launch.LaunchConfig
 
 import static ratpack.handlebars.Template.handlebarsTemplate
 
-import java.security.MessageDigest
-import java.text.SimpleDateFormat
-
 import garantito.sinapuli.model.*
 import garantito.sinapuli.ValidationException
 import static garantito.sinapuli.Util.*
