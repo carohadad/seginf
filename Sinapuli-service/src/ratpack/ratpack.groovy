@@ -25,8 +25,17 @@ import garantito.sinapuli.handlers.*
 import garantito.sinapuli.helpers.*
 import garantito.sinapuli.tsa.*
 
+import java.security.KeyStore
+
 String DATABASE_URL = "jdbc:h2:data/SinapuliDB;DB_CLOSE_DELAY=-1"
 String TSA_URL = "http://localhost:5050/timestamp"
+
+def loadKeyStore() {
+  def keyStore = KeyStore.getInstance("JKS")
+  keyStore.load(new File('sinapuli.jks').newInputStream(), 'garantito'.toCharArray())
+  keyStore
+}
+
 
 ratpack {    	
 	modules {
@@ -34,6 +43,8 @@ ratpack {
     bind UserDateTimeHelper
     bind StatusLabelHelper
     bind StatusCssHelper
+
+    bind KeyStore, loadKeyStore()
 
     register new H2Module('', '', DATABASE_URL)
     register new SessionModule()

@@ -8,21 +8,31 @@ import com.j256.ormlite.table.TableUtils
 import java.sql.SQLException
 import groovy.util.logging.Log
 import java.util.logging.Level
+import java.security.Signature
 
 import javax.inject.Inject
 
 import garantito.sinapuli.tsa.TSAClient
 import garantito.sinapuli.ValidationException
+import garantito.sinapuli.Digester
+import garantito.sinapuli.KeyProvider
 
 @Log
 public class TenderOfferRepository {
 	private Dao<TenderOffer, Integer> tenderOfferDao
-  private TSAClient tsaClient
 
   @Inject
-	TenderOfferRepository(ConnectionSource connectionSource, TSAClient tsaClient) {
+  TSAClient tsaClient
+
+  @Inject
+  KeyProvider keyProvider
+
+  @Inject
+  Digester digester
+
+  @Inject
+	TenderOfferRepository(ConnectionSource connectionSource) {
     setupDatabase(connectionSource)
-    this.tsaClient = tsaClient
 	}
 
 	/**
@@ -41,6 +51,13 @@ public class TenderOfferRepository {
 		tenderOfferDao.queryForId(id)
 	}
 
+  private def signData(byte[] data) {
+    def signature = Signature.getInstance("SHA256withRSA")
+    signature.initSign(keyProvider.privateKey)
+    signature.update(data)
+    signature = signature.sign()
+  }
+
   public TenderOffer placeOffer(TenderOffer offer) {
     offer.validate()
     offer.validateHashSignature()
@@ -49,10 +66,19 @@ public class TenderOfferRepository {
       offer.offerDate = new Date()
     }
 
-    // FIXME: deberíamos firmar el token luego de recibido
     byte[] hashBytes = offer.hash.decodeHex()
     byte[] token = tsaClient.getToken(hashBytes)
-    offer.receiptToken = token.encodeBase64(true)
+    byte[] signature = signData(token)
+
+    offer.receiptToken = "-----BEGIN TSP RESPONSE-----\n" + \
+      token.encodeBase64(true) + \
+      "-----END TSP RESPONSE-----\n\n" + \
+      "-----BEGIN SIGNATURE-----\n" + \
+      signature.encodeBase64(true) + \
+      "-----END SIGNATURE-----\n\n" + \
+      "-----BEGIN CERTIFICATE-----\n" + \
+      keyProvider.certificate.encoded.encodeBase64(true) + \
+      "-----END CERTIFICATE-----\n"
 
     create(offer)
   }
@@ -77,11 +103,24 @@ public class TenderOfferRepository {
       offer.completeDate = new Date()
     }
 
-    // FIXME: enviar al TSA otro hash distinto del anterior
-    // FIXME: firmar el token recibido
-    byte[] hashBytes = offer.hash.decodeHex()
-    byte[] token = tsaClient.getToken(hashBytes)
-    offer.documentReceiptToken = token.encodeBase64(true)
+    String receipt = "DOCUMENTO RECIBIDO, HASH ${offer.hash}\n"
+    byte[] receiptHashBytes = digester.digest(receipt.bytes)
+    byte[] token = tsaClient.getToken(receiptHashBytes)
+    byte[] signature = signData(token)
+
+    offer.documentReceiptToken = 
+      "-----BEGIN RECEIPT-----\n" + \
+      receipt + \
+      "-----END RECEIPT-----\n\n" + \
+      "-----BEGIN TSP RESPONSE-----\n" + \
+      token.encodeBase64(true) + \
+      "-----END TSP RESPONSE-----\n\n" + \
+      "-----BEGIN SIGNATURE-----\n" + \
+      signature.encodeBase64(true) + \
+      "-----END SIGNATURE-----\n\n" + \
+      "-----BEGIN CERTIFICATE-----\n" + \
+      keyProvider.certificate.encoded.encodeBase64(true) + \
+      "-----END CERTIFICATE-----\n"
 
     update(offer)
   }

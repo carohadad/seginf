@@ -42,6 +42,8 @@ ratpack {
 
         tsa.validate(tsaRequest)
 
+        println "Generando TSR para ${tsaRequest.messageImprintDigest.encodeHex()}"
+
         def resp = tsa.generate(tsaRequest)
         def encodedResponse = tsa.encode(resp)
 
