@@ -7,12 +7,23 @@ import java.security.*
 
 class TSAModuleTest extends spock.lang.Specification {
 
+  static class DummySerialGenerator implements SerialNumberGenerator {
+    BigInteger cache = BigInteger.ONE
+
+    synchronized BigInteger next() {
+      cache++
+    }
+  }
+
   private buildTSAModule() {
     def keyProvider = new KeyProvider()
     keyProvider.keyStore = loadKeyStore()
 
     def module = new TSAModule()
     module.keyProvider = keyProvider
+
+    module.serialNumberGen = new DummySerialGenerator()
+
     module
   }
 

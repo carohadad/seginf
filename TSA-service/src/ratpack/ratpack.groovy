@@ -2,8 +2,7 @@ import static ratpack.groovy.Groovy.*
 import org.bouncycastle.tsp.*
 import java.security.KeyStore
 
-import garantito.tsa.TSAModule
-import garantito.tsa.KeyProvider
+import garantito.tsa.*
 
 def loadKeyStore() {
   def keyStore = KeyStore.getInstance("JKS")
@@ -13,6 +12,7 @@ def loadKeyStore() {
 
 ratpack {
   modules {
+    bind SerialNumberGenerator, new SerialNumberGeneratorImpl(new File('tsa.srl'))
     bind KeyStore, loadKeyStore()
     bind KeyProvider
     bind TSAModule

@@ -17,6 +17,9 @@ class TSAModule {
   @Inject
   KeyProvider keyProvider
 
+  @Inject
+  SerialNumberGenerator serialNumberGen
+
   def acceptedAlgorithms = [TSPAlgorithms.SHA256] as Set
 
   static final def DEFAULT_POLICY = new ASN1ObjectIdentifier("1.3.6.1.4.1.13762.3")
@@ -39,7 +42,7 @@ class TSAModule {
 
   def generate(request) {
     def date = new Date()
-    def serialNumber = new BigInteger(160, new Random())
+    def serialNumber = serialNumberGen.next()
 
     def calcProv = new BcDigestCalculatorProvider()
 
