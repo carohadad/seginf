@@ -1,4 +1,5 @@
 import static ratpack.groovy.Groovy.*
+import static ratpack.form.Forms.form
 import org.bouncycastle.tsp.*
 import java.security.KeyStore
 
@@ -19,18 +20,44 @@ ratpack {
   }
 
   handlers {
-    get("get_timestamp") { TSAModule tsa ->
+    get {
+      render groovyTemplate("index.html")
+    }
+
+    post('token') { TSAModule tsa ->
+      def form = parse(form())
+
+      if (form.hash == null || form.hash.trim() == "" || form.hash.trim().size() != 64) {
+        response.status 400
+        response.send 'text/plain', 'El hash es inválido'
+        return
+      }
 
       def reqGen = new TimeStampRequestGenerator()
-      def request = reqGen.generate(TSPAlgorithms.SHA256, new byte[32])
+      reqGen.certReq = true
+      def nonce = BigInteger.valueOf(System.currentTimeMillis())
+      def tsq = reqGen.generate(TSPAlgorithms.SHA256, form.hash.trim().decodeHex(), nonce)
 
-      tsa.validate(request)
+      tsa.validate(tsq)
 
-      def resp = tsa.generate(request)
-      def encodedResponse = tsa.encode(resp)
+      def tsr = tsa.generate(tsq)
 
-      response.contentType("application/timestamp-reply")
-      response.send "${encodedResponse}"
+      response.send "text/plain", tsr.encoded.encodeBase64(true).toString()
+    }
+
+    post('show_tsr') { TSAModule tsa ->
+      def form = parse(form())
+
+      if (form.tsr == null || form.tsr.trim() == "") {
+        response.status 400
+        response.send 'text/plain', 'El TSR es inválido'
+        return
+      }
+
+      def tsrB64 = form.tsr.replaceAll(/\s+/, '').decodeBase64()
+      def tsr = new TimeStampResponse(tsrB64)
+
+      render groovyTemplate("show_tsr.html", "text/html", tsr: tsr)
     }
 
     post("timestamp") { TSAModule tsa ->

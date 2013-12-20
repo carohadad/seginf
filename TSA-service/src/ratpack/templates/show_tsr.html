@@ -1,0 +1,120 @@
+<!doctype>
+<title>TSA Garantito</title>
+<style>
+  body {
+    padding: 10px;
+  }
+  pre.tsr {
+    font-size: 10px;
+  }
+
+  table {
+    border-collapse: collapse;
+    width: 100%;
+  }
+
+  table th {
+    text-align: left;
+    border: 1px solid black;
+    padding: 5px;
+    background-color: #eee;
+  }
+  table td {
+    border: 1px solid black;
+    padding: 5px;
+  }
+  table td.inner {
+    padding: 0px;
+  }
+
+</style>
+
+<h1>Detalle de TimeStampResponse</h1>
+
+<pre class="tsr">
+${model.tsr.encoded.encodeBase64(true)}
+</pre>
+
+<table>
+  <tr>
+    <th>Status</th>
+    <td>${model.tsr.status}</td>
+  </tr>
+  <tr>
+    <th>Status String</th>
+    <td>${model.tsr.statusString}</td>
+  </tr>
+  <tr>
+    <th>TimeStamp Token</th>
+    <td class="inner">
+      <% def token = model.tsr.timeStampToken %>
+      <table>
+        <tr>
+          <th>Signer ID</th>
+          <td class="inner">
+            <% def sid = token.getSID() %>
+            <table>
+              <tr>
+                <th>Issuer</th>
+                <td>${sid.issuer}</td>
+              </tr>
+              <tr>
+                <th>Serial Number</th>
+                <td>${sid.serialNumber}</td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+        <tr>
+          <th>TimeStamp Info</th>
+          <td class="inner">
+            <% def info = token.timeStampInfo %>
+            <table>
+              <tr>
+                <th>Accuracy</th>
+                <td>${info.accuracy}</td>
+              </tr>
+              <tr>
+                <th>Generated Time</th>
+                <td>${info.genTime}</td>
+              </tr>
+              <tr>
+                <th>GenTime Accuracy</th>
+                <td>${info.genTimeAccuracy}</td>
+              </tr>
+              <tr>
+                <th>Message Imprint Alg OID</th>
+                <td>${info.messageImprintAlgOID}</td>
+              </tr>
+              <tr>
+                <th>Message Imprint Digest</th>
+                <td>${info.messageImprintDigest.encodeHex()}</td>
+              </tr>
+              <tr>
+                <th>Nonce</th>
+                <td>${info.nonce}</td>
+              </tr>
+              <tr>
+                <th>Policy</th>
+                <td>${info.policy}</td>
+              </tr>
+              <tr>
+                <th>Serial Number</th>
+                <td>${info.serialNumber}</td>
+              </tr>
+              <tr>
+                <th>TSA</th>
+                <td>${info.tsa}</td>
+              </tr>
+              <tr>
+                <th>Ordered</th>
+                <td>${info.ordered}</td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+</table>
+

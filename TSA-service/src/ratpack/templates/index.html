@@ -1,0 +1,65 @@
+<!doctype>
+<title>TSA Garantito</title>
+<style>
+  body {
+    padding: 10px;
+  }
+
+  .frame {
+    display: block;
+    margin-top: 30px;
+    padding: 10px 20px;
+    border: 1px solid gray;
+  }
+
+  h2 {
+    margin: 0;
+  }
+
+  #hash {
+    width: 40em;
+  }
+
+  #tsr {
+    width: 100%;
+    font-family: monospace;
+    font-size: 14px;
+  }
+</style>
+
+<h1>TSA Garantito</h1>
+
+<p>El endpoint HTTP POST es <code>http://localhost:5050/timestamp</code>. Enviar un TSQ en binario en el body del request. La respuesta es un TSR codificado Base64.</p>
+
+<form action="/token" method="post" class="frame">
+  <h2>Obtener un TimeStamp Token</h2>
+  <p>
+    <label for="hash">Hash SHA-256:</label>
+    <input type="text" id="hash" name="hash" maxlength="64">
+    <button type="button" onclick="genRandom()">Random</button>
+  </p>
+
+  <button type="submit">Obtener TSR</button>
+</form>
+
+<script>
+  function genRandom() {
+    var chars = "0123456789abcdef";
+    var result = '';
+    for (var i = 0; i < 64; i++) {
+      result += chars[Math.floor(Math.random() * chars.length)];
+    }
+    document.getElementById('hash').value = result;
+  }
+</script>
+
+<form action="/show_tsr" method="post" class="frame">
+  <h2>Mostrar el detalle de un TSR</h2>
+  <p>
+    <label for="tsr">Codificación Base64 del TSR:</label><br>
+    <textarea id="tsr" name="tsr" rows="15"></textarea>
+  </p>
+
+  <button type="submit">Mostrar detalle</button>
+</form>
+
