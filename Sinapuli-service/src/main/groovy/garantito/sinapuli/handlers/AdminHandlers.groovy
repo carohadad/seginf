@@ -17,14 +17,34 @@ import garantito.sinapuli.model.*
 import garantito.sinapuli.ValidationException
 import static garantito.sinapuli.Util.*
 
+import com.google.inject.*
+
 class AdminHandlers extends GroovyHandler {
+  @Inject
+  ProjectRepository repoProject
+
+  @Inject
+  OffererRepository repoOfferer
+
+  @Inject
+  TenderOfferRepository repoOffers
+
+  def projectListWithCounts() {
+    def projects = repoProject.list()
+    projects.each { project ->
+      if (!project.pending) {
+        project.offerCount = repoOffers.countForProjectId(project.id)
+      }
+    }
+  }
+
   def handlers = { ->
-    get { ProjectRepository repoProject ->
+    get {
       render handlebarsTemplate("projects/index.html",
-        buildModel(context, projectList: repoProject.list()))
+        buildModel(context, projectList: projectListWithCounts()))
     }
 
-    prefix('offerers') { OffererRepository repoOfferer ->
+    prefix('offerers') {
       get {
         render handlebarsTemplate('offerers/index.html',
           buildModel(context, offerersList: repoOfferer.list()))
@@ -58,12 +78,12 @@ class AdminHandlers extends GroovyHandler {
       }
     }
 
-    prefix('projects') { ProjectRepository repoProject ->
+    prefix('projects') {
       handler('') {
         byMethod {
           get {
-            render handlebarsTemplate('projects/index.html',
-              buildModel(context, projectList: repoProject.list()))
+            render handlebarsTemplate("projects/index.html",
+              buildModel(context, projectList: projectListWithCounts()))
           }
 
           post {
@@ -103,6 +123,7 @@ class AdminHandlers extends GroovyHandler {
           get {
             println "getting Project with ID " + pathTokens.id
             def project = repoProject.get(pathTokens.id.toInteger())
+            project.offers = repoOffers.listForProjectId(project.id)
 
             render handlebarsTemplate("projects/show.html", buildModel(context, project: project))
           }
@@ -124,50 +145,16 @@ class AdminHandlers extends GroovyHandler {
       }
     }
 
-    prefix('tenderOffer') { TenderOfferRepository repoTenderOffer ->
-      get("new/:id") {
-        println "getting project with ID " + pathTokens.id
-        def project = repoProject.get((pathTokens.id).toInteger())
-            render groovyTemplate("/tenderOffer/new.html", project: project)
-      }
-
-      get("edit/:id") {
-        println "getting Offerer with ID " + pathTokens.id
-        def tenderOffer = repoTenderOffer.get((pathTokens.id).toInteger())
-
-        render groovyTemplate("/tenderOffer/edit.html", id: tenderOffer.id, hash: tenderOffer.hash)
-      }
-
-      get("delete/:id") {
-        render groovyTemplate("/tenderOffer/delete.html", id: pathTokens.id)
-      }
-
-      post ("submit") {
-        def form = context.parse(form())
-
-        def offerer = repoOfferer.create(form.email)
-        println "CREADO offerer " + offerer.id
-        def project = repoProject.get(form.idproject.toInteger())
-
-        def tenderOffer = repoTenderOffer.create(form.hash, offerer, project)
-
-        redirect "/"
-      }
-
-      post ("update/:id") {
-        def form = context.parse(form())
-
-        // Update is a save with an id
-        repoTenderOffer.update(form.id.toInteger(), form.hash)
-
-        redirect "/"
-      }
-
-      post ("delete/:id") {
-        println "Now deleting trendeOffer with ID: ${pathTokens.id}"
-        repoTenderOffer.delete(pathTokens.id.toInteger())
-
-        redirect "/"
+    prefix('offers') {
+      get(':id/document') {
+        def offer = repoOffers.get(pathTokens.asInt('id'))
+        if (offer.complete) {
+          response.headers.add "Content-disposition", "filename=\"${offer.documentFilename}\""
+          response.send offer.documentType, offer.document
+        } else {
+          response.status 400, "Falta el documento de la oferta"
+          response.send "text/plain", "La oferta está incompleta"
+        }
       }
     }
   }

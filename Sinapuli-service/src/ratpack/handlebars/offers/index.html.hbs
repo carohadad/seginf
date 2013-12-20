@@ -15,7 +15,10 @@
       <tbody>
         {{#each offerList}}
         <tr>
-          <td>{{project.name}}</td>
+          <td>
+            {{project.name}} 
+            <span class="label label-{{statusCss project.status}}">{{statusLabel project.status}}</span>
+          </td>
           <td><a href="/offers/{{id}}">{{userDateTime offerDate}}</a></td>
           <td>
             {{#if complete}}

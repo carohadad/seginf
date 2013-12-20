@@ -70,20 +70,6 @@ ratpack {
       }
       insert([handler] as Handler[])
     }
-
-    //handler('upload') {
-    //  byMethod {
-    //  get {
-    //    render groovyTemplate('/upload.html')      
-    //  }
-
-    //  post {
-    //    def f = context.parse(form())
-    //    def uploaded = f.file('file')
-    //    render groovyTemplate('/upload-result.html', filename: uploaded.fileName, content: uploaded.text)
-    //  }
-    //  }
-    //}
   }
 }
 

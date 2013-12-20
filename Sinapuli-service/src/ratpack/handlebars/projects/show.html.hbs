@@ -29,6 +29,49 @@
     </div>
 
     <div class="clearfix"></div>
+
+    {{#unless project.pending}}
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <h2 class="panel-title">Ofertas en este proyecto</h2>
+      </div>
+      {{#if project.offers}}
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Oferente</th>
+            <th>Fecha</th>
+            <th>Completa</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          {{#each project.offers}}
+          <tr>
+            <td>{{offerer.name}}</td>
+            <td>{{userDateTime offerDate}}</td>
+            <td>
+              {{#if complete}}
+              <span class="label label-success">SI</span>
+              {{else}}
+              <span class="label label-default">NO</span>
+              {{/if}}
+            </td>
+            <td>
+              {{#if complete}}
+              <a href="/offers/{{id}}/document" class="btn btn-default btn-xs" target="_blank">Ver Documento Oferta</a>
+              {{/if}}
+            </td>
+          </tr>
+          {{/each}}
+        </tbody>
+      </table>
+      {{else}}
+      <div class="panel-body">No se registran ofertas aún.</div>
+      {{/if}}
+    </div>
+    {{/unless}}
+
     <div class="extra-actions">
       <a href="/projects">Volver al listado</a>
       <span class="pull-right">

@@ -52,6 +52,9 @@ class Project {
   @DatabaseField
   String tenderFilename
 
+  long offerCount
+  def offers
+
   Project() {
     creationDate = new Date()
     startTenderDate = new DateTime().plus(Period.days(1)).withTime(10,0,0,0).toDate()
@@ -73,6 +76,14 @@ class Project {
 
   public Date getFinishTenderDate() {
     new DateTime(endTenderDate).plus(CLOSING_PERIOD).toDate()
+  }
+
+  public long getOfferCount() {
+    if (this.offers == null) {
+      this.offerCount
+    } else {
+      this.offers.size()
+    }
   }
 
   public void validate() {
@@ -110,9 +121,14 @@ class Project {
   public boolean isOpen() {
     status == Status.OPEN
   }
-
   public boolean isClosed() {
     status == Status.CLOSED
+  }
+  public boolean isPending() {
+    status == Status.PENDING
+  }
+  public boolean isFinished() {
+    status == Status.FINISHED
   }
 }
 

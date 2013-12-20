@@ -1,6 +1,6 @@
 {{#partial "content"}}
 <div class="row">
-  <div class="col-md-10">
+  <div class="col-md-12">
     <h2>Proyectos</h2>
     <table class="table">
       <thead>
@@ -9,6 +9,7 @@
           <th>Apertura</th>
           <th>Finalización</th>
           <th>Estado</th>
+          <th>Ofertas</th>
           <th></th>
         </tr>
       </thead>
@@ -20,6 +21,7 @@
           <td>{{userDateTime startTenderDate}}</td>
           <td>{{userDateTime endTenderDate}}</td>	
           <td><span class="label label-{{statusCss status}}">{{statusLabel status}}</span></td>
+          <td>{{#unless pending}}{{offerCount}}{{/unless}}</td>
           <td>
             <a href="/projects/{{id}}" class="btn btn-default btn-xs">Ver</a>
             <form action="/projects/{{id}}/delete" method="POST" class="inline-form" 

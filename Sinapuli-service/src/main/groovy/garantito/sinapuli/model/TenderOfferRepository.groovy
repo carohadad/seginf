@@ -105,16 +105,27 @@ public class TenderOfferRepository {
 
 	public List<TenderOffer> listForProjectId(int projectId) {
 		try {
-		  tenderOfferDao.queryForEq("project_id", projectId)
+		  def query = tenderOfferDao.queryBuilder()
+      query.where().eq("project_id", projectId)
+      query.orderBy('offerDate', true)
+      query.query()
 		} catch (SQLException e) {
       log.log Level.WARNING, "failed to get offers for project ${projectId}", e
       []
 		}
 	}
 
+  public long countForProjectId(int projectId) {
+    println "counting offers for ${projectId}"
+    tenderOfferDao.queryBuilder().where().eq('project_id', projectId).countOf()
+  }
+
 	public List<TenderOffer> listForOffererId(int offererId) {
 		try {
-		  tenderOfferDao.queryForEq("offerer_id", offererId)
+		  def query = tenderOfferDao.queryBuilder()
+      query.where().eq("offerer_id", offererId)
+      query.orderBy('offerDate', true)
+      query.query()
 		} catch (SQLException e) {
       log.log Level.WARNING, "failed to get offers for offerer ${offererId}", e
       []
