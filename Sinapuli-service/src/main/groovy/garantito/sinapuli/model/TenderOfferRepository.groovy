@@ -71,6 +71,7 @@ public class TenderOfferRepository {
     if (offer.documentReceiptToken != null) {
       throw new ValidationException("La oferta ya está completa")
     }
+    offer.validateDocument()
 
     if (offer.completeDate == null) {
       offer.completeDate = new Date()

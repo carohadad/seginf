@@ -78,7 +78,8 @@ class VerSig {
             //FileInputStream datafis = new FileInputStream(args[2]);
             //BufferedInputStream bufin = new BufferedInputStream(datafis);
 
-		    byte[] hashDoc = DatatypeConverter.parseBase64Binary(readFile(args[2]));	
+        String hexString = readFile(args[2]).trim();
+		    byte[] hashDoc = DatatypeConverter.parseHexBinary(hexString);	
 		    InputStream bufin = new ByteArrayInputStream(hashDoc);
  
             byte[] buffer = new byte[1024];

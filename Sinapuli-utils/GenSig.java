@@ -71,7 +71,8 @@ class GenSig {
 		    //FileInputStream fis = new FileInputStream(args[0]);
 		    //BufferedInputStream bufin = new BufferedInputStream(fis);
 
-		    byte[] decodedBytes = DatatypeConverter.parseBase64Binary(readFile(args[0]));	
+        String hexString = readFile(args[0]).trim();
+		    byte[] decodedBytes = DatatypeConverter.parseHexBinary(hexString);	
 		    InputStream bufin = new ByteArrayInputStream(decodedBytes);
 
 

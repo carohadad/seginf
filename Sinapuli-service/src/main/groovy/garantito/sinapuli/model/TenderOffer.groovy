@@ -8,6 +8,7 @@ import groovy.transform.EqualsAndHashCode
 
 import garantito.sinapuli.ValidationException
 import static garantito.sinapuli.Util.*
+import garantito.sinapuli.Digester
 
 import java.security.*
 
@@ -110,12 +111,20 @@ class TenderOffer {
     try {
       def signature = Signature.getInstance("SHA256withRSA")
       signature.initVerify(offerer.certificate)
-      signature.update(hash.decodeBase64())
-      if (!signature.verify(hashSignature.decodeBase64())) {
+      signature.update(hash.decodeHex())
+      if (!signature.verify(hashSignature.replaceAll(/\s+/,'').decodeBase64())) {
         throw new ValidationException("La firma del hash es inválida")
       }
-    } catch (SignatureException e) {
-      throw new ValidationException("La firma del hash es inválida: ${e.message}")
+    } catch (Exception e) {
+      throw new ValidationException("La firma del hash es inválida: ${e.message}", e)
+    }
+  }
+
+  public void validateDocument() {
+    def digester = new Digester()
+    def docHash = digester.digest(document)
+    if (docHash != hash.decodeHex()) {
+      throw new ValidationException("El documento no se corresponde con el hash de la oferta")
     }
   }
 }
