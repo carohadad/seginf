@@ -12,6 +12,7 @@ import java.util.logging.Level
 import javax.inject.Inject
 
 import garantito.sinapuli.tsa.TSAClient
+import garantito.sinapuli.ValidationException
 
 @Log
 public class TenderOfferRepository {
@@ -43,6 +44,10 @@ public class TenderOfferRepository {
   public TenderOffer placeOffer(TenderOffer offer) {
     offer.validate()
 
+    if (offer.offerDate == null) {
+      offer.offerDate = new Date()
+    }
+
     // FIXME: deberíamos firmar el token luego de recibido
     byte[] hashBytes = offer.hash.decodeHex()
     byte[] token = tsaClient.getToken(hashBytes)
@@ -56,6 +61,28 @@ public class TenderOfferRepository {
 		tenderOfferDao.create(offer)
 		offer
 	}
+
+  public TenderOffer complete(TenderOffer offer) {
+    offer.validate()
+    if (!offer.hasDocument) {
+      throw new ValidationException("No se puede completar una oferta sin un documento")
+    }
+    if (offer.documentReceiptToken != null) {
+      throw new ValidationException("La oferta ya está completa")
+    }
+
+    if (offer.completeDate == null) {
+      offer.completeDate = new Date()
+    }
+
+    // FIXME: enviar al TSA otro hash distinto del anterior
+    // FIXME: firmar el token recibido
+    byte[] hashBytes = offer.hash.decodeHex()
+    byte[] token = tsaClient.getToken(hashBytes)
+    offer.documentReceiptToken = token.encodeBase64(true)
+
+    update(offer)
+  }
 
   public TenderOffer update(TenderOffer offer) {
     if (offer.id == null) {

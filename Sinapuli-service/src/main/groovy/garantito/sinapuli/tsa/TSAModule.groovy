@@ -20,7 +20,7 @@ class TSAModule extends AbstractModule {
 
   @Provides
   TSAClient tsaClient() {
-    new TSAClient(url, username, password)
+    new TSAClientImpl(url, username, password)
   }
 }
 

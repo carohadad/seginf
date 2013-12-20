@@ -110,7 +110,7 @@ class OffererHandlers extends GroovyHandler {
           post {
             def session = get(SessionStorage)
             def offer = repoOffers.get(pathTokens.asInt('id'))
-            if (offer.offerer.id != session.offerer_id) {
+            if (offer.offerer.id != session.offererId) {
               redirect "/projects/${offer.project.id}"
               return
             }
@@ -139,7 +139,7 @@ class OffererHandlers extends GroovyHandler {
               offer.documentType = uploaded.contentType
               offer.documentFilename = uploaded.fileName
 
-              offer = repoOffers.update(offer)
+              offer = repoOffers.complete(offer)
 
               redirect "/offers/${offer.id}"
 
@@ -169,6 +169,23 @@ class OffererHandlers extends GroovyHandler {
           if (offer.complete) {
             response.headers.add "Content-disposition", "filename=\"${offer.documentFilename}\""
             response.send offer.documentType, offer.document
+          } else {
+            response.status 400, "Falta el documento de la oferta"
+            response.send "text/plain", "La oferta está incompleta"
+          }
+        } else {
+          response.status 403, "Acceso denegado"
+          response.send "text/plain", "La oferta no le pertenece"
+        }
+      }
+
+      get(':id/documentReceipt') {
+        def offer = repoOffers.get(pathTokens.asInt('id'))
+        def session = get(SessionStorage)
+        if (session.offererId == offer.offerer.id) {
+          if (offer.complete) {
+            response.headers.add "Content-disposition", "filename=\"recibo-documento-oferta-${offer.id}.txt\""
+            response.send "text/plain", offer.documentReceiptToken
           } else {
             response.status 400, "Falta el documento de la oferta"
             response.send "text/plain", "La oferta está incompleta"

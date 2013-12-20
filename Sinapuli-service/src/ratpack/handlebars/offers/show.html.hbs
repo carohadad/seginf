@@ -15,23 +15,28 @@
       <b>Hash</b>: {{offer.hash}}
     </p>
 
-    <a href="/offers/{{offer.id}}/receipt" class="btn btn-default" target="_blank">Descargar Recibo</a>
-    {{#if offer.complete}}
-    <a href="/offers/{{offer.id}}/document" class="btn btn-default" target="_blank">Ver documento</a>
-    {{/if}}
+    <div class="extra-actions">
+      <a href="/offers/{{offer.id}}/receipt" class="btn btn-default" target="_blank">Descargar Recibo</a>
+      {{#if offer.complete}}
+      <a href="/offers/{{offer.id}}/document" class="btn btn-default" target="_blank">Ver documento</a>
+      <a href="/offers/{{offer.id}}/documentReceipt" class="btn btn-default" target="_blank">Descargar Recibo de Documento</a>
+      {{/if}}
+    </div>
 
     {{#if offer.project.closed}}
     {{#unless offer.complete}}
-    <form method="POST" role="form">
-      <div class="form-group">
-        <label for="document">Documento de la oferta</label>
-        <input type="file" id="document" name="document" required="true">
-        <p class="help-block">Documento final de la oferta. El hash debe
-        coincidir con el ingresado al momento de realizar la oferta.</p>
-      </div>
+    <div class="well">
+      <form method="POST" role="form" enctype="multipart/form-data">
+        <div class="form-group">
+          <label for="document">Documento de la oferta</label>
+          <input type="file" id="document" name="document" required="true">
+          <p class="help-block">Documento final de la oferta. El hash debe
+          coincidir con el ingresado al momento de realizar la oferta.</p>
+        </div>
 
-      <button type="submit" class="btn btn-default">Completar oferta</button>
-    </form>
+        <button type="submit" class="btn btn-default">Completar oferta</button>
+      </form>
+    </div>
     {{/unless}}
     {{/if}}
 

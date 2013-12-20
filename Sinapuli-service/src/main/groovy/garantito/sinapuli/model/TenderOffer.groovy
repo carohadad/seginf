@@ -41,6 +41,9 @@ class TenderOffer {
   @DatabaseField(dataType = DataType.LONG_STRING)
   String receiptToken
 
+  @DatabaseField(dataType = DataType.LONG_STRING)
+  String documentReceiptToken
+
   @DatabaseField(foreign = true, foreignAutoRefresh = true)
   Offerer offerer
 
@@ -49,6 +52,14 @@ class TenderOffer {
 
   TenderOffer() {
     offerDate = new Date()
+  }
+
+  public void setHash(data) {
+    if (data instanceof byte[]) {
+      this.hash = data.encodeHex()
+    } else {
+      this.hash = data
+    }
   }
 
   @Override
@@ -86,6 +97,10 @@ class TenderOffer {
   }
 
   public boolean isComplete() {
-    document != null && document.length > 0 && completeDate != null
+    hasDocument && completeDate != null
+  }
+
+  public boolean isHasDocument() {
+    document != null && document.length > 0
   }
 }
