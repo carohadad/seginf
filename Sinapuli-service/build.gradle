@@ -29,6 +29,7 @@ dependencies {
   compile "io.ratpack:ratpack-handlebars:${RATPACK_VERSION}"
   compile "io.ratpack:ratpack-h2:${RATPACK_VERSION}"
   compile 'joda-time:joda-time:2.3'
+  compile 'org.bouncycastle:bcpkix-jdk15on:1.49'
 }
 
 task wrapper(type: Wrapper) {

@@ -15,8 +15,9 @@
       <b>Hash</b>: {{offer.hash}}
     </p>
 
+    <a href="/offers/{{offer.id}}/receipt" class="btn btn-default" target="_blank">Descargar Recibo</a>
     {{#if offer.complete}}
-    <a href="/offers/{{offer.id}}/document" class="btn btn-default">Ver documento</a>
+    <a href="/offers/{{offer.id}}/document" class="btn btn-default" target="_blank">Ver documento</a>
     {{/if}}
 
     {{#if offer.project.closed}}

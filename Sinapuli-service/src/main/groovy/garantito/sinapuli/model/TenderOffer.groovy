@@ -39,7 +39,7 @@ class TenderOffer {
   Date completeDate
 
   @DatabaseField(dataType = DataType.LONG_STRING)
-  String recepitToken
+  String receiptToken
 
   @DatabaseField(foreign = true, foreignAutoRefresh = true)
   Offerer offerer

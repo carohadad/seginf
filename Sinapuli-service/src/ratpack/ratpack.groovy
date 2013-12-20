@@ -23,8 +23,10 @@ import garantito.sinapuli.*
 import garantito.sinapuli.model.*
 import garantito.sinapuli.handlers.*
 import garantito.sinapuli.helpers.*
+import garantito.sinapuli.tsa.*
 
 String DATABASE_URL = "jdbc:h2:data/SinapuliDB;DB_CLOSE_DELAY=-1"
+String TSA_URL = "http://localhost:5050/timestamp"
 
 ratpack {    	
 	modules {
@@ -38,6 +40,7 @@ ratpack {
 		register new MapSessionsModule(100, 15)
     register new HandlebarsModule()
 
+    register new TSAModule(TSA_URL, null, null)
     register new SinapuliModule()
 	}
 	
