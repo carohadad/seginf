@@ -35,7 +35,7 @@ public class HashDocument {
 			file.createNewFile();
 		}
 
-		out.println(DatatypeConverter.printBase64Binary(bDigest));
+		out.println(DatatypeConverter.printHexBinary(bDigest));
 		out.close();
 
 		//fop.write(bDigest);		

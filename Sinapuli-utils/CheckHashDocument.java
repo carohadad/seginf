@@ -27,7 +27,7 @@ public class CheckHashDocument {
 		//byte[] hashDoc=new byte[hashDocFile.available()];
 		//hashDocFile.read(hashDoc);
 
-		byte[] hashDoc = DatatypeConverter.parseBase64Binary(readFile(hashDocPath));
+		byte[] hashDoc = DatatypeConverter.parseHexBinary(readFile(hashDocPath));
 
 		// Compute the new DIGEST
 		byte[] proposedDigest = getHash(doc);
@@ -53,9 +53,9 @@ public class CheckHashDocument {
 		File file = new File(filename);
 		try {
 			FileReader reader = new FileReader(file);
-			char[] chars = new char[(int) file.length()];
+			char[] chars = new char[(int) file.length()-1];
 			reader.read(chars);
-			content = new String(chars);
+			content = new String(chars);			
 			reader.close();
 		} catch (IOException e) {
 			e.printStackTrace();
