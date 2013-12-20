@@ -77,7 +77,7 @@ class OffererHandlers extends GroovyHandler {
                 project: project,
                 offerer: offerer)
 
-              offer = repoOffers.create(offer)
+              offer = repoOffers.placeOffer(offer)
 
               redirect "/offers/${offer.id}"
 
@@ -147,6 +147,35 @@ class OffererHandlers extends GroovyHandler {
               render handlebarsTemplate("offers/show.html", buildModel(context, offer: offer, error: e.message))
             }
           }
+        }
+      }
+
+      get(':id/receipt') {
+        def offer = repoOffers.get(pathTokens.asInt('id'))
+        def session = get(SessionStorage)
+        if (session.offererId == offer.offerer.id) {
+          response.headers.add "Content-disposition", "filename=\"recibo-oferta-${offer.id}.txt\""
+          response.send "text/plain", offer.receiptToken
+        } else {
+          response.status 403, "Acceso denegado"
+          response.send "text/plain", "La oferta no le pertenece"
+        }
+      }
+
+      get(':id/document') {
+        def offer = repoOffers.get(pathTokens.asInt('id'))
+        def session = get(SessionStorage)
+        if (session.offererId == offer.offerer.id) {
+          if (offer.complete) {
+            response.headers.add "Content-disposition", "filename=\"${offer.documentFilename}\""
+            response.send offer.documentType, offer.document
+          } else {
+            response.status 400, "Falta el documento de la oferta"
+            response.send "text/plain", "La oferta está incompleta"
+          }
+        } else {
+          response.status 403, "Acceso denegado"
+          response.send "text/plain", "La oferta no le pertenece"
         }
       }
     }

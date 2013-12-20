@@ -34,20 +34,28 @@ ratpack {
     }
 
     post("timestamp") { TSAModule tsa ->
-      def inputStream = request.getInputStream()
-      def requestBytes = inputStream.bytes
+      try {
+        def inputStream = request.getInputStream()
+        def requestBytes = inputStream.bytes
 
-      def tsaRequest = new TimeStampRequest(requestBytes)
+        def tsaRequest = new TimeStampRequest(requestBytes)
 
-      tsa.validate(tsaRequest)
+        tsa.validate(tsaRequest)
 
-      def resp = tsa.generate(tsaRequest)
-      def encodedResponse = tsa.encode(resp)
+        def resp = tsa.generate(tsaRequest)
+        def encodedResponse = tsa.encode(resp)
 
-      response.contentType("application/timestamp-reply")
-      response.headers.add("Content-Encoding", "base64")
+        response.contentType("application/timestamp-reply")
+        response.headers.add("Content-Encoding", "base64")
 
-      response.send "${encodedResponse}"
+        response.send "${encodedResponse}"
+      } catch (Exception e) {
+        def writer = new StringWriter()
+        response.status 500, e.message
+        e.printStackTrace(new PrintWriter(writer))
+        e.printStackTrace()
+        response.send "text/plain", writer.toString()
+      }
     }
   }
 }

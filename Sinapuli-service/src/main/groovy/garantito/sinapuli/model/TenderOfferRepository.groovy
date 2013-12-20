@@ -11,13 +11,17 @@ import java.util.logging.Level
 
 import javax.inject.Inject
 
+import garantito.sinapuli.tsa.TSAClient
+
 @Log
 public class TenderOfferRepository {
 	private Dao<TenderOffer, Integer> tenderOfferDao
+  private TSAClient tsaClient
 
   @Inject
-	TenderOfferRepository(ConnectionSource connectionSource) {
+	TenderOfferRepository(ConnectionSource connectionSource, TSAClient tsaClient) {
     setupDatabase(connectionSource)
+    this.tsaClient = tsaClient
 	}
 
 	/**
@@ -35,6 +39,17 @@ public class TenderOfferRepository {
 	public TenderOffer get(int id) {
 		tenderOfferDao.queryForId(id)
 	}
+
+  public TenderOffer placeOffer(TenderOffer offer) {
+    offer.validate()
+
+    // FIXME: deberíamos firmar el token luego de recibido
+    byte[] hashBytes = offer.hash.decodeHex()
+    byte[] token = tsaClient.getToken(hashBytes)
+    offer.receiptToken = token.encodeBase64(true)
+
+    create(offer)
+  }
 
 	public TenderOffer create(TenderOffer offer) {
     offer.validate()
