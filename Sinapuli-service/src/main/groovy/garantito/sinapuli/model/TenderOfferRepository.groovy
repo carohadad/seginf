@@ -43,6 +43,7 @@ public class TenderOfferRepository {
 
   public TenderOffer placeOffer(TenderOffer offer) {
     offer.validate()
+    offer.validateHashSignature()
 
     if (offer.offerDate == null) {
       offer.offerDate = new Date()

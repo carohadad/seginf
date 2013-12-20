@@ -9,6 +9,8 @@ import groovy.transform.EqualsAndHashCode
 import garantito.sinapuli.ValidationException
 import static garantito.sinapuli.Util.*
 
+import java.security.*
+
 @EqualsAndHashCode
 @DatabaseTable(tableName = "tenderOffers")
 class TenderOffer {
@@ -102,5 +104,18 @@ class TenderOffer {
 
   public boolean isHasDocument() {
     document != null && document.length > 0
+  }
+
+  public void validateHashSignature() {
+    try {
+      def signature = Signature.getInstance("SHA256withRSA")
+      signature.initVerify(offerer.certificate)
+      signature.update(hash.decodeBase64())
+      if (!signature.verify(hashSignature.decodeBase64())) {
+        throw new ValidationException("La firma del hash es inválida")
+      }
+    } catch (SignatureException e) {
+      throw new ValidationException("La firma del hash es inválida: ${e.message}")
+    }
   }
 }
