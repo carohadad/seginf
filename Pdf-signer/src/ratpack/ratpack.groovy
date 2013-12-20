@@ -16,37 +16,18 @@ ratpack {
       render groovyTemplate("index.html")
     }
 
-    /*	
-    get ("download"){
-	println "download"
-
-	FileInputStream downloadFile = new FileInputStream("download.pdf");
-	byte[] download=new byte[downloadFile.available()];
-	downloadFile.read(download);
-
-	response.send(download);
-        return
-    }
-
-    post("html2pdf"){
-
-      def f = context.parse(form())
-      html2pdf(f.url)
-      render groovyTemplate("pdf.html")
-    }
-    */
-
-
     post("html2pdf"){
 
 	def f = context.parse(form())
+
 	html2pdf(f.url)
 
 	FileInputStream downloadFile = new FileInputStream("download.pdf");
 	byte[] download=new byte[downloadFile.available()];
 	downloadFile.read(download);
 
-	response.send(download);
+	response.send("application/pdf;charset=UTF-8", download);
+
 	return	
     }
 
