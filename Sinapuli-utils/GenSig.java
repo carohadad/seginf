@@ -34,74 +34,106 @@
 import java.io.*;
 import java.security.*;
 import java.security.cert.Certificate;
+import javax.xml.bind.DatatypeConverter;
  
 class GenSig {
  
-    public static void main(String[] args) {
- 
-        /* Generate a RSA signature */
- 
-        if (args.length != 5) {
-            System.out.println("Usage: GenSig nameOfFileToSign keystore password sign publicKey");
+	public static void main(String[] args) {
 
-            }
-        else try{
+		/* Generate a RSA signature */
 
-	    KeyStore ks = KeyStore.getInstance(KeyStore.getDefaultType());
-	    ks.load(new FileInputStream(args[1]), args[2].toCharArray());
-	    
-	    String alias = (String)ks.aliases().nextElement();
-	    PrivateKey privateKey = (PrivateKey) ks.getKey(alias, args[2].toCharArray());
+		if (args.length != 5) {
+		    System.out.println("Usage: GenSig nameOfFileToSign keystore password sign publicKey");
 
-	    Certificate cert = ks.getCertificate(alias);
+		    }
+		else try{
 
-	    // Get public key	
-            PublicKey publicKey = cert.getPublicKey();
+		    KeyStore ks = KeyStore.getInstance(KeyStore.getDefaultType());
+		    ks.load(new FileInputStream(args[1]), args[2].toCharArray());
+		    
+		    String alias = (String)ks.aliases().nextElement();
+		    PrivateKey privateKey = (PrivateKey) ks.getKey(alias, args[2].toCharArray());
 
-            /* Create a Signature object and initialize it with the private key */
- 
-	    Signature rsa = Signature.getInstance("SHA256withRSA");	
-		
- 
-	    rsa.initSign(privateKey);
- 
-            /* Update and sign the data */
- 
-            FileInputStream fis = new FileInputStream(args[0]);
-            BufferedInputStream bufin = new BufferedInputStream(fis);
-            byte[] buffer = new byte[1024];
-            int len;
-            while (bufin.available() != 0) {
-                len = bufin.read(buffer);
-                rsa.update(buffer, 0, len);
-                };
- 
-            bufin.close();
- 
-            /* Now that all the data to be signed has been read in, 
-                    generate a signature for it */
- 
-            byte[] realSig = rsa.sign();
- 
-         
-            /* Save the signature in a file */
-            FileOutputStream sigfos = new FileOutputStream(args[3]);
-            sigfos.write(realSig);
- 
-            sigfos.close();
- 
- 
-            /* Save the public key in a file */
-	    byte[] key = publicKey.getEncoded();
-            FileOutputStream keyfos = new FileOutputStream(args[4]);
-            keyfos.write(key);
- 
-            keyfos.close();
- 
-        } catch (Exception e) {
-            System.err.println("Caught exception " + e.toString());
-        }
- 
-    };
+		    Certificate cert = ks.getCertificate(alias);
+
+		    // Get public key	
+		    PublicKey publicKey = cert.getPublicKey();
+
+		    /* Create a Signature object and initialize it with the private key */
+
+		    Signature rsa = Signature.getInstance("SHA256withRSA");	
+	
+
+		    rsa.initSign(privateKey);
+
+		    /* Update and sign the data */
+
+		    //FileInputStream fis = new FileInputStream(args[0]);
+		    //BufferedInputStream bufin = new BufferedInputStream(fis);
+
+		    byte[] decodedBytes = DatatypeConverter.parseBase64Binary(readFile(args[0]));	
+		    InputStream bufin = new ByteArrayInputStream(decodedBytes);
+
+
+		    byte[] buffer = new byte[1024];
+		    int len;
+		    while (bufin.available() != 0) {
+			len = bufin.read(buffer);
+			rsa.update(buffer, 0, len);
+			};
+
+		    bufin.close();
+
+		    /* Now that all the data to be signed has been read in, 
+			    generate a signature for it */
+
+		    byte[] realSig = rsa.sign();
+
+		 
+		    /* Save the signature in a file */
+		    //FileOutputStream sigfos = new FileOutputStream(args[3]);
+		    //sigfos.write(realSig);
+		    //sigfos.close();
+
+		    File file = new File(args[3]);
+		    PrintWriter out = new PrintWriter(file);
+
+			// if file doesn't exists, then create it
+			if (!file.exists()) {
+				file.createNewFile();
+			}
+
+		    out.println(DatatypeConverter.printBase64Binary(realSig));
+		    out.close();
+
+
+		    /* Save the public key in a file */
+		    byte[] key = publicKey.getEncoded();
+		    FileOutputStream keyfos = new FileOutputStream(args[4]);
+		    keyfos.write(key);
+
+		    keyfos.close();
+
+		} catch (Exception e) {
+		    System.err.println("Caught exception " + e.toString());
+		}
+
+	}
+
+	public static String readFile(String filename)
+	{
+		String content = null;
+		File file = new File(filename);
+		try {
+			FileReader reader = new FileReader(file);
+			char[] chars = new char[(int) file.length()];
+			reader.read(chars);
+			content = new String(chars);
+			reader.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return content;
+	}
  
 }

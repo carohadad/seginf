@@ -33,6 +33,7 @@
 import java.io.*;
 import java.security.*;
 import java.security.spec.*;
+import javax.xml.bind.DatatypeConverter;
  
 class VerSig {
  
@@ -59,11 +60,13 @@ class VerSig {
             PublicKey pubKey = keyFactory.generatePublic(pubKeySpec);
  
             /* input the signature bytes */
-            FileInputStream sigfis = new FileInputStream(args[1]);
-            byte[] sigToVerify = new byte[sigfis.available()]; 
-            sigfis.read(sigToVerify );
- 
-            sigfis.close();
+            //FileInputStream sigfis = new FileInputStream(args[1]);
+            //byte[] sigToVerify = new byte[sigfis.available()]; 
+	    //sigfis.read(sigToVerify ); 
+            //sigfis.close();
+
+	    byte[] sigToVerify = DatatypeConverter.parseBase64Binary(readFile(args[1]));
+            
  
             /* create a Signature object and initialize it with the public key */
             Signature sig = Signature.getInstance("SHA256withRSA");
@@ -71,8 +74,12 @@ class VerSig {
  
             /* Update and verify the data */
  
-            FileInputStream datafis = new FileInputStream(args[2]);
-            BufferedInputStream bufin = new BufferedInputStream(datafis);
+            		
+            //FileInputStream datafis = new FileInputStream(args[2]);
+            //BufferedInputStream bufin = new BufferedInputStream(datafis);
+
+		    byte[] hashDoc = DatatypeConverter.parseBase64Binary(readFile(args[2]));	
+		    InputStream bufin = new ByteArrayInputStream(hashDoc);
  
             byte[] buffer = new byte[1024];
             int len;
@@ -82,6 +89,7 @@ class VerSig {
                 };
  
             bufin.close();
+            
  
  
             boolean verifies = sig.verify(sigToVerify);
@@ -91,8 +99,24 @@ class VerSig {
  
         } catch (Exception e) {
             System.err.println("Caught exception " + e.toString());
-};
+	}
  
     }
+
+	public static String readFile(String filename)
+	{
+		String content = null;
+		File file = new File(filename);
+		try {
+			FileReader reader = new FileReader(file);
+			char[] chars = new char[(int) file.length()];
+			reader.read(chars);
+			content = new String(chars);
+			reader.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return content;
+	}
  
 }

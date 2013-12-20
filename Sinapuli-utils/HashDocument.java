@@ -2,9 +2,12 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.PrintWriter;
 
 import java.security.MessageDigest;
 import java.security.SecureRandom;
+
+import javax.xml.bind.DatatypeConverter;
 
 import java.util.Arrays;
 
@@ -24,16 +27,20 @@ public class HashDocument {
 
 		File file = new File(outputPath);
 
-		FileOutputStream fop = new FileOutputStream(file);
+		//FileOutputStream fop = new FileOutputStream(file);
+		PrintWriter out = new PrintWriter(file);
 
 		// if file doesn't exists, then create it
 		if (!file.exists()) {
 			file.createNewFile();
 		}
 
-		fop.write(bDigest);
-		fop.flush();
-		fop.close();
+		out.println(DatatypeConverter.printBase64Binary(bDigest));
+		out.close();
+
+		//fop.write(bDigest);		
+		//fop.flush();
+		//fop.close();
 
 		System.out.println("Done");
 	}
