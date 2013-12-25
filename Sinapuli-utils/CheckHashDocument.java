@@ -1,12 +1,6 @@
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.FileReader;
-
-
-import java.security.MessageDigest;
-import java.security.SecureRandom;
+import java.io.*;
+import java.nio.file.*;
+import java.security.*;
 
 import javax.xml.bind.DatatypeConverter;
 
@@ -20,12 +14,8 @@ public class CheckHashDocument {
 		String docPath = args[0]; 
 		String hashDocPath = args[1]; 
 
-		FileInputStream docFile = new FileInputStream(docPath);
-		byte[] doc=new byte[docFile.available()];
-
-                //FileInputStream hashDocFile = new FileInputStream(hashDocPath);
-		//byte[] hashDoc=new byte[hashDocFile.available()];
-		//hashDocFile.read(hashDoc);
+		Path path = Paths.get(docPath);
+		byte[] doc = Files.readAllBytes(path); 
 
 		byte[] hashDoc = DatatypeConverter.parseHexBinary(readFile(hashDocPath));
 

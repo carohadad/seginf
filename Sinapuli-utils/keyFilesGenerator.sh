@@ -96,37 +96,6 @@ verSig(){
 
 }
 
-#sinapuliToken(){
-#
-#
-#	echo -n "Ingrese el nombre del documento: "
-#	read docPath
-#	echo -n "Ingrese el nombre del archivo de salida: "
-#	read outputPath
-#	echo -n "Ingrese el nombre de su archivo keystore: "
-#	read keystore
-#	echo -n "Ingrese la password para el keystore: "
-#	read password
-#	echo -n "Ingrese el nombre del archivo de salida para su clave publica: "
-#	read publicKey
-#
-#	java SinapuliToken "$docPath" "$outputPath" "$keystore" "$password" "$publicKey"
-#
-#}
-#
-#sinapuliTokenRead(){
-#
-#
-#	echo -n "Ingrese el nombre del documento de oferta: "
-#	read sinapuliToken
-#	echo -n "Ingrese el nombre del archivo de salida para el hash: "
-#	read hashOutput
-#	echo -n "Ingrese el nombre del archivo de salida para la firma: "
-#	read signOutput
-#
-#	java SinapuliTokenRead "$sinapuliToken" "$hashOutput" "$signOutput"
-#}
-#
 
 PS3="Seleccione una opcion: "
 options=(
@@ -136,8 +105,6 @@ options=(
 "Quiero comparar un documento con un hash" 
 "Quiero firmar un Hash" 
 "Quiero verificar la firma de un Hash" 
-#"Quiero subir una oferta en Sinapuli"
-#"Quiero extraer el hash y la firma de una oferta en Sinapuli"
 "Salir")
 
 
@@ -162,12 +129,6 @@ do
         "Quiero verificar la firma de un Hash" )
             echo "eligio la opcion 6"
             verSig ;;
-#        "Quiero subir una oferta en Sinapuli" )
-#            echo "eligio la opcion 7"		
-#            sinapuliToken ;;
-#        "Quiero extraer el hash y la firma de una oferta en Sinapuli" )
-#            echo "eligio la opcion 8"		
-#            sinapuliTokenRead ;;
         "Salir")
             break
             ;;

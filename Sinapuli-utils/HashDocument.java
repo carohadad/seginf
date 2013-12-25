@@ -1,11 +1,6 @@
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.PrintWriter;
-
-import java.security.MessageDigest;
-import java.security.SecureRandom;
+import java.io.*;
+import java.nio.file.*;
+import java.security.*;
 
 import javax.xml.bind.DatatypeConverter;
 
@@ -19,15 +14,13 @@ public class HashDocument {
 		String docPath = args[0]; 
 		String outputPath = args[1]; 
 
-		FileInputStream docFile = new FileInputStream(docPath);
-		byte[] doc=new byte[docFile.available()];
+		Path path = Paths.get(docPath);
+		byte[] doc = Files.readAllBytes(path); 
 
 		// Digest computation
 		byte[] bDigest = getHash(doc);
 
 		File file = new File(outputPath);
-
-		//FileOutputStream fop = new FileOutputStream(file);
 		PrintWriter out = new PrintWriter(file);
 
 		// if file doesn't exists, then create it
@@ -38,9 +31,6 @@ public class HashDocument {
 		out.println(DatatypeConverter.printHexBinary(bDigest));
 		out.close();
 
-		//fop.write(bDigest);		
-		//fop.flush();
-		//fop.close();
 
 		System.out.println("Done");
 	}

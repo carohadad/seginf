@@ -68,10 +68,7 @@ class GenSig {
 
 		    /* Update and sign the data */
 
-		    //FileInputStream fis = new FileInputStream(args[0]);
-		    //BufferedInputStream bufin = new BufferedInputStream(fis);
-
-        String hexString = readFile(args[0]).trim();
+        	    String hexString = readFile(args[0]).trim();
 		    byte[] decodedBytes = DatatypeConverter.parseHexBinary(hexString);	
 		    InputStream bufin = new ByteArrayInputStream(decodedBytes);
 
@@ -81,7 +78,7 @@ class GenSig {
 		    while (bufin.available() != 0) {
 			len = bufin.read(buffer);
 			rsa.update(buffer, 0, len);
-			};
+		    };
 
 		    bufin.close();
 
@@ -92,9 +89,6 @@ class GenSig {
 
 		 
 		    /* Save the signature in a file */
-		    //FileOutputStream sigfos = new FileOutputStream(args[3]);
-		    //sigfos.write(realSig);
-		    //sigfos.close();
 
 		    File file = new File(args[3]);
 		    PrintWriter out = new PrintWriter(file);

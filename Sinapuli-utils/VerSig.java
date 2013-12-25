@@ -33,6 +33,7 @@
 import java.io.*;
 import java.security.*;
 import java.security.spec.*;
+import java.nio.file.*;
 import javax.xml.bind.DatatypeConverter;
  
 class VerSig {
@@ -47,24 +48,16 @@ class VerSig {
         else try{
  
             /* import encoded public key */
- 
-            FileInputStream keyfis = new FileInputStream(args[0]);
-            byte[] encKey = new byte[keyfis.available()];  
-            keyfis.read(encKey);
- 
-            keyfis.close();
- 
+
+	    Path path = Paths.get(args[0]);
+            byte[] encKey = Files.readAllBytes(path);
+	
             X509EncodedKeySpec pubKeySpec = new X509EncodedKeySpec(encKey);
  
 	    KeyFactory keyFactory = KeyFactory.getInstance("RSA");		
             PublicKey pubKey = keyFactory.generatePublic(pubKeySpec);
  
             /* input the signature bytes */
-            //FileInputStream sigfis = new FileInputStream(args[1]);
-            //byte[] sigToVerify = new byte[sigfis.available()]; 
-	    //sigfis.read(sigToVerify ); 
-            //sigfis.close();
-
 	    byte[] sigToVerify = DatatypeConverter.parseBase64Binary(readFile(args[1]));
             
  
@@ -73,25 +66,19 @@ class VerSig {
             sig.initVerify(pubKey);
  
             /* Update and verify the data */
- 
-            		
-            //FileInputStream datafis = new FileInputStream(args[2]);
-            //BufferedInputStream bufin = new BufferedInputStream(datafis);
 
-        String hexString = readFile(args[2]).trim();
-		    byte[] hashDoc = DatatypeConverter.parseHexBinary(hexString);	
-		    InputStream bufin = new ByteArrayInputStream(hashDoc);
+            String hexString = readFile(args[2]).trim();
+	    byte[] hashDoc = DatatypeConverter.parseHexBinary(hexString);	
+	    InputStream bufin = new ByteArrayInputStream(hashDoc);
  
             byte[] buffer = new byte[1024];
             int len;
             while (bufin.available() != 0) {
                 len = bufin.read(buffer);
                 sig.update(buffer, 0, len);
-                };
+            };
  
             bufin.close();
-            
- 
  
             boolean verifies = sig.verify(sigToVerify);
  
