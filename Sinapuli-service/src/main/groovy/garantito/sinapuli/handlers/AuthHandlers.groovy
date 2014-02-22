@@ -1,7 +1,7 @@
 package garantito.sinapuli.handlers
 
 import static ratpack.handlebars.Template.handlebarsTemplate
-import static ratpack.form.Forms.form
+import ratpack.form.Form
 import ratpack.session.Session
 import ratpack.session.store.SessionStorage
 
@@ -51,7 +51,7 @@ class AuthHandlers extends GroovyHandler {
           render handlebarsTemplate("login.html")
         }
         post {
-          def form = parse(form())
+          def form = parse(Form.class)
           def session = get(SessionStorage)
           if (form.username == 'admin' && form.password == 'admin') {
             session.auth = true

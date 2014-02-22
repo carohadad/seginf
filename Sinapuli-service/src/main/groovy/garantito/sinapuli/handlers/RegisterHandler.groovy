@@ -1,7 +1,7 @@
 package garantito.sinapuli.handlers
 
 import static ratpack.handlebars.Template.handlebarsTemplate
-import static ratpack.form.Forms.form
+import ratpack.form.Form
 import ratpack.session.Session
 import ratpack.session.store.SessionStorage
 
@@ -29,7 +29,7 @@ class RegisterHandler extends GroovyHandler {
         render handlebarsTemplate('register.html', offerer: new Offerer())
       }
       post {
-        def form = context.parse(form())
+        def form = context.parse(Form.class)
         def offerer
 
         try {

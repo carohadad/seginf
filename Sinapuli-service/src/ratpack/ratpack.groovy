@@ -1,6 +1,5 @@
 import ratpack.groovy.Groovy
 import static ratpack.groovy.Groovy.*
-import static ratpack.form.Forms.form
 import ratpack.session.Session
 import ratpack.session.SessionModule
 import ratpack.session.store.MapSessionsModule

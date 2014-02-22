@@ -1,5 +1,5 @@
 import static ratpack.groovy.Groovy.*
-import static ratpack.form.Forms.form
+import ratpack.form.Form
 import org.bouncycastle.tsp.*
 import java.security.KeyStore
 
@@ -25,7 +25,7 @@ ratpack {
     }
 
     post('token') { TSAModule tsa ->
-      def form = parse(form())
+      def form = parse(Form.class)
 
       if (form.hash == null || form.hash.trim() == "" || form.hash.trim().size() != 64) {
         response.status 400
@@ -46,7 +46,7 @@ ratpack {
     }
 
     post('show_tsr') { TSAModule tsa ->
-      def form = parse(form())
+      def form = parse(Form.class)
 
       if (form.tsr == null || form.tsr.trim() == "") {
         response.status 400
@@ -62,7 +62,7 @@ ratpack {
 
     post("timestamp") { TSAModule tsa ->
       try {
-        def inputStream = request.getInputStream()
+        def inputStream = request.body.getInputStream()
         def requestBytes = inputStream.bytes
 
         def tsaRequest = new TimeStampRequest(requestBytes)

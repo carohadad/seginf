@@ -1,5 +1,5 @@
 import static ratpack.groovy.Groovy.*
-import static ratpack.form.Forms.form
+import ratpack.form.Form
 
 import java.io.*;
 import java.security.*;
@@ -18,7 +18,7 @@ ratpack {
 
     post("html2pdf"){
 
-	def f = context.parse(form())
+	def f = context.parse(Form.class)
 
 	html2pdf(f.url)
 

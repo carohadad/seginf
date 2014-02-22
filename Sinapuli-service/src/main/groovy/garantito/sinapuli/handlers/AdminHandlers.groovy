@@ -2,7 +2,7 @@ package garantito.sinapuli.handlers
 
 import ratpack.groovy.Groovy
 import static ratpack.groovy.Groovy.*
-import static ratpack.form.Forms.form
+import ratpack.form.Form
 import ratpack.session.Session
 import ratpack.session.store.SessionStorage
 
@@ -87,7 +87,7 @@ class AdminHandlers extends GroovyHandler {
           }
 
           post {
-            def form = context.parse(form())
+            def form = context.parse(Form.class)
             def uploaded = form.file('file')
             def project
 
