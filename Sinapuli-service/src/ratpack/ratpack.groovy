@@ -48,7 +48,7 @@ ratpack {
     register new H2Module('', '', DATABASE_URL)
     register new SessionModule()
 		register new MapSessionsModule(100, 15)
-    register new HandlebarsModule()
+    register new HandlebarsModule(cacheSize: 0)
 
     register new TSAModule(TSA_URL, null, null)
     register new SinapuliModule()
